@@ -6,7 +6,7 @@
 #include "../header/InputManager.h"
 #include <SDL2/SDL.h>
 
-bool Collider::debug = false;
+bool Collider::debug = true;
 
 Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset) : Component(associated)
 {

@@ -9,12 +9,6 @@
 
 TitleState::TitleState() : State()
 {
-    GameObject* titleGo = new GameObject();
-    Sprite* titleSprite = new Sprite(*titleGo, "./assets/image/title.png");
-    CameraFollower* titleFollower = new CameraFollower(*titleGo);
-    titleGo->AddComponent(titleSprite);
-    titleGo->AddComponent(titleFollower);
-
     GameObject* textGo = new GameObject();
     textGo->box.SetVec(Vec2(250, 350));
     CameraFollower* textFollower = new CameraFollower(*textGo, textGo->box.GetVec());
@@ -29,7 +23,6 @@ TitleState::TitleState() : State()
     Text* text = new Text(*textGo, fontFile, fontSize, style, textStr, color, 0.75);
     textGo->AddComponent(text);
     
-    AddObject(titleGo);
     AddObject(textGo);
 }
 
