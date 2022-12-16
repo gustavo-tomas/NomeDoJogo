@@ -10,7 +10,6 @@ Player* Player::player;
 
 Player::Player(GameObject& associated) : Component(associated)
 {
-    speed = Vec2(0, 0);
     linearSpeed = 0;
     angle = 0;
     hp = 100;
@@ -20,6 +19,8 @@ Player::Player(GameObject& associated) : Component(associated)
     associated.AddComponent(sprite);
 
     Collider* collider = new Collider(associated);
+    collider->SetMass(1.0);
+
     associated.AddComponent(collider);
 
     player = this;
@@ -72,16 +73,11 @@ void Player::Update(float dt)
         linearSpeed = abs(linearSpeed) <= 5.0 ? 0 : linearSpeed - 1.0;
     }
 
-    // Updates sprite and position
+    // @TODO: atualizar esses dados no collider?
+    // Updates sprite and velocity
+    Collider* collider = (Collider*) associated.GetComponent("Collider");
     associated.angleDeg = angle;
-    speed = Vec2(linearSpeed, 0).GetRotated(angle);
-    associated.box.SetVec(associated.box.GetVec() + speed * dt);
-    
-    // Limits X & Y position to the limits of the tilemap
-    associated.box.x = min(1408.f - associated.box.w, associated.box.x);
-    associated.box.x = max(0.f, associated.box.x);
-    associated.box.y = min(1280.f - associated.box.h, associated.box.y);
-    associated.box.y = max(0.f, associated.box.y);
+    collider->velocity = Vec2(linearSpeed, 0).GetRotated(angle);
 }
 
 void Player::Render()

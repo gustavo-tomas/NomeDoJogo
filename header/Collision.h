@@ -1,3 +1,4 @@
+#include "Collider.h"
 #include "Rect.h"
 #include "Vec2.h"
 
@@ -39,5 +40,42 @@ class Collision {
 					return false;
 			}
 			return true;
+		}
+
+		static inline void ResolveCollision(Collider& a, Collider& b)
+		{
+			// Calculate relative velocity
+			Vec2 relativeVelocity = b.velocity - a.velocity;
+
+			// @TODO: calcular normalVelocity de maneira genérica
+			// Calculate relative velocity in terms of the normal direction
+			Vec2 normal = Vec2(-1.f, 0.f);
+			float normalVelocity = normal.GetDot(relativeVelocity);
+
+			cout << "NORMAL VELOCITY: " << normalVelocity << endl;
+			cout << "REL VELOCITY: " << relativeVelocity.x << " " << relativeVelocity.y << endl;
+			cout << "A VELOCITY: " << a.velocity.x << " " << a.velocity.y << endl;
+			cout << "B VELOCITY: " << b.velocity.x << " " << b.velocity.y << endl;
+			// cout << "NORMAL: " << normal.x << " " << normal.y << endl;
+
+			// Do not resolve if velocities are separating
+			if (normalVelocity > 0.0)
+				return;
+
+			// Calculate restitution
+			float e = min(a.restitution, b.restitution);
+
+			// Calculate impulse scalar
+			float j = - (1.f + e) * normalVelocity;
+			j /= 1.f / a.mass + 1.f / b.mass;
+
+			// Apply impulse
+			Vec2 impulse = normal * j;
+
+			a.velocity = a.velocity - (impulse * (1.f / a.mass));
+			b.velocity = b.velocity + (impulse * (1.f / b.mass));
+
+			cout << "FINAL A VELOCITY: " << a.velocity.x << " " << a.velocity.y << endl;
+			cout << "FINAL B VELOCITY: " << b.velocity.x << " " << b.velocity.y << endl;
 		}
 };

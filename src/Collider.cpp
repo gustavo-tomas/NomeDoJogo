@@ -19,6 +19,8 @@ void Collider::Update(float dt)
     // Debug is toggled ON/OFF by pressing Tab :)
     if (InputManager::GetInstance().KeyPress(TAB_KEY))
         debug = !debug;
+
+    associated.box.SetVec(associated.box.GetVec() + velocity * dt);
 }
 
 void Collider::Render() {
@@ -75,4 +77,19 @@ void Collider::SetScale(Vec2 scale)
 void Collider::SetOffset(Vec2 offset)
 {
     this->offset = offset;
+}
+
+void Collider::SetVelocity(Vec2 velocity)
+{
+    this->velocity = velocity;
+}
+
+void Collider::SetRestitution(float restitution)
+{
+    this->restitution = restitution;
+}
+
+void Collider::SetMass(float mass)
+{
+    this->mass = mass;
 }

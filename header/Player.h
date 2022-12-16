@@ -16,7 +16,6 @@ class Player : public Component {
         static Player* player;
 
     private:
-        Vec2 speed;
         float linearSpeed;
         float angle;
         int hp;

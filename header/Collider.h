@@ -12,7 +12,13 @@ class Collider : public Component {
         bool Is(const char* type);
         void SetScale(Vec2 scale);
         void SetOffset(Vec2 offset);
+        void SetVelocity(Vec2 velocity);
+        void SetRestitution(float restitution);
+        void SetMass(float mass);
         Rect box;
+        Vec2 velocity = Vec2(0, 0);
+        float restitution = 1.0;
+        float mass = 1000000;
 
     private:
         Vec2 scale;

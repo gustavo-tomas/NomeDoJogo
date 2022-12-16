@@ -129,6 +129,7 @@ void StageState::Update(float dt)
                     {
                         objectArray[i]->NotifyCollision(*objectArray[j]);
                         objectArray[j]->NotifyCollision(*objectArray[i]);
+                        Collision::ResolveCollision(*colliderA, *colliderB);
                     }
                 }
             }
