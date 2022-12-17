@@ -91,9 +91,6 @@ void StageState::Update(float dt)
     if (QuitRequested() || PopRequested())
         return;
 
-    // Updates the camera
-    Camera::Update(dt);
-
     // Sets quit requested
     if (InputManager::GetInstance().QuitRequested())
         quitRequested = true;
@@ -101,6 +98,9 @@ void StageState::Update(float dt)
     // Returns to title screen
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY))
         popRequested = true;
+
+    // Updates the camera
+    Camera::Update(dt);
 
     // Updates GOs
     UpdateArray(dt);
@@ -130,6 +130,10 @@ void StageState::Update(float dt)
                         objectArray[i]->NotifyCollision(*objectArray[j]);
                         objectArray[j]->NotifyCollision(*objectArray[i]);
                         Collision::ResolveCollision(*colliderA, *colliderB);
+                        
+                        // Update collisions before rendering
+                        colliderA->ResolveCollisionUpdate(dt);
+                        colliderB->ResolveCollisionUpdate(dt);
                     }
                 }
             }

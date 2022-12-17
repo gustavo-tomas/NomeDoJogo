@@ -20,11 +20,6 @@ void Collider::Update(float dt)
     if (InputManager::GetInstance().KeyPress(TAB_KEY))
         debug = !debug;
 
-    associated.box.SetVec(associated.box.GetVec() + velocity * dt);
-}
-
-void Collider::Render() {
-
     // This section was moved from Update to better reflect changes in the hitbox
     box.SetVec(associated.box.GetCenter() + offset.GetRotated(associated.angleDeg));
     if (scale.x > 0)
@@ -38,7 +33,20 @@ void Collider::Render() {
         box.h = associated.box.h * scale.y;
         box.y -= (associated.box.h * scale.y) / 2.0;
     }
-    // Section ends here 
+    // Section ends here
+
+    box.SetVec(box.GetVec() + correction + (velocity * dt));
+    associated.box.SetVec(box.GetVec());
+}
+
+void Collider::ResolveCollisionUpdate(float dt)
+{
+    box.SetVec(box.GetVec() + correction);
+    associated.box.SetVec(box.GetVec());
+    correction = Vec2();
+}
+
+void Collider::Render() {
 
     if (!debug)
         return;
@@ -67,6 +75,12 @@ bool Collider::Is(const char* type)
 {
     string str_type = type;
     return str_type == "Collider";
+}
+
+void Collider::ApplyImpulse(Vec2 impulse)
+{
+    float inv = 1.f / this->mass;
+    this->velocity = this->velocity + (impulse * inv);
 }
 
 void Collider::SetScale(Vec2 scale)

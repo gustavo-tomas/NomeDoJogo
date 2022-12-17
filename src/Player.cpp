@@ -3,6 +3,7 @@
 #include "../header/Game.h"
 #include "../header/InputManager.h"
 #include "../header/Collider.h"
+#include "../header/Collision.h"
 #include "../header/Camera.h"
 #include "../header/Sound.h"
 
@@ -14,7 +15,7 @@ Player::Player(GameObject& associated) : Component(associated)
     angle = 0;
     hp = 100;
     
-    Sprite* sprite = new Sprite(associated, "./assets/image/box.png");
+    Sprite* sprite = new Sprite(associated, "./assets/image/250_scout.png");
     sprite->SetScale(0.3, 0.3);
     associated.AddComponent(sprite);
 
@@ -44,40 +45,31 @@ void Player::Update(float dt)
         return;
     }
 
-    float acc = 500.0;
-    float dec = 300.0;
-    float maxSpeed = 550.0;
+    float speed = 200.0;
+    Vec2 velocity = Vec2(0.f, 0.f);
 
-    // Accelerates
-    if (InputManager::GetInstance().IsKeyDown(W_KEY))
-        linearSpeed = linearSpeed < maxSpeed ? linearSpeed + acc * dt : maxSpeed;
+    // Up
+    if (InputManager::GetInstance().IsKeyDown(W_KEY)) 
+        velocity.y -= 1.f;
 
-    // Decelerates
+    // Down
     if (InputManager::GetInstance().IsKeyDown(S_KEY))
-        linearSpeed = linearSpeed > -maxSpeed ? linearSpeed - acc * dt : -maxSpeed;
+        velocity.y += 1.f;
 
-    // Turns Right
-    if (InputManager::GetInstance().IsKeyDown(D_KEY))
-        angle += 2.5 * dt;
+    // Right
+    if (InputManager::GetInstance().IsKeyDown(D_KEY)) 
+        velocity.x += 1.f;
 
-    // Turns Left
+    // Left
     if (InputManager::GetInstance().IsKeyDown(A_KEY))
-        angle -= 2.5 * dt;
+        velocity.x -= 1.f;
 
-    // Comes to a halt
-    if (!InputManager::GetInstance().IsKeyDown(W_KEY) &&
-        !InputManager::GetInstance().IsKeyDown(S_KEY))
-    {
-        linearSpeed = linearSpeed > 0 ? linearSpeed - dec * dt : linearSpeed;
-        linearSpeed = linearSpeed < 0 ? linearSpeed + dec * dt : linearSpeed;
-        linearSpeed = abs(linearSpeed) <= 5.0 ? 0 : linearSpeed - 1.0;
-    }
-
-    // @TODO: atualizar esses dados no collider?
-    // Updates sprite and velocity
     Collider* collider = (Collider*) associated.GetComponent("Collider");
-    associated.angleDeg = angle;
-    collider->velocity = Vec2(linearSpeed, 0).GetRotated(angle);
+    if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
+        collider->velocity = velocity.GetNormal() * speed;
+
+    else
+        collider->velocity = velocity;
 }
 
 void Player::Render()
