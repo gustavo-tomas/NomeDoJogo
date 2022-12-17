@@ -41,41 +41,46 @@ class Collision {
 			}
 			return true;
 		}
+		
+		static inline Vec2 GetCollisionNormal(Collider& a, Collider& b)
+		{
+			Rect r1 = a.box;
+			Rect r2 = b.box;
+			
+			Vec2 dist = r1.GetCenter() - r2.GetCenter();
+			float width = (r1.w + r2.w) / 2.f;
+			float height = (r1.h + r2.h) / 2.f;
+			float crossWidth = width * dist.y;
+			float crossHeight = height * dist.x;
+
+			if (crossWidth > crossHeight)
+				return crossWidth > -crossHeight ? Vec2(0.f, -1.f) : Vec2(-1.f, 0.f); // Bottom : Left
+
+			return crossWidth > -crossHeight ? Vec2(1.f, 0.f) : Vec2(0.f, 1.f); // Right : Top
+		}
 
 		static inline void ResolveCollision(Collider& a, Collider& b)
 		{
 			// Calculate relative velocity
 			Vec2 relativeVelocity = b.velocity - a.velocity;
 
-			// @TODO: calcular normalVelocity de maneira genérica
-			// Calculate relative velocity in terms of the normal direction
-			Vec2 normal = Vec2(-1.f, 0.f);
-			float normalVelocity = normal.GetDot(relativeVelocity);
-
-			cout << "NORMAL VELOCITY: " << normalVelocity << endl;
-			cout << "REL VELOCITY: " << relativeVelocity.x << " " << relativeVelocity.y << endl;
-			cout << "A VELOCITY: " << a.velocity.x << " " << a.velocity.y << endl;
-			cout << "B VELOCITY: " << b.velocity.x << " " << b.velocity.y << endl;
-			// cout << "NORMAL: " << normal.x << " " << normal.y << endl;
-
-			// Do not resolve if velocities are separating
-			if (normalVelocity > 0.0)
-				return;
+			// Calculate collision normal
+			Vec2 normal = GetCollisionNormal(a, b);
 
 			// Calculate restitution
 			float e = min(a.restitution, b.restitution);
 
+			// Calculate invert mass
+			float invA = 1.f / a.mass;
+			float invB = 1.f / b.mass;
+
 			// Calculate impulse scalar
-			float j = - (1.f + e) * normalVelocity;
-			j /= 1.f / a.mass + 1.f / b.mass;
+			float j = -(1.f + e) * normal.GetDot(relativeVelocity) / (invA + invB);
 
 			// Apply impulse
-			Vec2 impulse = normal * j;
+			Vec2 impulse = normal * j * 1.2f;
 
-			a.velocity = a.velocity - (impulse * (1.f / a.mass));
-			b.velocity = b.velocity + (impulse * (1.f / b.mass));
-
-			cout << "FINAL A VELOCITY: " << a.velocity.x << " " << a.velocity.y << endl;
-			cout << "FINAL B VELOCITY: " << b.velocity.x << " " << b.velocity.y << endl;
+			a.velocity = a.velocity - (impulse * invA);
+			b.velocity = b.velocity + (impulse * invB);
 		}
 };
