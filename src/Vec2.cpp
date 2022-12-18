@@ -60,7 +60,7 @@ float Vec2::GetDot(Vec2 vec)
     return x * vec.x + y * vec.y;
 }
 
-Vec2 Vec2::GetNormal()
+Vec2 Vec2::GetNormalized()
 {
     return Vec2(x, y) * (1.f / GetMagnitude());
 }
