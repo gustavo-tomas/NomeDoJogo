@@ -17,11 +17,8 @@ Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset) : Component(
 void Collider::Update(float dt)
 {
     // Debug is toggled ON/OFF by pressing Tab :)
-    if (InputManager::GetInstance().KeyPress(TAB_KEY))
+    if (InputManager::GetInstance().IsKeyDown(TAB_KEY))
         debug = !debug;
-}
-
-void Collider::Render() {
 
     // This section was moved from Update to better reflect changes in the hitbox
     box.SetVec(associated.box.GetCenter() + offset.GetRotated(associated.angleDeg));
@@ -36,7 +33,21 @@ void Collider::Render() {
         box.h = associated.box.h * scale.y;
         box.y -= (associated.box.h * scale.y) / 2.0;
     }
-    // Section ends here 
+    // Section ends here
+
+    box.SetVec(box.GetVec() + velocity * dt);
+    associated.box.SetVec(box.GetVec());
+}
+
+void Collider::ResolveCollisionUpdate(float dt)
+{
+    // Apply correction (if any) and update the associated box
+    box.SetVec(box.GetVec() + correction);
+    associated.box.SetVec(box.GetVec());
+    correction = Vec2();
+}
+
+void Collider::Render() {
 
     if (!debug)
         return;
@@ -67,6 +78,12 @@ bool Collider::Is(const char* type)
     return str_type == "Collider";
 }
 
+void Collider::ApplyImpulse(Vec2 impulse)
+{
+    float inv = 1.f / this->mass;
+    this->velocity = this->velocity + (impulse * inv);
+}
+
 void Collider::SetScale(Vec2 scale)
 {
     this->scale = scale;
@@ -75,4 +92,20 @@ void Collider::SetScale(Vec2 scale)
 void Collider::SetOffset(Vec2 offset)
 {
     this->offset = offset;
+}
+
+void Collider::SetVelocity(Vec2 velocity)
+{
+    this->velocity = velocity;
+}
+
+void Collider::SetRestitution(float restitution)
+{
+    this->restitution = restitution;
+}
+
+void Collider::SetMass(float mass)
+{
+    this->mass = mass;
+    this->invMass = 1.f / mass;
 }

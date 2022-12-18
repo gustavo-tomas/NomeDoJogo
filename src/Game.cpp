@@ -2,6 +2,7 @@
 #include "../header/InputManager.h"
 #include "../header/GameData.h"
 #include "../header/CameraFollower.h"
+#include "../header/Resources.h"
 
 Game* Game::instance = nullptr;
 

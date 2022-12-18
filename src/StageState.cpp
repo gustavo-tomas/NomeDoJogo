@@ -69,6 +69,15 @@ void StageState::LoadAssets()
     testBoxGo->AddComponent(testBox);
     AddObject(testBoxGo);
 
+    // Box 2
+    GameObject* testBoxGo2 = new GameObject();
+    TestBox* testBox2 = new TestBox(*testBoxGo2);
+    
+    testBoxGo2->box.SetVec(Vec2(800, 600));
+    
+    testBoxGo2->AddComponent(testBox2);
+    AddObject(testBoxGo2);
+
     // FPS counter
     GameObject* textGo = new GameObject();
     CameraFollower* textFollower = new CameraFollower(*textGo, textGo->box.GetVec());
@@ -91,9 +100,6 @@ void StageState::Update(float dt)
     if (QuitRequested() || PopRequested())
         return;
 
-    // Updates the camera
-    Camera::Update(dt);
-
     // Sets quit requested
     if (InputManager::GetInstance().QuitRequested())
         quitRequested = true;
@@ -101,6 +107,9 @@ void StageState::Update(float dt)
     // Returns to title screen
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY))
         popRequested = true;
+
+    // Updates the camera
+    Camera::Update(dt);
 
     // Updates GOs
     UpdateArray(dt);
@@ -129,6 +138,11 @@ void StageState::Update(float dt)
                     {
                         objectArray[i]->NotifyCollision(*objectArray[j]);
                         objectArray[j]->NotifyCollision(*objectArray[i]);
+                        Collision::ResolveCollision(*colliderA, *colliderB);
+                        
+                        // Update collisions before rendering
+                        colliderA->ResolveCollisionUpdate(dt);
+                        colliderB->ResolveCollisionUpdate(dt);
                     }
                 }
             }

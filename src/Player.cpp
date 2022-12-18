@@ -3,6 +3,7 @@
 #include "../header/Game.h"
 #include "../header/InputManager.h"
 #include "../header/Collider.h"
+#include "../header/Collision.h"
 #include "../header/Camera.h"
 #include "../header/Sound.h"
 
@@ -10,12 +11,11 @@ Player* Player::player;
 
 Player::Player(GameObject& associated) : Component(associated)
 {
-    speed = Vec2(0, 0);
     linearSpeed = 0;
     angle = 0;
     hp = 100;
     
-    Sprite* sprite = new Sprite(associated, "./assets/image/box.png");
+    Sprite* sprite = new Sprite(associated, "./assets/image/250_scout.png");
     sprite->SetScale(0.3, 0.3);
     associated.AddComponent(sprite);
 
@@ -43,45 +43,31 @@ void Player::Update(float dt)
         return;
     }
 
-    float acc = 500.0;
-    float dec = 300.0;
-    float maxSpeed = 550.0;
+    float speed = 200.0;
+    Vec2 velocity = Vec2(0.f, 0.f);
 
-    // Accelerates
-    if (InputManager::GetInstance().IsKeyDown(W_KEY))
-        linearSpeed = linearSpeed < maxSpeed ? linearSpeed + acc * dt : maxSpeed;
+    // Up
+    if (InputManager::GetInstance().IsKeyDown(W_KEY)) 
+        velocity.y -= 1.f;
 
-    // Decelerates
+    // Down
     if (InputManager::GetInstance().IsKeyDown(S_KEY))
-        linearSpeed = linearSpeed > -maxSpeed ? linearSpeed - acc * dt : -maxSpeed;
+        velocity.y += 1.f;
 
-    // Turns Right
-    if (InputManager::GetInstance().IsKeyDown(D_KEY))
-        angle += 2.5 * dt;
+    // Right
+    if (InputManager::GetInstance().IsKeyDown(D_KEY)) 
+        velocity.x += 1.f;
 
-    // Turns Left
+    // Left
     if (InputManager::GetInstance().IsKeyDown(A_KEY))
-        angle -= 2.5 * dt;
+        velocity.x -= 1.f;
 
-    // Comes to a halt
-    if (!InputManager::GetInstance().IsKeyDown(W_KEY) &&
-        !InputManager::GetInstance().IsKeyDown(S_KEY))
-    {
-        linearSpeed = linearSpeed > 0 ? linearSpeed - dec * dt : linearSpeed;
-        linearSpeed = linearSpeed < 0 ? linearSpeed + dec * dt : linearSpeed;
-        linearSpeed = abs(linearSpeed) <= 5.0 ? 0 : linearSpeed - 1.0;
-    }
+    Collider* collider = (Collider*) associated.GetComponent("Collider");
+    if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
+        collider->velocity = velocity.GetNormalized() * speed;
 
-    // Updates sprite and position
-    associated.angleDeg = angle;
-    speed = Vec2(linearSpeed, 0).GetRotated(angle);
-    associated.box.SetVec(associated.box.GetVec() + speed * dt);
-    
-    // Limits X & Y position to the limits of the tilemap
-    associated.box.x = min(1408.f - associated.box.w, associated.box.x);
-    associated.box.x = max(0.f, associated.box.x);
-    associated.box.y = min(1280.f - associated.box.h, associated.box.y);
-    associated.box.y = max(0.f, associated.box.y);
+    else
+        collider->velocity = velocity;
 }
 
 void Player::Render()
