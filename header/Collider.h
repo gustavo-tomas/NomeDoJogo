@@ -23,6 +23,7 @@ class Collider : public Component {
         Vec2 correction = Vec2(0.f, 0.f);
         float restitution = 1.f;
         float mass = 1.f;
+        float invMass = 1.f;
         bool kinematic = false;
 
     private:

@@ -17,7 +17,7 @@ Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset) : Component(
 void Collider::Update(float dt)
 {
     // Debug is toggled ON/OFF by pressing Tab :)
-    if (InputManager::GetInstance().KeyPress(TAB_KEY))
+    if (InputManager::GetInstance().IsKeyDown(TAB_KEY))
         debug = !debug;
 
     // This section was moved from Update to better reflect changes in the hitbox
@@ -35,12 +35,13 @@ void Collider::Update(float dt)
     }
     // Section ends here
 
-    box.SetVec(box.GetVec() + correction + (velocity * dt));
+    box.SetVec(box.GetVec() + velocity * dt);
     associated.box.SetVec(box.GetVec());
 }
 
 void Collider::ResolveCollisionUpdate(float dt)
 {
+    // Apply correction (if any) and update the associated box
     box.SetVec(box.GetVec() + correction);
     associated.box.SetVec(box.GetVec());
     correction = Vec2();
@@ -106,4 +107,5 @@ void Collider::SetRestitution(float restitution)
 void Collider::SetMass(float mass)
 {
     this->mass = mass;
+    this->invMass = 1.f / mass;
 }
