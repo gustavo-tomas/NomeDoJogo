@@ -20,8 +20,6 @@ Player::Player(GameObject& associated) : Component(associated)
     associated.AddComponent(sprite);
 
     Collider* collider = new Collider(associated);
-    collider->SetMass(1.0);
-
     associated.AddComponent(collider);
 
     player = this;
@@ -66,7 +64,7 @@ void Player::Update(float dt)
 
     Collider* collider = (Collider*) associated.GetComponent("Collider");
     if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
-        collider->velocity = velocity.GetNormal() * speed;
+        collider->velocity = velocity.GetNormalized() * speed;
 
     else
         collider->velocity = velocity;

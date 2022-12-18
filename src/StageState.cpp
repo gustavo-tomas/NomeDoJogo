@@ -69,6 +69,15 @@ void StageState::LoadAssets()
     testBoxGo->AddComponent(testBox);
     AddObject(testBoxGo);
 
+    // Box 2
+    GameObject* testBoxGo2 = new GameObject();
+    TestBox* testBox2 = new TestBox(*testBoxGo2);
+    
+    testBoxGo2->box.SetVec(Vec2(800, 600));
+    
+    testBoxGo2->AddComponent(testBox2);
+    AddObject(testBoxGo2);
+
     // FPS counter
     GameObject* textGo = new GameObject();
     CameraFollower* textFollower = new CameraFollower(*textGo, textGo->box.GetVec());
