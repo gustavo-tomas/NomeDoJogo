@@ -17,7 +17,7 @@ class State {
         void virtual Start() = 0; // pure
         void virtual Pause() = 0; // pure
         void virtual Resume() = 0; // pure
-        virtual weak_ptr<GameObject> AddObject(GameObject* object);
+        virtual weak_ptr<GameObject> AddObject(GameObject* object, uint32_t layer = 0);
         virtual weak_ptr<GameObject> GetObjectPtr(GameObject* object);
         bool PopRequested();
         bool QuitRequested();
@@ -29,7 +29,7 @@ class State {
         bool popRequested;
         bool quitRequested;
         bool started;
-        vector<shared_ptr<GameObject>> objectArray;
+        vector<vector<shared_ptr<GameObject>>> objectArray;
 };
 
 #endif // STATE_H

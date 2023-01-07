@@ -42,41 +42,63 @@ void State::Render()
 
 }
 
-weak_ptr<GameObject> State::AddObject(GameObject* go)
+weak_ptr<GameObject> State::AddObject(GameObject* go, uint32_t layer)
 {
     auto ptr = shared_ptr<GameObject>(go);
-    objectArray.push_back(ptr);
-    if (started)
-        go->Start();
+    if (layer < objectArray.size())
+    {
+        objectArray[layer].push_back(ptr);
+        if (started)
+            go->Start();
+    }
+
+    else if (layer == objectArray.size()) 
+    {
+        objectArray.push_back({});
+        objectArray[layer].push_back(ptr);
+        if (started)
+            go->Start();
+    }
+
+    else
+    {
+        cerr << "ERROR ADDING OBJECT!!!!\n";
+        exit(1);
+    }
     
     return weak_ptr<GameObject>(ptr);
 }
 
 weak_ptr<GameObject> State::GetObjectPtr(GameObject* go)
 {
-    for (auto& obj : objectArray)
-        if (obj.get() == go)
-            return weak_ptr<GameObject>(obj);
+    
+    for (auto& layer : objectArray)
+        for (auto& obj : layer)
+            if (obj.get() == go)
+                return weak_ptr<GameObject>(obj);
 
-    return weak_ptr<GameObject>();
+    return {};
 }
 
 void State::StartArray()
 {
-    for (unsigned int i = 0; i < objectArray.size(); i++)
-        objectArray[i]->Start();
+    for (uint32_t i = 0; i < objectArray.size(); i++) // layer 
+        for (uint32_t j = 0; j < objectArray[i].size(); j++) // obj array
+            objectArray[i][j]->Start();
 }
 
 void State::UpdateArray(float dt)
 {
-    for (unsigned int i = 0; i < objectArray.size(); i++)
-        objectArray[i]->Update(dt);
+    for (uint32_t i = 0; i < objectArray.size(); i++) // layer 
+        for (uint32_t j = 0; j < objectArray[i].size(); j++) // obj array
+            objectArray[i][j]->Update(dt);
 }
 
 void State::RenderArray()
 {
-    for (unsigned int i = 0; i < objectArray.size(); i++)
-        objectArray[i]->Render();
+    for (uint32_t i = 0; i < objectArray.size(); i++) // layer 
+        for (uint32_t j = 0; j < objectArray[i].size(); j++) // obj array
+            objectArray[i][j]->Render();
 }
 
 bool State::PopRequested()

@@ -4,6 +4,7 @@
 #include "Rect.h"
 #include "Component.h"
 #include <vector>
+#include <map>
 #include <algorithm>
 #include <memory>
 #include <iostream>
@@ -28,6 +29,7 @@ class GameObject {
         double angleDeg;
 
     private:
+    
         vector<unique_ptr<Component>> components;
         bool isDead;
 };

@@ -3,6 +3,7 @@
 #include "../header/Sound.h"
 #include "../header/Vec2.h"
 #include "../header/TileSet.h"
+#include "../header/StaticBox.h"
 #include "../header/TileMap.h"
 #include "../header/InputManager.h"
 #include "../header/Camera.h"
@@ -78,6 +79,15 @@ void StageState::LoadAssets()
     testBoxGo2->AddComponent(testBox2);
     AddObject(testBoxGo2);
 
+    // Static Box 1
+    GameObject* staticBoxGo = new GameObject();
+    StaticBox* staticBox = new StaticBox(*staticBoxGo);
+    
+    staticBoxGo->box.SetVec(Vec2(200, 200));
+    
+    staticBoxGo->AddComponent(staticBox);
+    AddObject(staticBoxGo);
+
     // FPS counter
     GameObject* textGo = new GameObject();
     CameraFollower* textFollower = new CameraFollower(*textGo, textGo->box.GetVec());
@@ -114,35 +124,39 @@ void StageState::Update(float dt)
     // Updates GOs
     UpdateArray(dt);
 
-    for (unsigned long i = 0; i < objectArray.size(); i++)
+    for (uint32_t i = 0; i < objectArray.size(); i++)
     {
-        // Deletes GOs
-        if (objectArray[i]->IsDead())
-            objectArray.erase(objectArray.begin() + i);
-
-        // Updates FPS counter - Turning into a component might be better 
-        Text* FPS_Text = (Text*) objectArray[i]->GetComponent("Text");
-        if (FPS_Text != nullptr)
-            FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
-
-        // Checks for colisions
-        else
+        for (uint32_t j = 0; j < objectArray[i].size(); j++)
         {
-            for (unsigned long j = i + 1; j < objectArray.size(); j++)
+            // Deletes GOs
+            if (objectArray[i][j]->IsDead())
+                objectArray[i].erase(objectArray[i].begin() + j);
+
+            // Updates FPS counter - Turning into a component might be better 
+            Text* FPS_Text = (Text*) objectArray[i][j]->GetComponent("Text");
+            if (FPS_Text != nullptr)
+                FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
+
+            // Checks for colisions
+            else
             {
-                Collider* colliderA = (Collider*) objectArray[i]->GetComponent("Collider");
-                Collider* colliderB = (Collider*) objectArray[j]->GetComponent("Collider");
-                if (colliderA != nullptr && colliderB != nullptr)
+                for (unsigned long j = i + 1; j < objectArray.size(); j++)
+                for (unsigned long j = i + 1; j < objectArray.size(); j++)
                 {
-                    if (Collision::IsColliding(colliderA->box, colliderB->box, objectArray[i]->angleDeg, objectArray[j]->angleDeg))
+                    Collider* colliderA = (Collider*) objectArray[i]->GetComponent("Collider");
+                    Collider* colliderB = (Collider*) objectArray[j]->GetComponent("Collider");
+                    if (colliderA != nullptr && colliderB != nullptr)
                     {
-                        objectArray[i]->NotifyCollision(*objectArray[j]);
-                        objectArray[j]->NotifyCollision(*objectArray[i]);
-                        Collision::ResolveCollision(*colliderA, *colliderB);
-                        
-                        // Update collisions before rendering
-                        colliderA->ResolveCollisionUpdate(dt);
-                        colliderB->ResolveCollisionUpdate(dt);
+                        if (Collision::IsColliding(colliderA->box, colliderB->box, objectArray[i]->angleDeg, objectArray[j]->angleDeg))
+                        {
+                            objectArray[i]->NotifyCollision(*objectArray[j]);
+                            objectArray[j]->NotifyCollision(*objectArray[i]);
+                            Collision::ResolveCollision(*colliderA, *colliderB);
+                            
+                            // Update collisions before rendering
+                            colliderA->ResolveCollisionUpdate(dt);
+                            colliderB->ResolveCollisionUpdate(dt);
+                        }
                     }
                 }
             }
