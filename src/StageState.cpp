@@ -14,6 +14,7 @@
 #include "../header/Text.h"
 #include "../header/Player.h"
 #include "../header/TestBox.h"
+#include "../header/DialogBox.h"
 
 StageState::StageState() : State()
 {
@@ -77,6 +78,15 @@ void StageState::LoadAssets()
     
     testBoxGo2->AddComponent(testBox2);
     AddObject(testBoxGo2);
+
+    // DialogBox
+    GameObject* dialogBoxGo = new GameObject();
+    dialogBoxGo->box.SetVec(Vec2(400, 300));
+    DialogBox* dialogBox = new DialogBox(*dialogBoxGo, "LOOOOOOL");
+    
+    dialogBoxGo->AddComponent(dialogBox);
+
+    AddObject(dialogBoxGo);
 
     // FPS counter
     GameObject* textGo = new GameObject();

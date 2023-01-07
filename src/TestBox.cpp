@@ -25,12 +25,12 @@ TestBox::~TestBox()
 
 void TestBox::NotifyCollision(GameObject& other)
 {
-    cout << "HIT\n";
+    // cout << "HIT\n";
 }
 
 void TestBox::Update(float dt)
 {
-    cout << "\n";
+    // cout << "\n";
 }
 
 void TestBox::Render()
