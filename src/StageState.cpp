@@ -14,7 +14,7 @@
 #include "../header/Text.h"
 #include "../header/Player.h"
 #include "../header/TestBox.h"
-#include "../header/SpriteRect.h"
+#include "../header/DialogBox.h"
 
 StageState::StageState() : State()
 {
@@ -80,34 +80,14 @@ void StageState::LoadAssets()
     testBoxGo2->AddComponent(testBox2);
     AddObject(testBoxGo2);
 
-    // SpriteRect 2
-    GameObject* staticBoxGo2 = new GameObject();
-    SpriteRect* spriteRect2 = new SpriteRect(*staticBoxGo2, 0xFF8888FF, 100, 100);
-    CameraFollower* cameraFollower2 = new CameraFollower(*staticBoxGo2, Vec2(250, 250));
+    // DialogBox
+    GameObject* dialogBoxGo = new GameObject();
+    dialogBoxGo->box.SetVec(Vec2(400, 300));
+    DialogBox* dialogBox = new DialogBox(*dialogBoxGo, "LOOOOOOL");
     
-    staticBoxGo2->AddComponent(spriteRect2);
-    staticBoxGo2->AddComponent(cameraFollower2);
-    AddObject(staticBoxGo2, 1);
+    dialogBoxGo->AddComponent(dialogBox);
 
-    // SpriteRect 3
-    GameObject* staticBoxGo3 = new GameObject();
-    SpriteRect* spriteRect3 = new SpriteRect(*staticBoxGo3, 0x5555FF55, 100, 100);
-    CameraFollower* cameraFollower3 = new CameraFollower(*staticBoxGo3, Vec2(225, 225));
-    
-    staticBoxGo3->AddComponent(spriteRect3);
-    staticBoxGo3->AddComponent(cameraFollower3);
-    AddObject(staticBoxGo3, 2);
-
-    // SpriteRect 1
-    GameObject* staticBoxGo = new GameObject();
-    SpriteRect* spriteRect = new SpriteRect(*staticBoxGo, 0x88888888, 100, 100);
-    CameraFollower* cameraFollower = new CameraFollower(*staticBoxGo, Vec2(200, 200));
-    
-    staticBoxGo->AddComponent(spriteRect);
-    staticBoxGo->AddComponent(cameraFollower);
-    AddObject(staticBoxGo, 3);
-
-    // @TODO Tests END here ---
+    AddObject(dialogBoxGo);
 
     // FPS counter
     fpsCounter = new GameObject();
