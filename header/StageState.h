@@ -24,6 +24,7 @@ class StageState : public State {
 
     private:
         Music backgroundMusic;
+        GameObject* fpsCounter;
 };
 
 #endif // STAGESTATE_H
