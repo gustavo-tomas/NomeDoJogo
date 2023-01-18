@@ -15,8 +15,7 @@ Player::Player(GameObject& associated) : Component(associated)
     angle = 0;
     hp = 100;
     
-    Sprite* sprite = new Sprite(associated, "./assets/image/250_scout.png");
-    sprite->SetScale(0.3, 0.3);
+    Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4);
     associated.AddComponent(sprite);
 
     Collider* collider = new Collider(associated);
@@ -43,7 +42,7 @@ void Player::Update(float dt)
         return;
     }
 
-    float speed = 200.0;
+    float speed = 300.0;
     Vec2 velocity = Vec2(0.f, 0.f);
 
     // Up
