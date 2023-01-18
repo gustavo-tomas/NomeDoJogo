@@ -56,7 +56,7 @@ void StageState::LoadAssets()
     playerGo->box.SetVec(Vec2(704, 640));
     
     playerGo->AddComponent(player);
-    AddObject(playerGo);
+    AddObject(playerGo, 1);
 
     // Camera
     Camera::Follow(playerGo);
@@ -79,15 +79,6 @@ void StageState::LoadAssets()
     
     testBoxGo2->AddComponent(testBox2);
     AddObject(testBoxGo2);
-
-    // DialogBox
-    GameObject* dialogBoxGo = new GameObject();
-    dialogBoxGo->box.SetVec(Vec2(400, 300));
-    DialogBox* dialogBox = new DialogBox(*dialogBoxGo, "LOOOOOOL");
-    
-    dialogBoxGo->AddComponent(dialogBox);
-
-    AddObject(dialogBoxGo);
 
     // FPS counter
     fpsCounter = new GameObject();
@@ -125,50 +116,54 @@ void StageState::Update(float dt)
     // Updates GOs
     UpdateArray(dt);
 
+    // cout << objectArray.size() << endl; 
+
+    // cout << objectArray[1].size() << endl; 
+
     for (uint32_t i = 0; i < objectArray.size(); i++)
     {
         for (uint32_t j = 0; j < objectArray[i].size(); j++)
         {
             // Deletes GOs
-            if (objectArray[i][j]->IsDead())
+            if (objectArray[i][j]->IsDead()) 
+            {
                 objectArray[i].erase(objectArray[i].begin() + j);
+                continue;
+            }
 
             // Checks for colisions
+            uint32_t iniK = 0;
+            uint32_t iniL = 0;
+            
+            if (j + 1 == objectArray[i].size())
+            {
+                iniK = i + 1;
+                iniL = 0;
+            } 
+            
             else
             {
-                uint32_t iniK = 0;
-                uint32_t iniL = 0;
-                
-                if (j + 1 == objectArray[i].size())
+                iniK = i;
+                iniL = j + 1;
+            }
+            
+            for (uint32_t k = iniK; k < objectArray.size(); k++)
+            {
+                for (uint32_t l = iniL; l < objectArray[k].size(); l++)
                 {
-                    iniK = i + 1;
-                    iniL = 0;
-                } 
-                
-                else
-                {
-                    iniK = i;
-                    iniL = j + 1;
-                }
-                
-                for (uint32_t k = iniK; k < objectArray.size(); k++)
-                {
-                    for (uint32_t l = iniL; l < objectArray[k].size(); l++)
+                    Collider* colliderA = (Collider*) objectArray[i][j]->GetComponent("Collider");
+                    Collider* colliderB = (Collider*) objectArray[k][l]->GetComponent("Collider");
+                    if (colliderA != nullptr && colliderB != nullptr)
                     {
-                        Collider* colliderA = (Collider*) objectArray[i][j]->GetComponent("Collider");
-                        Collider* colliderB = (Collider*) objectArray[k][l]->GetComponent("Collider");
-                        if (colliderA != nullptr && colliderB != nullptr)
+                        if (Collision::IsColliding(colliderA->box, colliderB->box, objectArray[i][j]->angleDeg, objectArray[k][l]->angleDeg))
                         {
-                            if (Collision::IsColliding(colliderA->box, colliderB->box, objectArray[i][j]->angleDeg, objectArray[k][l]->angleDeg))
-                            {
-                                objectArray[i][j]->NotifyCollision(*objectArray[k][l]);
-                                objectArray[k][l]->NotifyCollision(*objectArray[i][j]);
-                                Collision::ResolveCollision(*colliderA, *colliderB);
-                                
-                                // Update collisions before rendering
-                                colliderA->ResolveCollisionUpdate(dt);
-                                colliderB->ResolveCollisionUpdate(dt);
-                            }
+                            objectArray[i][j]->NotifyCollision(*objectArray[k][l]);
+                            objectArray[k][l]->NotifyCollision(*objectArray[i][j]);
+                            Collision::ResolveCollision(*colliderA, *colliderB);
+                            
+                            // Update collisions before rendering
+                            colliderA->ResolveCollisionUpdate(dt);
+                            colliderB->ResolveCollisionUpdate(dt);
                         }
                     }
                 }
