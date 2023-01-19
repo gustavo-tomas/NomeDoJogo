@@ -73,7 +73,6 @@ Component* GameObject::GetComponent(const char* type)
 
 void GameObject::NotifyCollision(GameObject& other)
 {
-    cout << "Entrou aqui" << endl;
     for (auto& cpt : components)
         cpt->NotifyCollision(other);
 }
