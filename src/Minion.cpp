@@ -8,7 +8,7 @@ Minion::Minion(GameObject& associated, Vec2 initialPos) : Component(associated)
 {
     associated.box.SetVec(initialPos);
 
-    Sprite* sprite = new Sprite(associated, "./assets/image/minion-45x66.png", 3);
+    Sprite* sprite = new Sprite(associated, "./assets/image/minion-45x66.png", 3, 2);
     associated.AddComponent(sprite);
 
     Collider* collider = new Collider(associated);
