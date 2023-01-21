@@ -6,7 +6,7 @@
 
 class Note : public Component {
     public:
-        Note(GameObject& associated);
+        Note(GameObject& associated, float speed);
         void Update(float dt);
         void Render();
         bool Is(const char* type);

@@ -17,6 +17,7 @@
 #include "../header/DialogBox.h"
 #include "../header/Minion.h"
 #include "../header/Bullet.h"
+#include "../header/Spawner.h"
 
 StageState::StageState() : State()
 {
@@ -124,6 +125,11 @@ void StageState::LoadAssets()
     fpsCounter->AddComponent(text);
     
     AddObject(fpsCounter);
+
+    GameObject *spawnerGo = new GameObject(); 
+    Spawner *spawner = new Spawner(*spawnerGo, "./assets/sheet_music/music1.txt");
+    spawnerGo->AddComponent(spawner);
+    AddObject(spawnerGo, 1);
 }
 
 void StageState::Update(float dt)
