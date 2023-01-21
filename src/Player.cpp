@@ -17,7 +17,7 @@ Player::Player(GameObject& associated) : Component(associated)
     angle = 0;
     hp = 100;
     
-    Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4);
+    Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4, 2);
     associated.AddComponent(sprite);
 
     Collider* collider = new Collider(associated);

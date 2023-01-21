@@ -9,7 +9,7 @@ Bullet::Bullet(GameObject& associated, float angle, float speed,
     int frameCount, float frameTime, bool targetsPlayer)
     : Component(associated)
 {
-    Sprite* bulletSprite = new Sprite(associated, sprite, frameCount, frameTime);
+    Sprite* bulletSprite = new Sprite(associated, sprite, frameCount, 1, frameTime);
     bulletSprite->SetScale(2.0, 2.0);
     associated.AddComponent(bulletSprite);
 
