@@ -6,6 +6,8 @@
 #include "../header/Collision.h"
 #include "../header/Camera.h"
 #include "../header/Sound.h"
+#include "../header/Bullet.h"
+#include "../header/GameData.h"
 
 Player* Player::player;
 
@@ -61,12 +63,43 @@ void Player::Update(float dt)
     if (InputManager::GetInstance().IsKeyDown(A_KEY))
         velocity.x -= 1.f;
 
+    // Shoot
+    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY))
+        Shoot();
+
+    // Updates shoot timer
+    shootTimer.Update(dt);
+
     Collider* collider = (Collider*) associated.GetComponent("Collider");
     if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
         collider->velocity = velocity.GetNormalized() * speed;
 
     else
         collider->velocity = velocity;
+
+    GameData::playerPos = associated.box.GetCenter();
+}
+
+void Player::Shoot()
+{
+    if (shootTimer.Get() < 0.40)
+        return;
+
+    float speed = 750;
+    float damage = 20;
+    float maxDistance = 1000;
+
+    GameObject* bulletGo = new GameObject();
+    Bullet* bullet = new Bullet(*bulletGo, angle - (M_PI / 4.0), speed, damage, maxDistance, "./assets/image/mage-bullet-13x13.png", 5, 0.5, false);
+    
+    Vec2 center = associated.box.GetCenter();
+    Vec2 offset = Vec2(associated.box.w, -bulletGo->box.h / 2.0);
+
+    bulletGo->box.SetVec(center + offset);
+    bulletGo->AddComponent(bullet);
+
+    Game::GetInstance().GetCurrentState().AddObject(bulletGo);
+    shootTimer.Restart();
 }
 
 void Player::Render()
