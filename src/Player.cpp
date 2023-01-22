@@ -19,7 +19,7 @@ Player::Player(GameObject& associated) : Component(associated)
     sprite->SetScale(0.3, 0.3);
     associated.AddComponent(sprite);
 
-    Collider* collider = new Collider(associated);
+    Collider* collider = new Collider(associated, Vec2(0.75, 0.5), Vec2(0.4, 50));
     associated.AddComponent(collider);
 
     player = this;

@@ -21,10 +21,12 @@ class StageState : public State {
         void Start();
         void Pause();
         void Resume();
+        void AddColliderObject(GameObject* object);
 
     private:
         Music backgroundMusic;
         GameObject* fpsCounter;
+        vector<GameObject*> colliderArray;
 };
 
 #endif // STAGESTATE_H
