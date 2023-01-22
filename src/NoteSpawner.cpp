@@ -10,15 +10,17 @@
 #include <string>
 
 
-NoteSpawner::NoteSpawner(GameObject& associated) : Component(associated), notes(){
+NoteSpawner::NoteSpawner(GameObject& associated) : Component(associated), notes()
+{
     
 }
 
-NoteSpawner::NoteSpawner(GameObject& associated, string sheetMusic) : Component(associated), notes(){
-    std::ifstream myfile; 
+NoteSpawner::NoteSpawner(GameObject& associated, string sheetMusic) : Component(associated), notes()
+{
+    ifstream myfile; 
     myfile.open(sheetMusic);
 
-    std::string buff;
+    string buff;
     getline(myfile, buff, ':');
     getline(myfile, buff);
     speed = stoll(buff);
@@ -39,11 +41,13 @@ NoteSpawner::NoteSpawner(GameObject& associated, string sheetMusic) : Component(
     }
 }
 
-NoteSpawner::~NoteSpawner(){
+NoteSpawner::~NoteSpawner()
+{
     
 }
 
-void NoteSpawner::Update(float dt){
+void NoteSpawner::Update(float dt)
+{
     State& state = Game::GetInstance().GetCurrentState();
     while (ind < notes.size())
     {
@@ -55,18 +59,20 @@ void NoteSpawner::Update(float dt){
             noteGo->AddComponent(note);
             state.AddObject(noteGo, 2);
             ind++;
-        } else{
+        } 
+        else
             break;
-        }
     }
     timer.Update(dt);
 }
 
-void NoteSpawner::Render(){
+void NoteSpawner::Render()
+{
     
 }
 
-bool NoteSpawner::Is(const char* type){
+bool NoteSpawner::Is(const char* type)
+{
     string str_type = type;
     return str_type == "NoteSpawner";
 }

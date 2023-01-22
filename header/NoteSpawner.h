@@ -26,4 +26,4 @@ class NoteSpawner : public Component {
         Timer timer;
 };
 
-#endif // SPAWNER_H
+#endif // NOTESPAWNER_H

@@ -80,7 +80,6 @@ weak_ptr<GameObject> State::AddObject(GameObject* go, uint32_t layer)
 
 weak_ptr<GameObject> State::GetObjectPtr(GameObject* go)
 {
-    
     for (auto& layer : objectArray)
         for (auto& obj : layer)
             if (obj.get() == go)
