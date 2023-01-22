@@ -1,4 +1,4 @@
-#include "../header/Spawner.h"
+#include "../header/NoteSpawner.h"
 #include "../header/GameObject.h"
 #include "../header/State.h"
 #include "../header/Game.h"
@@ -10,11 +10,11 @@
 #include <string>
 
 
-Spawner::Spawner(GameObject& associated) : Component(associated), notes(){
+NoteSpawner::NoteSpawner(GameObject& associated) : Component(associated), notes(){
     
 }
 
-Spawner::Spawner(GameObject& associated, string sheetMusic) : Component(associated), notes(){
+NoteSpawner::NoteSpawner(GameObject& associated, string sheetMusic) : Component(associated), notes(){
     std::ifstream myfile; 
     myfile.open(sheetMusic);
 
@@ -39,11 +39,11 @@ Spawner::Spawner(GameObject& associated, string sheetMusic) : Component(associat
     }
 }
 
-Spawner::~Spawner(){
+NoteSpawner::~NoteSpawner(){
     
 }
 
-void Spawner::Update(float dt){
+void NoteSpawner::Update(float dt){
     State& state = Game::GetInstance().GetCurrentState();
     while (ind < notes.size())
     {
@@ -62,11 +62,11 @@ void Spawner::Update(float dt){
     timer.Update(dt);
 }
 
-void Spawner::Render(){
+void NoteSpawner::Render(){
     
 }
 
-bool Spawner::Is(const char* type){
+bool NoteSpawner::Is(const char* type){
     string str_type = type;
-    return str_type == "Spawner";
+    return str_type == "NoteSpawner";
 }

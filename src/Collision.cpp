@@ -93,6 +93,9 @@ void Collision::SetPositionalCorrection(Collider& a, Collider& b, Vec2 n)
 
 void Collision::ResolveCollision(Collider& a, Collider& b)
 {
+    if (!a.activeCollison || !b.activeCollison)
+        return;
+
     // Calculate relative velocity
     Vec2 relativeVelocity = b.velocity - a.velocity;
 

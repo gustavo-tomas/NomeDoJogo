@@ -1,22 +1,24 @@
-#ifndef SPAWNER_H
-#define SPAWNER_H
+#ifndef NOTESPAWNER_H
+#define NOTESPAWNER_H
 
 #include "GameObject.h"
 #include "Timer.h"
 
-struct NoteInfo{
+struct NoteInfo
+{
     int h;
     float time;
 };
 
-class Spawner : public Component {
+class NoteSpawner : public Component {
     public:
-        Spawner(GameObject& associated);
-        Spawner(GameObject& associated, string sheetMusic);
-        ~Spawner();
+        NoteSpawner(GameObject& associated);
+        NoteSpawner(GameObject& associated, string sheetMusic);
+        ~NoteSpawner();
         void Update(float dt);
         void Render();
         bool Is(const char* type);
+
     private:
         float speed;
         vector<NoteInfo> notes;

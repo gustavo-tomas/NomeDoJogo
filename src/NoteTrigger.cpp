@@ -2,17 +2,14 @@
 #include "../header/Collider.h"
 #include "../header/Note.h"
 #include "../header/SpriteRect.h"
-
+#include "../header/InputManager.h"
 
 NoteTrigger::NoteTrigger(GameObject& associated) : Component(associated)
 {
     associated.box.h = associated.box.w = 20;
 
-    Collider *collider = new Collider(associated);   
+    Collider *collider = new Collider(associated, Vec2(1, 1), Vec2(0, 0), false);   
     associated.AddComponent(collider);
-
-    // SpriteRect* sr = new SpriteRect(associated, 0xFF3333FF ^ random(), 20, 20);
-    // associated.AddComponent(sr);
 }
 
 NoteTrigger::~NoteTrigger()
@@ -38,13 +35,17 @@ bool NoteTrigger::Is(const char* type)
 
 void NoteTrigger::NotifyCollision(GameObject& other)
 {
-    auto component = other.GetComponent("Note");
-    if(component != nullptr){
-        Note* noteComponent = (Note*)component;
-        auto auxValue = min(abs((associated.box.x + associated.box.w) - other.box.x), abs((other.box.x + other.box.w) - associated.box.x));
-        auto percentage = ceil(auxValue / 5) * 5;
-        cout << "auxValue = " << auxValue << "\n";
-        cout << "percentage = " << percentage << "\n";
+    auto component = (Note*) other.GetComponent("Note");
+    if (component != nullptr)
+    {
+        if (InputManager::GetInstance().KeyPress(LEFT_ARROW_KEY))
+        {
+            Note* noteComponent = (Note*)component;
+            float auxValue = min(abs((associated.box.x + associated.box.w) - other.box.x), abs((other.box.x + other.box.w) - associated.box.x));
+            float percentage = ceil(auxValue / 5) * 25;
+            
+            other.RequestDelete();
+        }
     }
 }
 

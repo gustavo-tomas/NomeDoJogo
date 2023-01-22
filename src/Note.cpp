@@ -12,11 +12,8 @@ Note::Note(GameObject& associated, float speed) : Component(associated)
     this->speed = speed;
     associated.box.h = associated.box.w = 18;
 
-    Collider *collider = new Collider(associated);   
+    Collider *collider = new Collider(associated, Vec2(1, 1), Vec2(0, 0), false);  
     associated.AddComponent(collider);
-
-    // SpriteRect* sr = new SpriteRect(associated, 0xFF3333FF ^ random(), 18, 18);
-    // associated.AddComponent(sr);
 }
 
 Note::~Note()
@@ -27,9 +24,8 @@ Note::~Note()
 void Note::Update(float dt)
 {
     associated.box.x -= speed * dt;
-    if(associated.box.x < 0){
+    if (associated.box.x < 0)
         associated.RequestDelete();
-    }
 }
 
 void Note::Render()
