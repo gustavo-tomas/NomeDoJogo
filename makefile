@@ -1,6 +1,6 @@
 CXX=g++
 
-CFLAGS=-std=c++11 -Wall -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+CFLAGS= -g -std=c++11 -Wall -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 TARGET ?= Run
 

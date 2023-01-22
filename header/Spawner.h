@@ -11,7 +11,9 @@ struct NoteInfo{
 
 class Spawner : public Component {
     public:
+        Spawner(GameObject& associated);
         Spawner(GameObject& associated, string sheetMusic);
+        ~Spawner();
         void Update(float dt);
         void Render();
         bool Is(const char* type);

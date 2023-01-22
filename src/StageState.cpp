@@ -18,6 +18,7 @@
 #include "../header/Minion.h"
 #include "../header/Bullet.h"
 #include "../header/Spawner.h"
+#include "../header/NoteTrigger.h"
 
 StageState::StageState() : State()
 {
@@ -126,10 +127,37 @@ void StageState::LoadAssets()
     
     AddObject(fpsCounter);
 
+    // Spawner
     GameObject *spawnerGo = new GameObject(); 
     Spawner *spawner = new Spawner(*spawnerGo, "./assets/sheet_music/music1.txt");
     spawnerGo->AddComponent(spawner);
     AddObject(spawnerGo, 1);
+
+    // NoteTriggers
+    GameObject *noteTrigger1Go = new GameObject(); 
+    noteTrigger1Go->box.SetVec(Vec2(40, GameData::HEIGHT - 20));
+    NoteTrigger *noteTrigger1 = new NoteTrigger(*noteTrigger1Go);
+    noteTrigger1Go->AddComponent(noteTrigger1);
+    AddObject(noteTrigger1Go, 1);
+    
+    GameObject *noteTrigger2Go = new GameObject(); 
+    noteTrigger2Go->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * 2));
+    NoteTrigger *noteTrigger2 = new NoteTrigger(*noteTrigger2Go);
+    noteTrigger2Go->AddComponent(noteTrigger2);
+    AddObject(noteTrigger2Go, 1);
+    
+    GameObject *noteTrigger3Go = new GameObject(); 
+    noteTrigger3Go->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * 3));
+    NoteTrigger *noteTrigger3 = new NoteTrigger(*noteTrigger3Go);
+    noteTrigger3Go->AddComponent(noteTrigger3);
+    AddObject(noteTrigger3Go, 1);
+    
+    GameObject *noteTrigger4Go = new GameObject(); 
+    noteTrigger4Go->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * 4));
+    NoteTrigger *noteTrigger4 = new NoteTrigger(*noteTrigger4Go);
+    noteTrigger4Go->AddComponent(noteTrigger4);
+    AddObject(noteTrigger4Go, 1);
+    
 }
 
 void StageState::Update(float dt)
