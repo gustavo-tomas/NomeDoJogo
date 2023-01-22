@@ -59,7 +59,8 @@ void StageState::LoadAssets()
     Player* player = new Player(*playerGo);
     playerGo->box.SetVec(Vec2(104, 154));
     playerGo->AddComponent(player);
-    AddObject(playerGo);
+    AddObject(playerGo, 1);
+    AddColliderObject(playerGo);
 
     // Camera
     // Camera::Follow(playerGo);
@@ -70,7 +71,7 @@ void StageState::LoadAssets()
     GameObject* guitarGo = new GameObject();
     Sprite* guitarSprite = new Sprite(*guitarGo, "./assets/image/GuitarNeckFinalized.png");
     CameraFollower* guitarCf = new CameraFollower(*guitarGo, Vec2(60, 400));
-    
+
     guitarGo->AddComponent(guitarCf);
     guitarGo->AddComponent(guitarSprite);
     AddObject(guitarGo);
@@ -157,7 +158,6 @@ void StageState::LoadAssets()
     NoteTrigger *noteTrigger4 = new NoteTrigger(*noteTrigger4Go);
     noteTrigger4Go->AddComponent(noteTrigger4);
     AddObject(noteTrigger4Go, 1);
-    
 }
 
 void StageState::Update(float dt)
@@ -179,54 +179,33 @@ void StageState::Update(float dt)
     // Updates GOs
     UpdateArray(dt);
 
+    // Deletes GOs
     for (uint32_t i = 0; i < objectArray.size(); i++)
-    {
         for (uint32_t j = 0; j < objectArray[i].size(); j++)
-        {
-            // Deletes GOs
-            if (objectArray[i][j]->IsDead())
+            if (objectArray[i][j]->IsDead()) 
                 objectArray[i].erase(objectArray[i].begin() + j);
 
-            // Checks for colisions
-            else
-            {
-                uint32_t iniK = 0;
-                uint32_t iniL = 0;
-                
-                if (j + 1 == objectArray[i].size())
-                {
-                    iniK = i + 1;
-                    iniL = 0;
-                } 
-                
-                else
-                {
-                    iniK = i;
-                    iniL = j + 1;
-                }
-                
-                for (uint32_t k = iniK; k < objectArray.size(); k++)
-                {
-                    for (uint32_t l = iniL; l < objectArray[k].size(); l++)
-                    {
-                        Collider* colliderA = (Collider*) objectArray[i][j]->GetComponent("Collider");
-                        Collider* colliderB = (Collider*) objectArray[k][l]->GetComponent("Collider");
-                        if (colliderA != nullptr && colliderB != nullptr)
-                        {
-                            if (Collision::IsColliding(colliderA->box, colliderB->box, objectArray[i][j]->angleDeg, objectArray[k][l]->angleDeg))
-                            {
-                                objectArray[i][j]->NotifyCollision(*objectArray[k][l]);
-                                objectArray[k][l]->NotifyCollision(*objectArray[i][j]);
-                                Collision::ResolveCollision(*colliderA, *colliderB);
-                                
-                                // Update collisions before rendering
-                                colliderA->ResolveCollisionUpdate(dt);
-                                colliderB->ResolveCollisionUpdate(dt);
-                            }
-                        }
-                    }
-                }
-            }
+    // Checks for colisions
+    for (uint32_t i = 0; i < colliderArray.size(); i++)
+    {
+        for (uint32_t j = i + 1; j < colliderArray.size(); j++)
+        {
+            Collider* colliderA = (Collider*) colliderArray[i]->GetComponent("Collider");
+            Collider* colliderB = (Collider*) colliderArray[j]->GetComponent("Collider");
+
+            if (colliderA == nullptr || colliderB == nullptr)
+                continue;
+
+            if (!Collision::IsColliding(colliderA->box, colliderB->box, colliderArray[i]->angleDeg, colliderArray[j]->angleDeg))
+                continue;
+            
+            colliderArray[i]->NotifyCollision(*colliderArray[j]);
+            colliderArray[j]->NotifyCollision(*colliderArray[i]);
+            Collision::ResolveCollision(*colliderA, *colliderB);
+            
+            // Update collisions before next frame
+            colliderA->ResolveCollisionUpdate(dt);
+            colliderB->ResolveCollisionUpdate(dt);
         }
     }
 
@@ -234,6 +213,11 @@ void StageState::Update(float dt)
     Text* FPS_Text = (Text*) fpsCounter->GetComponent("Text");
     if (FPS_Text != nullptr)
         FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
+}
+
+void StageState::AddColliderObject(GameObject *object)
+{
+    colliderArray.push_back(object);
 }
 
 void StageState::Render()
@@ -244,5 +228,6 @@ void StageState::Render()
 StageState::~StageState()
 {
     objectArray.clear();
+    colliderArray.clear();
     cout << "Object Array deleted successfully!" << endl;
 }

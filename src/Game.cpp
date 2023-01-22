@@ -186,10 +186,6 @@ void Game::Run()
         UpdateFPS(start, SDL_GetPerformanceCounter());
     }
 
-    // Clear the stack
-    while (!stateStack.empty())
-        stateStack.pop();    
-    
     delete this;
 }
 

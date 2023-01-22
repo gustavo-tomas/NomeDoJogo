@@ -18,7 +18,7 @@ Player::Player(GameObject& associated) : Component(associated)
     Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4);
     associated.AddComponent(sprite);
 
-    Collider* collider = new Collider(associated);
+    Collider* collider = new Collider(associated, Vec2(0.75, 0.5), Vec2(0.4, 50));
     associated.AddComponent(collider);
 
     player = this;
