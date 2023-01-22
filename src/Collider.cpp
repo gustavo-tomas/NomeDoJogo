@@ -8,10 +8,11 @@
 
 bool Collider::debug = true;
 
-Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset) : Component(associated)
+Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset, bool activeCollison) : Component(associated)
 {
     this->scale = scale;
     this->offset = offset;
+    this->activeCollison = activeCollison;
 }
 
 void Collider::Update(float dt)
@@ -43,6 +44,8 @@ void Collider::Update(float dt)
 
 void Collider::ResolveCollisionUpdate(float dt)
 {
+    if(!activeCollison) return;
+    
     // Apply correction (if any) and update the associated box
     box.SetVec(box.GetVec() + correction);
     associated.box.x = box.x + (box.w - associated.box.w) / 2.0 - offset.x;

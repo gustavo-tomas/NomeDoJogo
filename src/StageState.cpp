@@ -15,6 +15,10 @@
 #include "../header/Player.h"
 #include "../header/TestBox.h"
 #include "../header/DialogBox.h"
+#include "../header/Minion.h"
+#include "../header/Bullet.h"
+#include "../header/NoteSpawner.h"
+#include "../header/NoteTrigger.h"
 
 StageState::StageState() : State()
 {
@@ -42,7 +46,8 @@ void StageState::LoadAssets()
 {
     // Background
     GameObject* bgGo = new GameObject();
-    Sprite* bg = new Sprite(*bgGo, "./assets/image/background.png");
+    Sprite* bg = new Sprite(*bgGo, "./assets/image/parallax-mountain-bg.png");
+    bg->SetScale(4.0, 4.0);
     CameraFollower* cf = new CameraFollower(*bgGo);
 
     bgGo->AddComponent(bg);
@@ -52,36 +57,59 @@ void StageState::LoadAssets()
     // Player
     GameObject* playerGo = new GameObject();
     Player* player = new Player(*playerGo);
-    
-    playerGo->box.SetVec(Vec2(704, 640));
-    
+    playerGo->box.SetVec(Vec2(104, 154));
     playerGo->AddComponent(player);
     AddObject(playerGo, 1);
-    AddColliderObject(playerGo);
-
+    
     // Camera
-    Camera::Follow(playerGo);
+    // Camera::Follow(playerGo);
 
     // @TODO Tests START here ---
-    // Box
-    GameObject* testBoxGo = new GameObject();
-    TestBox* testBox = new TestBox(*testBoxGo);
-    
-    testBoxGo->box.SetVec(Vec2(500, 600));
-    
-    testBoxGo->AddComponent(testBox);
-    AddObject(testBoxGo);
-    AddColliderObject(testBoxGo);
 
-    // Box 2
-    GameObject* testBoxGo2 = new GameObject();
-    TestBox* testBox2 = new TestBox(*testBoxGo2);
+    // Guitar UI
+    GameObject* guitarGo = new GameObject();
+    Sprite* guitarSprite = new Sprite(*guitarGo, "./assets/image/GuitarNeckFinalized.png");
+    CameraFollower* guitarCf = new CameraFollower(*guitarGo, Vec2(60, 400));
+
+    guitarGo->AddComponent(guitarCf);
+    guitarGo->AddComponent(guitarSprite);
+    AddObject(guitarGo);
+
+    // Health UI
+    GameObject* uiGo = new GameObject();
+    Sprite* uiSprite = new Sprite(*uiGo, "./assets/image/ui.png");
+    CameraFollower* uiCf = new CameraFollower(*uiGo, Vec2(0, 0));
+
+    uiSprite->SetScale(1.5, 1.5);
+    uiGo->AddComponent(uiCf);
+    uiGo->AddComponent(uiSprite);
+    AddObject(uiGo);
+
+    // Minion
+    for (int i = 0; i < 2; i++)
+    {
+        GameObject* minionGo = new GameObject();
+        Minion* minion = new Minion(*minionGo, Vec2(704, 100 + i * 150));
+        
+        minionGo->AddComponent(minion);
+        AddObject(minionGo);
+    }
+
+    // Note
+    GameObject* noteGo = new GameObject();
+    noteGo->box.SetVec(Vec2(904, 400));
+
+    // @TODO rotation test
+    Vec2 pos = noteGo->box.GetCenter() - Vec2(10, 0);
+    float ang = noteGo->box.GetCenter().GetAngle(pos) - (M_PI / 4.0);
+
+    Bullet* note = new Bullet(*noteGo, ang, 50, 0, 900,
+                     "./assets/image/mage-bullet-13x13.png", 5, 0.7, false);
     
-    testBoxGo2->box.SetVec(Vec2(800, 600));
-    
-    testBoxGo2->AddComponent(testBox2);
-    AddObject(testBoxGo2);
-    AddColliderObject(testBoxGo2);
+    noteGo->AddComponent(note);
+    AddObject(noteGo);
+
+    // @TODO Tests END here ---
 
     // FPS counter
     fpsCounter = new GameObject();
@@ -98,7 +126,23 @@ void StageState::LoadAssets()
     fpsCounter->AddComponent(text);
     
     AddObject(fpsCounter);
-    AddColliderObject(fpsCounter);
+
+    // NoteSpawner
+    GameObject *spawnerGo = new GameObject(); 
+    NoteSpawner *spawner = new NoteSpawner(*spawnerGo, "./assets/sheet_music/music1.txt");
+    spawnerGo->AddComponent(spawner);
+    AddObject(spawnerGo, 1);
+
+    // NoteTriggers
+    
+    for (int i = 0; i < 4; i++)
+    {
+        GameObject *noteTriggerGo = new GameObject(); 
+        noteTriggerGo->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * (i + 1)));
+        NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo);
+        noteTriggerGo->AddComponent(noteTrigger);
+        AddObject(noteTriggerGo, 1);
+    }
 }
 
 void StageState::Update(float dt)
@@ -131,17 +175,23 @@ void StageState::Update(float dt)
     {
         for (uint32_t j = i + 1; j < colliderArray.size(); j++)
         {
-            Collider* colliderA = (Collider*) colliderArray[i]->GetComponent("Collider");
-            Collider* colliderB = (Collider*) colliderArray[j]->GetComponent("Collider");
+            if(colliderArray[i].expired() || colliderArray[j].expired())
+                continue;
+            
+            auto weakColliderA = colliderArray[i].lock().get();
+            auto weakColliderB = colliderArray[j].lock().get();
+
+            Collider* colliderA = (Collider*) weakColliderA->GetComponent("Collider");
+            Collider* colliderB = (Collider*) weakColliderB->GetComponent("Collider");
 
             if (colliderA == nullptr || colliderB == nullptr)
                 continue;
 
-            if (!Collision::IsColliding(colliderA->box, colliderB->box, colliderArray[i]->angleDeg, colliderArray[j]->angleDeg))
+            if (!Collision::IsColliding(colliderA->box, colliderB->box, weakColliderA->angleDeg, weakColliderB->angleDeg))
                 continue;
             
-            colliderArray[i]->NotifyCollision(*colliderArray[j]);
-            colliderArray[j]->NotifyCollision(*colliderArray[i]);
+            weakColliderA->NotifyCollision(*weakColliderB);
+            weakColliderB->NotifyCollision(*weakColliderA);
             Collision::ResolveCollision(*colliderA, *colliderB);
             
             // Update collisions before next frame
@@ -156,9 +206,9 @@ void StageState::Update(float dt)
         FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
 }
 
-void StageState::AddColliderObject(GameObject *object)
+void StageState::AddColliderObject(weak_ptr<GameObject>& object)
 {
-    colliderArray.push_back(object);
+    colliderArray.emplace_back(object);
 }
 
 void StageState::Render()

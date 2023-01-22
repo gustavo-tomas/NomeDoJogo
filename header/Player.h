@@ -13,12 +13,22 @@ class Player : public Component {
         void Render();
         bool Is(const char* type);
         void NotifyCollision(GameObject& other);
+
+        void ResetAttackPower(){
+            attackPower = 0;
+        }
+        void AddAttackPower(float value){
+            attackPower += value;
+        }
+
         static Player* player;
 
     private:
         float linearSpeed;
         float angle;
         int hp;
+        int mana;
+        float attackPower;
 };
 
 #endif // PLAYER_H
