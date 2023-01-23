@@ -44,8 +44,7 @@ void StageState::LoadAssets()
 {
     // Background
     GameObject* bgGo = new GameObject();
-    Sprite* bg = new Sprite(*bgGo, "./assets/image/parallax-mountain-bg.png");
-    bg->SetScale(4.0, 4.0);
+    Sprite* bg = new Sprite(*bgGo, "./assets/image/background.png");
     CameraFollower* cf = new CameraFollower(*bgGo);
 
     bgGo->AddComponent(bg);
@@ -60,7 +59,8 @@ void StageState::LoadAssets()
     AddObject(playerGo);
 
     // Camera
-    // Camera::Follow(playerGo);
+    Camera::Unfollow();
+    Camera::Reset();
 
     // @TODO Tests START here ---
 
@@ -133,11 +133,17 @@ void StageState::Update(float dt)
 
     // Sets quit requested
     if (InputManager::GetInstance().QuitRequested())
+    {
         quitRequested = true;
+        return;
+    }
 
     // Returns to title screen
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY))
+    {
         popRequested = true;
+        return;
+    }
 
     // Updates the camera
     Camera::Update(dt);
@@ -153,7 +159,7 @@ void StageState::Update(float dt)
             if (objectArray[i][j]->IsDead())
                 objectArray[i].erase(objectArray[i].begin() + j);
 
-            // Checks for colisions
+            // Checks for colisions @TODO use new array method when merging with dev
             else
             {
                 uint32_t iniK = 0;
