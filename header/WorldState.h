@@ -17,11 +17,13 @@ class WorldState : public State {
         void Start();
         void Pause();
         void Resume();
+        void AddColliderObject(weak_ptr<GameObject>& object);
 
     private:
         Music backgroundMusic;
         GameObject* fpsCounter;
         GameObject* playerGo;
+        vector<weak_ptr<GameObject>> colliderArray;
 };
 
 #endif // WORLDSTATE_H

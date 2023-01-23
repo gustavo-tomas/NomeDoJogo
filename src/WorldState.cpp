@@ -91,56 +91,46 @@ void WorldState::Update(float dt)
     // Updates GOs
     UpdateArray(dt);
 
+    // Deletes GOs
     for (uint32_t i = 0; i < objectArray.size(); i++)
-    {
         for (uint32_t j = 0; j < objectArray[i].size(); j++)
-        {
-            // Deletes GOs
-            if (objectArray[i][j]->IsDead())
+            if (objectArray[i][j]->IsDead()) 
                 objectArray[i].erase(objectArray[i].begin() + j);
 
-            // Checks for colisions @TODO use new array method when merging with dev
-            else
-            {
-                uint32_t iniK = 0;
-                uint32_t iniL = 0;
-                
-                if (j + 1 == objectArray[i].size())
-                {
-                    iniK = i + 1;
-                    iniL = 0;
-                } 
-                
-                else
-                {
-                    iniK = i;
-                    iniL = j + 1;
-                }
-                
-                for (uint32_t k = iniK; k < objectArray.size(); k++)
-                {
-                    for (uint32_t l = iniL; l < objectArray[k].size(); l++)
-                    {
-                        Collider* colliderA = (Collider*) objectArray[i][j]->GetComponent("Collider");
-                        Collider* colliderB = (Collider*) objectArray[k][l]->GetComponent("Collider");
-                        if (colliderA != nullptr && colliderB != nullptr)
-                        {
-                            if (Collision::IsColliding(colliderA->box, colliderB->box, objectArray[i][j]->angleDeg, objectArray[k][l]->angleDeg))
-                            {
-                                objectArray[i][j]->NotifyCollision(*objectArray[k][l]);
-                                objectArray[k][l]->NotifyCollision(*objectArray[i][j]);
-                                Collision::ResolveCollision(*colliderA, *colliderB);
-                                
-                                // Update collisions before rendering
-                                colliderA->ResolveCollisionUpdate(dt);
-                                colliderB->ResolveCollisionUpdate(dt);
-                            }
-                        }
-                    }
-                }
-            }
+    // Checks for colisions
+    for (uint32_t i = 0; i < colliderArray.size(); i++)
+    {
+        for (uint32_t j = i + 1; j < colliderArray.size(); j++)
+        {
+            if(colliderArray[i].expired() || colliderArray[j].expired())
+                continue;
+            
+            auto weakColliderA = colliderArray[i].lock().get();
+            auto weakColliderB = colliderArray[j].lock().get();
+
+            Collider* colliderA = (Collider*) weakColliderA->GetComponent("Collider");
+            Collider* colliderB = (Collider*) weakColliderB->GetComponent("Collider");
+
+            if (colliderA == nullptr || colliderB == nullptr)
+                continue;
+
+            if (!Collision::IsColliding(colliderA->box, colliderB->box, weakColliderA->angleDeg, weakColliderB->angleDeg))
+                continue;
+            
+            weakColliderA->NotifyCollision(*weakColliderB);
+            weakColliderB->NotifyCollision(*weakColliderA);
+            Collision::ResolveCollision(*colliderA, *colliderB);
+            
+            // Update collisions before next frame
+            colliderA->ResolveCollisionUpdate(dt);
+            colliderB->ResolveCollisionUpdate(dt);
         }
     }
+}
+
+void WorldState::AddColliderObject(weak_ptr<GameObject>& object)
+{
+    colliderArray.emplace_back(object);
 }
 
 void WorldState::Render()
