@@ -95,22 +95,6 @@ void StageState::LoadAssets()
         AddObject(minionGo);
     }
 
-    // Note
-    GameObject* noteGo = new GameObject();
-    noteGo->box.SetVec(Vec2(904, 400));
-
-    // @TODO rotation test
-    Vec2 pos = noteGo->box.GetCenter() - Vec2(10, 0);
-    float ang = noteGo->box.GetCenter().GetAngle(pos) - (M_PI / 4.0);
-
-    Bullet* note = new Bullet(*noteGo, ang, 50, 0, 900,
-                     "./assets/image/mage-bullet-13x13.png", 5, 0.7, false);
-    
-    noteGo->AddComponent(note);
-    AddObject(noteGo);
-
-    // @TODO Tests END here ---
-
     // FPS counter
     fpsCounter = new GameObject();
     CameraFollower* textFollower = new CameraFollower(*fpsCounter, fpsCounter->box.GetVec());
