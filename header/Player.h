@@ -15,12 +15,23 @@ class Player : public Component {
         bool Is(const char* type);
         void NotifyCollision(GameObject& other);
         void Shoot();
+        
+        void ResetAttackPower() {
+            attackPower = 0;
+        }
+
+        void AddAttackPower(float value) {
+            attackPower += value;
+        }
+
         static Player* player;
 
     private:
         float linearSpeed;
         float angle;
         int hp;
+        int mana;
+        float attackPower;
         Timer shootTimer;
 };
 

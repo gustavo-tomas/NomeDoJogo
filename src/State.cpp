@@ -42,6 +42,11 @@ void State::Render()
 
 }
 
+void State::AddColliderObject(weak_ptr<GameObject>& object)
+{
+
+}
+
 weak_ptr<GameObject> State::AddObject(GameObject* go, uint32_t layer)
 {
     auto ptr = shared_ptr<GameObject>(go);
@@ -65,13 +70,16 @@ weak_ptr<GameObject> State::AddObject(GameObject* go, uint32_t layer)
         cerr << "ERROR ADDING OBJECT!!!!\n";
         exit(1);
     }
+
+    auto weakPtr =  weak_ptr<GameObject>(ptr);
+    if (go->GetComponent("Collider") != nullptr)
+        AddColliderObject(weakPtr);
     
-    return weak_ptr<GameObject>(ptr);
+    return weakPtr;
 }
 
 weak_ptr<GameObject> State::GetObjectPtr(GameObject* go)
 {
-    
     for (auto& layer : objectArray)
         for (auto& obj : layer)
             if (obj.get() == go)

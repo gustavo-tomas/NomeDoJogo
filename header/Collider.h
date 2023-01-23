@@ -7,7 +7,7 @@
 
 class Collider : public Component {
     public:
-        Collider(GameObject& associated, Vec2 scale = Vec2(1, 1), Vec2 offset = Vec2(0, 0));
+        Collider(GameObject& associated, Vec2 scale = Vec2(1, 1), Vec2 offset = Vec2(0, 0), bool activeCollison = true);
         void Update(float dt);
         void Render();
         bool Is(const char* type);
@@ -25,6 +25,7 @@ class Collider : public Component {
         float mass = 1.f;
         float invMass = 1.f;
         bool kinematic = false;
+        bool activeCollison = true;
 
     private:
         Vec2 scale;

@@ -11,12 +11,13 @@ class State {
     public:
         State();
         virtual ~State();
-        void virtual LoadAssets() = 0; // pure
-        void virtual Update(float dt) = 0; // pure
-        void virtual Render() = 0; // pure
-        void virtual Start() = 0; // pure
-        void virtual Pause() = 0; // pure
-        void virtual Resume() = 0; // pure
+        virtual void LoadAssets() = 0; // pure
+        virtual void Update(float dt) = 0; // pure
+        virtual void Render() = 0; // pure
+        virtual void Start() = 0; // pure
+        virtual void Pause() = 0; // pure
+        virtual void Resume() = 0; // pure
+        virtual void AddColliderObject(weak_ptr<GameObject>& object);
         virtual weak_ptr<GameObject> AddObject(GameObject* object, uint32_t layer = 0);
         virtual weak_ptr<GameObject> GetObjectPtr(GameObject* object);
         bool PopRequested();

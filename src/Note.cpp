@@ -1,15 +1,31 @@
 #include "../header/Note.h"
+#include "../header/Collider.h"
 #include "../header/SpriteRect.h"
 
 Note::Note(GameObject& associated) : Component(associated)
 {
-    SpriteRect* sr = new SpriteRect(associated, 0xFF3333FF, 50, 50);
-    associated.AddComponent(sr);
+    this->speed = 1;
+}
+
+Note::Note(GameObject& associated, float speed) : Component(associated)
+{
+    this->speed = speed;
+    associated.box.h = associated.box.w = 18;
+
+    Collider *collider = new Collider(associated, Vec2(1, 1), Vec2(0, 0), false);  
+    associated.AddComponent(collider);
+}
+
+Note::~Note()
+{
+    
 }
 
 void Note::Update(float dt)
 {
-    
+    associated.box.x -= speed * dt;
+    if (associated.box.x < 0)
+        associated.RequestDelete();
 }
 
 void Note::Render()
@@ -19,7 +35,8 @@ void Note::Render()
 
 bool Note::Is(const char* type)
 {
-    
+    string str_type = type;
+    return str_type == "Note";
 }
 
 void Note::NotifyCollision(GameObject& other)
