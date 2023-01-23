@@ -17,6 +17,11 @@ void Camera::Unfollow()
     focus = nullptr;
 }
 
+void Camera::Reset()
+{
+    pos = Vec2(0, 0);
+}
+
 void Camera::Update(float dt)
 {
     if (focus != nullptr)

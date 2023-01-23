@@ -46,8 +46,7 @@ void StageState::LoadAssets()
 {
     // Background
     GameObject* bgGo = new GameObject();
-    Sprite* bg = new Sprite(*bgGo, "./assets/image/parallax-mountain-bg.png");
-    bg->SetScale(4.0, 4.0);
+    Sprite* bg = new Sprite(*bgGo, "./assets/image/background.png");
     CameraFollower* cf = new CameraFollower(*bgGo);
 
     bgGo->AddComponent(bg);
@@ -62,7 +61,8 @@ void StageState::LoadAssets()
     AddObject(playerGo, 1);
     
     // Camera
-    // Camera::Follow(playerGo);
+    Camera::Unfollow();
+    Camera::Reset();
 
     // @TODO Tests START here ---
 
@@ -94,22 +94,6 @@ void StageState::LoadAssets()
         minionGo->AddComponent(minion);
         AddObject(minionGo);
     }
-
-    // Note
-    GameObject* noteGo = new GameObject();
-    noteGo->box.SetVec(Vec2(904, 400));
-
-    // @TODO rotation test
-    Vec2 pos = noteGo->box.GetCenter() - Vec2(10, 0);
-    float ang = noteGo->box.GetCenter().GetAngle(pos) - (M_PI / 4.0);
-
-    Bullet* note = new Bullet(*noteGo, ang, 50, 0, 900,
-                     "./assets/image/mage-bullet-13x13.png", 5, 0.7, false);
-    
-    noteGo->AddComponent(note);
-    AddObject(noteGo);
-
-    // @TODO Tests END here ---
 
     // FPS counter
     fpsCounter = new GameObject();
@@ -152,11 +136,17 @@ void StageState::Update(float dt)
 
     // Sets quit requested
     if (InputManager::GetInstance().QuitRequested())
+    {
         quitRequested = true;
+        return;
+    }
 
     // Returns to title screen
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY))
+    {
         popRequested = true;
+        return;
+    }
 
     // Updates the camera
     Camera::Update(dt);

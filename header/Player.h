@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include "GameObject.h"
+#include "Timer.h"
 
 class Player : public Component {
     public:
@@ -13,11 +14,13 @@ class Player : public Component {
         void Render();
         bool Is(const char* type);
         void NotifyCollision(GameObject& other);
-
-        void ResetAttackPower(){
+        void Shoot();
+        
+        void ResetAttackPower() {
             attackPower = 0;
         }
-        void AddAttackPower(float value){
+
+        void AddAttackPower(float value) {
             attackPower += value;
         }
 
@@ -29,6 +32,7 @@ class Player : public Component {
         int hp;
         int mana;
         float attackPower;
+        Timer shootTimer;
 };
 
 #endif // PLAYER_H

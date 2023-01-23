@@ -3,7 +3,7 @@
 #include "../header/Sprite.h"
 #include "../header/InputManager.h"
 #include "../header/Game.h"
-#include "../header/StageState.h"
+#include "../header/WorldState.h"
 #include "../header/CameraFollower.h"
 #include "../header/Text.h"
 
@@ -41,11 +41,14 @@ void TitleState::Update(float dt)
     // Sets quit requested
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) ||
         InputManager::GetInstance().QuitRequested())
+    {
         quitRequested = true;
+        return;
+    }
 
-    // Creates new StageState
+    // Creates new WorldState
     if (InputManager::GetInstance().KeyPress(SPACE_KEY))
-        Game::GetInstance().Push(new StageState());
+        Game::GetInstance().Push(new WorldState());
 
     UpdateArray(dt);
 }
