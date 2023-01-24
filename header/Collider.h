@@ -11,6 +11,7 @@ class Collider : public Component {
         void Update(float dt);
         void Render();
         bool Is(const char* type);
+        void Start();
         void ResolveCollisionUpdate(float dt);
         void ApplyImpulse(Vec2 impulse);
         void SetScale(Vec2 scale);
@@ -28,6 +29,7 @@ class Collider : public Component {
         bool activeCollison = true;
 
     private:
+        void UpdatePosition();
         Vec2 scale;
         Vec2 offset;
         static bool debug;
