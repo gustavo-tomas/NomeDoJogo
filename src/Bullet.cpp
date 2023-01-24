@@ -35,8 +35,14 @@ void Bullet::Update(float dt)
     }
     
     Vec2 deltaS = speed * dt;
-    associated.box.SetVec(associated.box.GetVec() + deltaS);
     distanceLeft -= Vec2(deltaS.x, deltaS.y).GetMagnitude();
+
+    Collider* collider = (Collider*) associated.GetComponent("Collider");
+    if (collider != nullptr)
+        collider->velocity = speed;
+
+    else
+        associated.box.SetVec(associated.box.GetVec() + deltaS);
 }
 
 void Bullet::Render()
