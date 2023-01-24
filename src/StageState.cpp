@@ -44,6 +44,10 @@ void StageState::Resume()
 
 void StageState::LoadAssets()
 {
+    // Background Music
+    backgroundMusic = Music("./assets/audio/doom.mp3");
+    backgroundMusic.Play();
+
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/background.png");
