@@ -162,6 +162,8 @@ void Game::Run()
             stateStack.pop();
             if (!stateStack.empty())
                 stateStack.top()->Resume();
+            else
+                break;
         }
         
         if (storedState != nullptr)
