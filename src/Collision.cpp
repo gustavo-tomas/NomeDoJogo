@@ -104,7 +104,7 @@ void Collision::ResolveCollision(Collider& a, Collider& b)
     float relVel = normal.GetDot(relativeVelocity);
 
     // Objects moving in oposing directions
-    if (relVel > 0.f)
+    if (relVel > 0.f && (a.kinematic && b.kinematic))
         return;
 
     // Correct hitbox overlap
