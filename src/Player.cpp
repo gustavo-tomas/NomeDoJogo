@@ -21,7 +21,11 @@ Player::Player(GameObject& associated) : Component(associated)
     associated.AddComponent(sprite);
 
     Collider* collider = new Collider(associated);
+    // Collider* collider = new Collider(associated, Vec2(0.75, 0.5), Vec2(0, 50));
     associated.AddComponent(collider);
+
+    Sound* shootSound = new Sound(associated, "./assets/audio/papapa.ogg");
+    associated.AddComponent(shootSound);
 
     player = this;
 }
@@ -77,7 +81,14 @@ void Player::Update(float dt)
     else
         collider->velocity = velocity;
 
-    GameData::playerPos = associated.box.GetCenter();
+    if (collider != nullptr)
+        GameData::playerPos = collider->box.GetCenter();
+
+    else
+    {
+        cout << "Player doesn't have a Collider, using associated position instead!\n";
+        GameData::playerPos = associated.box.GetCenter();
+    }
 }
 
 void Player::Shoot()
@@ -100,6 +111,10 @@ void Player::Shoot()
 
     Game::GetInstance().GetCurrentState().AddObject(bulletGo);
     shootTimer.Restart();
+
+    Sound* shootSound = (Sound *) associated.GetComponent("Sound");
+    if (shootSound != nullptr)
+        shootSound->Play();
 }
 
 void Player::Render()

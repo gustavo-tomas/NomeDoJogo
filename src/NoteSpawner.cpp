@@ -9,7 +9,6 @@
 #include <fstream>
 #include <string>
 
-
 NoteSpawner::NoteSpawner(GameObject& associated) : Component(associated), notes()
 {
     

@@ -4,53 +4,64 @@
 #include "../header/Camera.h"
 #include "../header/Game.h"
 #include "../header/InputManager.h"
-#include <SDL2/SDL.h>
 
 bool Collider::debug = true;
+Timer Collider::debugTimer;
 
 Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset, bool activeCollison) : Component(associated)
 {
     this->scale = scale;
     this->offset = offset;
     this->activeCollison = activeCollison;
+    this->box = associated.box;
+}
+
+void Collider::Start()
+{
+    // GetRotated is not used in this particular case
+    box.SetVec(associated.box.GetVec() + offset.GetRotated(associated.angleDeg));
+    UpdatePosition();
 }
 
 void Collider::Update(float dt)
 {
     // Debug is toggled ON/OFF by pressing Tab :)
-    if (InputManager::GetInstance().IsKeyDown(TAB_KEY))
+    debugTimer.Update(dt);
+    if (InputManager::GetInstance().KeyPress(TAB_KEY) && debugTimer.Get() >= 0.2)
+    {
         debug = !debug;
-
-    // This section was moved from Update to better reflect changes in the hitbox
-    box.SetVec(associated.box.GetVec() + offset.GetRotated(associated.angleDeg));
-    
-    if (scale.x > 0)
-    {
-        box.w = associated.box.w * scale.x;
-        box.x = associated.box.x + (associated.box.w - box.w) / 2.0 + offset.x;
+        debugTimer.Restart();
     }
-    
-    if (scale.y > 0)
-    {
-        box.h = associated.box.h * scale.y;
-        box.y = associated.box.y + (associated.box.h - box.h) / 2.0 + offset.y;
-    }
-    // Section ends here
 
     box.SetVec(box.GetVec() + velocity * dt);
-    associated.box.x = box.x + (box.w - associated.box.w) / 2.0 - offset.x;
-    associated.box.y = box.y + (box.h - associated.box.h) / 2.0 - offset.y;
+    associated.box.SetVec(Vec2(
+        box.x + (box.w - associated.box.w) / 2.0 - offset.x,
+        box.y + (box.h - associated.box.h) / 2.0 - offset.y
+    ));
+}
+
+void Collider::UpdatePosition()
+{
+    box.w = associated.box.w * scale.x;
+    box.h = associated.box.h * scale.y;
+    
+    box.SetVec(Vec2(
+        box.x = associated.box.x + (associated.box.w - box.w) / 2.0 + offset.x,
+        box.y = associated.box.y + (associated.box.h - box.h) / 2.0 + offset.y
+    ));
 }
 
 void Collider::ResolveCollisionUpdate(float dt)
 {
-    if(!activeCollison) return;
+    if (!activeCollison) return;
     
     // Apply correction (if any) and update the associated box
     box.SetVec(box.GetVec() + correction);
-    associated.box.x = box.x + (box.w - associated.box.w) / 2.0 - offset.x;
-    associated.box.y = box.y + (box.h - associated.box.h) / 2.0 - offset.y;
-    correction = Vec2();
+    associated.box.SetVec(Vec2(
+        box.x + (box.w - associated.box.w) / 2.0 - offset.x,
+        box.y + (box.h - associated.box.h) / 2.0 - offset.y
+    ));
+    correction = Vec2(0, 0);
 }
 
 void Collider::Render() {
@@ -93,11 +104,13 @@ void Collider::ApplyImpulse(Vec2 impulse)
 void Collider::SetScale(Vec2 scale)
 {
     this->scale = scale;
+    UpdatePosition();
 }
 
 void Collider::SetOffset(Vec2 offset)
 {
     this->offset = offset;
+    UpdatePosition();
 }
 
 void Collider::SetVelocity(Vec2 velocity)

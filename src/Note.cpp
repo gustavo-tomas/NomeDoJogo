@@ -25,7 +25,14 @@ void Note::Update(float dt)
 {
     associated.box.x -= speed * dt;
     if (associated.box.x < 0)
+    {
         associated.RequestDelete();
+        return;
+    }
+
+    Collider* collider = (Collider*) associated.GetComponent("Collider");
+    if (collider != nullptr)
+        collider->velocity = -speed;
 }
 
 void Note::Render()
