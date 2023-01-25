@@ -8,8 +8,8 @@
 #include "../header/Minion.h"
 #include "../header/Player.h"
 #include "../header/Sprite.h"
+#include "../header/Sound.h"
 #include "../header/StageState.h"
-
 
 WorldState::WorldState() : State()
 {
@@ -140,7 +140,7 @@ void WorldState::Render()
 
 void WorldState::Pause()
 {
-    
+    Sound::StopAllSounds();
 }
 
 void WorldState::Resume()
