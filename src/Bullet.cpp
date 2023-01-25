@@ -6,7 +6,7 @@
 
 Bullet::Bullet(GameObject& associated, float angle, float speed,
     int damage, float maxDistance, const char* sprite,
-    int frameCount, float frameTime, bool targetsPlayer)
+    int frameCount, float frameTime, bool targetsPlayer, string soundFile)
     : Component(associated)
 {
     Sprite* bulletSprite = new Sprite(associated, sprite, frameCount, 1, frameTime);
@@ -23,6 +23,13 @@ Bullet::Bullet(GameObject& associated, float angle, float speed,
     this->speed = Vec2(speed, speed).GetRotated(angle);
     this->damage = damage;
     this->distanceLeft = maxDistance;
+
+    if (soundFile != "")
+    {
+        Sound* sound = new Sound(associated, soundFile.c_str());
+        associated.AddComponent(sound);
+        sound->Play();
+    }
 }
 
 void Bullet::Update(float dt)
