@@ -6,6 +6,7 @@
 #include "../header/InputManager.h"
 
 bool Collider::debug = true;
+Timer Collider::debugTimer;
 
 Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset, bool activeCollison) : Component(associated)
 {
@@ -25,8 +26,12 @@ void Collider::Start()
 void Collider::Update(float dt)
 {
     // Debug is toggled ON/OFF by pressing Tab :)
-    if (InputManager::GetInstance().IsKeyDown(TAB_KEY))
+    debugTimer.Update(dt);
+    if (InputManager::GetInstance().KeyPress(TAB_KEY) && debugTimer.Get() >= 0.1)
+    {
         debug = !debug;
+        debugTimer.Restart();
+    }
 
     box.SetVec(box.GetVec() + velocity * dt);
     associated.box.SetVec(Vec2(

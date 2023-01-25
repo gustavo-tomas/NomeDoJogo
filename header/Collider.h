@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include "GameObject.h"
+#include "Timer.h"
 #include "Vec2.h"
 
 class Collider : public Component {
@@ -33,6 +34,7 @@ class Collider : public Component {
         Vec2 scale;
         Vec2 offset;
         static bool debug;
+        static Timer debugTimer;
 };
 
 #endif // COLLIDER_H
