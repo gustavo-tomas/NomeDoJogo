@@ -21,6 +21,7 @@ class Sound : public Component {
         void Update(float dt);
         void Render();
         bool Is(const char* type);
+        static void StopAllSounds();
 
     private:
         Mix_Chunk* chunk;

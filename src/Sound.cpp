@@ -3,23 +3,39 @@
 
 Sound::Sound(GameObject& associated) : Component(associated)
 {
+    channel = -1;
     chunk = nullptr;
 }
 
 Sound::Sound(GameObject& associated, const char* file) : Sound(associated)
 {
+    channel = -1;
     Open(file);
 }
 
 void Sound::Play(int times)
 {
-    channel = Mix_PlayChannel(-1, chunk, times - 1);
+    channel = Mix_PlayChannel(channel, chunk, times - 1);
 }
 
 void Sound::Stop()
 {
-    if (chunk != nullptr && channel >= -1)
-        Mix_HaltChannel(channel);
+    if (chunk != nullptr && channel > -1)
+    {
+        if (Mix_HaltChannel(channel) != 0)
+        {
+            cout << "Failed to halt channel: " << channel << "\n";
+            cout << SDL_GetError() << "\n";
+        }
+
+        else
+            cout << "Stopped channel: " << channel << "\n";
+    }
+}
+
+void Sound::StopAllSounds()
+{
+    Mix_HaltChannel(-1);
 }
 
 void Sound::Open(const char* file)
