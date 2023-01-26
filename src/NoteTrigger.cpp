@@ -4,9 +4,10 @@
 #include "../header/SpriteRect.h"
 #include "../header/InputManager.h"
 
-NoteTrigger::NoteTrigger(GameObject& associated) : Component(associated)
+NoteTrigger::NoteTrigger(GameObject& associated, int triggerKey) : Component(associated)
 {
     associated.box.h = associated.box.w = 20;
+    this->triggerKey = triggerKey;
 
     Collider *collider = new Collider(associated, Vec2(1, 1), Vec2(0, 0), false);   
     associated.AddComponent(collider);
@@ -38,7 +39,7 @@ void NoteTrigger::NotifyCollision(GameObject& other)
     auto component = (Note*) other.GetComponent("Note");
     if (component != nullptr)
     {
-        if (InputManager::GetInstance().KeyPress(LEFT_ARROW_KEY))
+        if (InputManager::GetInstance().KeyPress(triggerKey))
         {
             Note* noteComponent = (Note*)component;
             float auxValue = min(abs((associated.box.x + associated.box.w) - other.box.x), abs((other.box.x + other.box.w) - associated.box.x));

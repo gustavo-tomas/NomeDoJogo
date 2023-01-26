@@ -68,8 +68,6 @@ void StageState::LoadAssets()
     Camera::Unfollow();
     Camera::Reset();
 
-    // @TODO Tests START here ---
-
     // Guitar UI
     GameObject* guitarGo = new GameObject();
     Sprite* guitarSprite = new Sprite(*guitarGo, "./assets/image/GuitarNeckFinalized.png");
@@ -122,12 +120,12 @@ void StageState::LoadAssets()
     AddObject(spawnerGo, 1);
 
     // NoteTriggers
-    
+    int triggers[4] = {LEFT_ARROW_KEY, UP_ARROW_KEY, DOWN_ARROW_KEY, RIGHT_ARROW_KEY};
     for (int i = 0; i < 4; i++)
     {
         GameObject *noteTriggerGo = new GameObject(); 
         noteTriggerGo->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * (i + 1)));
-        NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo);
+        NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo, triggers[4 - i - 1]);
         noteTriggerGo->AddComponent(noteTrigger);
         AddObject(noteTriggerGo, 1);
     }
