@@ -6,7 +6,7 @@
 
 class NoteTrigger : public Component {
     public:
-        NoteTrigger(GameObject& associated);
+        NoteTrigger(GameObject& associated, int triggerKey = 0);
         ~NoteTrigger();
         void Update(float dt);
         void Render();
@@ -14,6 +14,7 @@ class NoteTrigger : public Component {
         void NotifyCollision(GameObject& other);
 
     private:
+        int triggerKey;
 };
 
 #endif // NOTE_H
