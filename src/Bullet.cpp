@@ -13,7 +13,7 @@ Bullet::Bullet(GameObject& associated, float angle, float speed,
     bulletSprite->SetScale(2.0, 2.0);
     associated.AddComponent(bulletSprite);
 
-    Collider* collider = new Collider(associated);
+    Collider* collider = new Collider(associated, {1, 1}, {0, 0}, false);
     collider->kinematic = true;
     associated.AddComponent(collider);
 
@@ -65,7 +65,7 @@ bool Bullet::Is(const char* type)
 
 void Bullet::NotifyCollision(GameObject& other)
 {
-    if (!associated.IsDead())
+    if (!associated.IsDead() && other.GetComponent("Bullet") == nullptr)
         associated.RequestDelete();
 }
 
