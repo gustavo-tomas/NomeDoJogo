@@ -6,6 +6,8 @@
 #include "../header/Camera.h"
 #include "../header/GameData.h"
 
+int Minion::minionCount = 0;
+
 Minion::Minion(GameObject& associated, Vec2 initialPos) : Component(associated)
 {
     associated.box.SetVec(initialPos);
@@ -15,6 +17,8 @@ Minion::Minion(GameObject& associated, Vec2 initialPos) : Component(associated)
 
     Collider* collider = new Collider(associated);
     associated.AddComponent(collider);
+
+    Minion::minionCount++;
 }
 
 void Minion::Start()
@@ -24,6 +28,13 @@ void Minion::Start()
 
 void Minion::Update(float dt)
 {
+    if (hp <= 0)
+    {
+        associated.RequestDelete();
+        Minion::minionCount--;
+        return;
+    }
+
     shootTimer.Update(dt);
     if (shootTimer.Get() >= 1.2)
         Shoot(GameData::playerPos);

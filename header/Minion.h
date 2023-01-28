@@ -15,6 +15,7 @@ class Minion : public Component {
         bool Is(const char* type);
         void NotifyCollision(GameObject& other);
         void Shoot(Vec2 target);
+        static int minionCount;
 
     private:
         int hp;
