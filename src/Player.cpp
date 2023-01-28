@@ -102,7 +102,7 @@ void Player::Shoot()
                                             speed, damage, maxDistance,
                                     "./assets/image/mage-bullet-13x13.png",
                                 5, 0.5, false,
-                                "./assets/audio/doom.mp3");
+                                "./assets/audio/papapa.mp3");
     
     Vec2 center = associated.box.GetCenter();
     Vec2 offset = Vec2(associated.box.w, -bulletGo->box.h / 2.0);
