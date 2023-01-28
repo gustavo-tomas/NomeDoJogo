@@ -131,5 +131,7 @@ bool Player::Is(const char* type)
 
 void Player::NotifyCollision(GameObject& other)
 {
-    
+    Bullet* bullet = (Bullet *) other.GetComponent("Bullet");
+    if (bullet != nullptr)
+        hp -= bullet->GetDamage();
 }
