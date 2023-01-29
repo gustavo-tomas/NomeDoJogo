@@ -27,7 +27,7 @@ void Collider::Update(float dt)
 {
     // Debug is toggled ON/OFF by pressing Tab :)
     debugTimer.Update(dt);
-    if (InputManager::GetInstance().KeyPress(TAB_KEY) && debugTimer.Get() >= 0.2)
+    if (InputManager::GetInstance().KeyPress(TAB_KEY) && debugTimer.Get() >= 0.4)
     {
         debug = !debug;
         debugTimer.Restart();
