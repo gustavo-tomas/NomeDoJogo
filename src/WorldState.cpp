@@ -4,12 +4,15 @@
 #include "../header/Collider.h"
 #include "../header/Collision.h"
 #include "../header/Game.h"
+#include "../header/GameData.h"
 #include "../header/InputManager.h"
 #include "../header/Minion.h"
 #include "../header/Player.h"
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 #include "../header/StageState.h"
+#include <fstream>
+#include <string>
 
 WorldState::WorldState() : State()
 {
@@ -33,7 +36,7 @@ void WorldState::LoadAssets()
 {
     // Background
     GameObject* bgGo = new GameObject();
-    Sprite* bg = new Sprite(*bgGo, "./assets/image/parallax-mountain-bg.png");
+    Sprite* bg = new Sprite(*bgGo, "./assets/image/background.png");
     bg->SetScale(4.0, 4.0);
     CameraFollower* cf = new CameraFollower(*bgGo);
 
@@ -44,21 +47,69 @@ void WorldState::LoadAssets()
     // Player
     playerGo = new GameObject();
     Player* player = new Player(*playerGo);
-    playerGo->box.SetVec(Vec2(104, 154));
+    playerGo->box.SetVec(Vec2(1650, 350));
     playerGo->AddComponent(player);
-    AddObject(playerGo);
+    AddObject(playerGo, 1);
 
     // Camera
     Camera::Follow(playerGo);
 
-    // Minion
-    for (int i = 0; i < 2; i++)
+    // World Objects
+    vector<WorldObject> objects = {};
+
+    ifstream mappingFile; 
+    mappingFile.open("./assets/map/world_objects.txt");
+
+    string buff;
+    getline(mappingFile, buff);
+
+    // Format: < name, position, scale, >
+    while (!getline(mappingFile, buff).eof())
     {
-        GameObject* minionGo = new GameObject();
-        Minion* minion = new Minion(*minionGo, Vec2(704, 100 + i * 150));
+        size_t pos = 0;
+        bool nameFound = false;
+        string name;
+        vector<float> values;
+
+        while ((pos = buff.find(",")) != string::npos)
+        {
+            string token = buff.substr(0, pos);
+            
+            if (!nameFound)
+            {
+                name = token;
+                nameFound = true;
+            }
+
+            else
+                values.push_back(stof(token));
+
+            buff.erase(0, pos + 1);
+        }
+
+        objects.push_back({
+            .name = name,
+            .position = Vec2(values[0], values[1]),
+            .scale = Vec2(values[2], values[3])
+        });
+    }
+
+    mappingFile.close();
+
+    // @TODO Add a collider field < name, position, scale, colliderScale, colliderOffset > ?
+    for (auto object : objects)
+    {
+        GameObject* objectGo = new GameObject();
+
+        Sprite* objectSprite = new Sprite(*objectGo, (GameData::objectsPath + object.name).c_str());
+        objectSprite->SetScale(object.scale.x, object.scale.y);
+        objectGo->AddComponent(objectSprite);
+
+        Collider* objectCollider = new Collider(*objectGo, {0.9, 0.9}, {0, 5});
+        objectGo->AddComponent(objectCollider);
         
-        minionGo->AddComponent(minion);
-        AddObject(minionGo);
+        objectGo->box.SetVec(object.position);
+        AddObject(objectGo);
     }
 }
 

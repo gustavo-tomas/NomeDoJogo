@@ -7,6 +7,12 @@
 
 using namespace std;
 
+typedef struct WorldObject {
+    string name;
+    Vec2 position = {0, 0};
+    Vec2 scale = {1, 1};
+} WorldObject;
+
 class WorldState : public State {
     public:
         WorldState();
