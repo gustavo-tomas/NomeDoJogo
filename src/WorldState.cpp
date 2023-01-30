@@ -89,14 +89,15 @@ void WorldState::LoadAssets()
 
         objects.push_back({
             .name = name,
-            .position = Vec2(values[0], values[1]),
-            .scale = Vec2(values[2], values[3])
+            .position = {values[0], values[1]},
+            .scale = {values[2], values[3]},
+            .colliderScale = {values[4], values[5]},
+            .colliderOffset = {values[6], values[7]}
         });
     }
 
     mappingFile.close();
 
-    // @TODO Add a collider field < name, position, scale, colliderScale, colliderOffset > ?
     for (auto object : objects)
     {
         GameObject* objectGo = new GameObject();
@@ -105,7 +106,7 @@ void WorldState::LoadAssets()
         objectSprite->SetScale(object.scale.x, object.scale.y);
         objectGo->AddComponent(objectSprite);
 
-        Collider* objectCollider = new Collider(*objectGo, {0.9, 0.9}, {0, 5});
+        Collider* objectCollider = new Collider(*objectGo, object.colliderScale, object.colliderOffset);
         objectGo->AddComponent(objectCollider);
         
         objectGo->box.SetVec(object.position);
