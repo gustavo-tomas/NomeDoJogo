@@ -3,6 +3,7 @@
 #include "../header/Note.h"
 #include "../header/SpriteRect.h"
 #include "../header/InputManager.h"
+#include "../header/Player.h"
 
 NoteTrigger::NoteTrigger(GameObject& associated, int triggerKey) : Component(associated)
 {
@@ -41,12 +42,13 @@ void NoteTrigger::NotifyCollision(GameObject& other)
     {
         if (InputManager::GetInstance().KeyPress(triggerKey))
         {
-            Note* noteComponent = (Note*)component;
             float auxValue = min(abs((associated.box.x + associated.box.w) - other.box.x), abs((other.box.x + other.box.w) - associated.box.x));
             float percentage = ceil(auxValue / 5) * 25;
             
             other.RequestDelete();
+
+            Player::player->AddMana(10);
+            Player::player->AddAttackPower(percentage);
         }
     }
 }
-
