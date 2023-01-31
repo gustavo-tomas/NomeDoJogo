@@ -9,6 +9,7 @@
 class Minion : public Component {
     public:
         Minion(GameObject& associated, Vec2 initialPos = Vec2(0, 0));
+        ~Minion();
         void Start();
         void Update(float dt);
         void Render();

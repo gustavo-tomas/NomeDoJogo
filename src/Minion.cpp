@@ -21,6 +21,11 @@ Minion::Minion(GameObject& associated, Vec2 initialPos) : Component(associated)
     Minion::minionCount++;
 }
 
+Minion::~Minion()
+{
+    Minion::minionCount--;
+}
+
 void Minion::Start()
 {
     hp = 100;
@@ -31,7 +36,6 @@ void Minion::Update(float dt)
     if (hp <= 0)
     {
         associated.RequestDelete();
-        Minion::minionCount--;
         return;
     }
 
