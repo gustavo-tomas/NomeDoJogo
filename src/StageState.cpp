@@ -175,6 +175,7 @@ void StageState::Update(float dt)
     if (Player::player == nullptr)
     {
         GameData::playerVictory = false;
+        Minion::minionCount = 0;
         Game::GetInstance().Push(new EndState());
         popRequested = true;
         return;
