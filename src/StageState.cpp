@@ -59,7 +59,7 @@ void StageState::LoadAssets()
 
     // Player
     GameObject* playerGo = new GameObject();
-    Player* player = new Player(*playerGo);
+    Player* player = new Player(*playerGo, true);
     playerGo->box.SetVec(Vec2(104, 154));
     playerGo->AddComponent(player);
     AddObject(playerGo, 1);

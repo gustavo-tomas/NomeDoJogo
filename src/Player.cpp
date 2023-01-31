@@ -11,12 +11,13 @@
 
 Player* Player::player;
 
-Player::Player(GameObject& associated) : Component(associated)
+Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 {
     linearSpeed = 0;
     angle = 0;
     hp = 100;
-    
+    this->moveLimits = moveLimits;
+
     Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4, 2);
     associated.AddComponent(sprite);
 
@@ -49,19 +50,19 @@ void Player::Update(float dt)
     Vec2 velocity = Vec2(0.f, 0.f);
 
     // Up
-    if (InputManager::GetInstance().IsKeyDown(W_KEY)) 
+    if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > 120)) 
         velocity.y -= 1.f;
 
     // Down
-    if (InputManager::GetInstance().IsKeyDown(S_KEY))
+    if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < 380))
         velocity.y += 1.f;
 
     // Right
-    if (InputManager::GetInstance().IsKeyDown(D_KEY)) 
+    if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < 300)) 
         velocity.x += 1.f;
 
     // Left
-    if (InputManager::GetInstance().IsKeyDown(A_KEY))
+    if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > 40))
         velocity.x -= 1.f;
 
     // Shoot
