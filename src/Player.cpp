@@ -11,7 +11,7 @@
 
 Player* Player::player;
 
-Player::Player(GameObject& associated) : Component(associated)
+Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 {
     linearSpeed = 0;
     angle = 0;
@@ -19,6 +19,7 @@ Player::Player(GameObject& associated) : Component(associated)
     mana = 0;
     attackPower = 0;
     
+    this->moveLimits = moveLimits;
     Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4, 2);
     associated.AddComponent(sprite);
 
@@ -51,19 +52,19 @@ void Player::Update(float dt)
     Vec2 velocity = Vec2(0.f, 0.f);
 
     // Up
-    if (InputManager::GetInstance().IsKeyDown(W_KEY)) 
+    if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT/5)) 
         velocity.y -= 1.f;
 
     // Down
-    if (InputManager::GetInstance().IsKeyDown(S_KEY))
+    if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT/3))
         velocity.y += 1.f;
 
     // Right
-    if (InputManager::GetInstance().IsKeyDown(D_KEY)) 
+    if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH/3)) 
         velocity.x += 1.f;
 
     // Left
-    if (InputManager::GetInstance().IsKeyDown(A_KEY))
+    if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH/20))
         velocity.x -= 1.f;
 
     // Shoot
@@ -148,5 +149,7 @@ bool Player::Is(const char* type)
 
 void Player::NotifyCollision(GameObject& other)
 {
-    
+    Bullet* bullet = (Bullet *) other.GetComponent("Bullet");
+    if (bullet != nullptr)
+        hp -= bullet->GetDamage();
 }

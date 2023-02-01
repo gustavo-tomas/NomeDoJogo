@@ -10,6 +10,7 @@
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 #include "../header/StageState.h"
+#include "../header/TestBox.h"
 
 WorldState::WorldState() : State()
 {
@@ -51,15 +52,12 @@ void WorldState::LoadAssets()
     // Camera
     Camera::Follow(playerGo);
 
-    // Minion
-    for (int i = 0; i < 2; i++)
-    {
-        GameObject* minionGo = new GameObject();
-        Minion* minion = new Minion(*minionGo, Vec2(704, 100 + i * 150));
-        
-        minionGo->AddComponent(minion);
-        AddObject(minionGo);
-    }
+    // @TODO TestBox
+    GameObject* testBoxGo = new GameObject();
+    TestBox* testBox = new TestBox(*testBoxGo, {300, 300});
+    
+    testBoxGo->AddComponent(testBox);
+    AddObject(testBoxGo);
 }
 
 void WorldState::Update(float dt)
