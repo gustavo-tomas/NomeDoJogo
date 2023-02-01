@@ -4,6 +4,7 @@
 #include "../header/Collider.h"
 #include "../header/Collision.h"
 #include "../header/Game.h"
+#include "../header/GameData.h"
 #include "../header/InputManager.h"
 #include "../header/Minion.h"
 #include "../header/Player.h"
@@ -11,6 +12,8 @@
 #include "../header/Sound.h"
 #include "../header/StageState.h"
 #include "../header/TestBox.h"
+#include <fstream>
+#include <string>
 
 WorldState::WorldState() : State()
 {
@@ -34,7 +37,7 @@ void WorldState::LoadAssets()
 {
     // Background
     GameObject* bgGo = new GameObject();
-    Sprite* bg = new Sprite(*bgGo, "./assets/image/parallax-mountain-bg.png");
+    Sprite* bg = new Sprite(*bgGo, "./assets/image/background.png");
     bg->SetScale(4.0, 4.0);
     CameraFollower* cf = new CameraFollower(*bgGo);
 
@@ -45,19 +48,71 @@ void WorldState::LoadAssets()
     // Player
     playerGo = new GameObject();
     Player* player = new Player(*playerGo);
-    playerGo->box.SetVec(Vec2(104, 154));
+    playerGo->box.SetVec(Vec2(1650, 350));
     playerGo->AddComponent(player);
-    AddObject(playerGo);
+    AddObject(playerGo, 1);
 
     // Camera
     Camera::Follow(playerGo);
 
-    // @TODO TestBox
-    GameObject* testBoxGo = new GameObject();
-    TestBox* testBox = new TestBox(*testBoxGo, {300, 300});
-    
-    testBoxGo->AddComponent(testBox);
-    AddObject(testBoxGo);
+    // World Objects
+    vector<WorldObject> objects = {};
+
+    ifstream mappingFile; 
+    mappingFile.open("./assets/map/world_objects.txt");
+
+    string buff;
+    getline(mappingFile, buff);
+
+    // Format: < name, position, scale, >
+    while (!getline(mappingFile, buff).eof())
+    {
+        size_t pos = 0;
+        bool nameFound = false;
+        string name;
+        vector<float> values;
+
+        while ((pos = buff.find(",")) != string::npos)
+        {
+            string token = buff.substr(0, pos);
+            
+            if (!nameFound)
+            {
+                name = token;
+                nameFound = true;
+            }
+
+            else
+                values.push_back(stof(token));
+
+            buff.erase(0, pos + 1);
+        }
+
+        objects.push_back({
+            .name = name,
+            .position = {values[0], values[1]},
+            .scale = {values[2], values[3]},
+            .colliderScale = {values[4], values[5]},
+            .colliderOffset = {values[6], values[7]}
+        });
+    }
+
+    mappingFile.close();
+
+    for (auto object : objects)
+    {
+        GameObject* objectGo = new GameObject();
+
+        Sprite* objectSprite = new Sprite(*objectGo, (GameData::objectsPath + object.name).c_str());
+        objectSprite->SetScale(object.scale.x, object.scale.y);
+        objectGo->AddComponent(objectSprite);
+
+        Collider* objectCollider = new Collider(*objectGo, object.colliderScale, object.colliderOffset);
+        objectGo->AddComponent(objectCollider);
+        
+        objectGo->box.SetVec(object.position);
+        AddObject(objectGo);
+    }
 }
 
 void WorldState::Update(float dt)

@@ -23,8 +23,9 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4, 2);
     associated.AddComponent(sprite);
 
-    Collider* collider = new Collider(associated);
-    // Collider* collider = new Collider(associated, Vec2(0.75, 0.5), Vec2(0, 50));
+    // Collider* collider = new Collider(associated);
+    // Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25));
+    Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25), false);
     associated.AddComponent(collider);
 
     player = this;
@@ -48,7 +49,8 @@ void Player::Update(float dt)
         return;
     }
 
-    float speed = 300.0;
+    // float speed = 300.0;
+    float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
 
     // Up
@@ -76,7 +78,7 @@ void Player::Update(float dt)
         collider->velocity = velocity.GetNormalized() * speed;
 
     else
-        collider->velocity = velocity;
+        collider->velocity = velocity; // {0, 0}
 
     if (collider != nullptr)
         GameData::playerPos = collider->box.GetCenter();

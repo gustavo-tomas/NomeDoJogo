@@ -2,6 +2,9 @@
 #define GAMEDATA_H
 
 #include "Vec2.h"
+#include <string>
+
+using namespace std;
 
 class GameData {
     public:
@@ -13,6 +16,7 @@ class GameData {
         static float currentFPS;
         static float delay;
         static Vec2 playerPos;
+        static const string objectsPath;
 };
 
 #endif // GAMEDATA_H
