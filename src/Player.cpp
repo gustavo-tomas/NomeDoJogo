@@ -16,8 +16,10 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     linearSpeed = 0;
     angle = 0;
     hp = 100;
+    mana = 0;
+    attackPower = 0;
+    
     this->moveLimits = moveLimits;
-
     Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4, 2);
     associated.AddComponent(sprite);
 
@@ -66,11 +68,8 @@ void Player::Update(float dt)
         velocity.x -= 1.f;
 
     // Shoot
-    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY))
+    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
         Shoot();
-
-    // Updates shoot timer
-    shootTimer.Update(dt);
 
     Collider* collider = (Collider*) associated.GetComponent("Collider");
     if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
@@ -91,16 +90,12 @@ void Player::Update(float dt)
 
 void Player::Shoot()
 {
-    if (shootTimer.Get() < 0.40)
-        return;
-
     float speed = 750;
-    float damage = 20;
     float maxDistance = 1000;
 
     GameObject* bulletGo = new GameObject();
     Bullet* bullet = new Bullet(*bulletGo, angle - (M_PI / 4.0),
-                                            speed, damage, maxDistance,
+                                            speed, attackPower, maxDistance,
                                     "./assets/image/mage-bullet-13x13.png",
                                 5, 0.5, false,
                                 "./assets/audio/papapa.mp3");
@@ -112,11 +107,33 @@ void Player::Shoot()
     bulletGo->AddComponent(bullet);
 
     Game::GetInstance().GetCurrentState().AddObject(bulletGo);
-    shootTimer.Restart();
 
     Sound* shootSound = (Sound *) associated.GetComponent("Sound");
     if (shootSound != nullptr)
         shootSound->Play();
+
+    ResetMana();
+    ResetAttackPower();
+}
+
+void Player::ResetAttackPower() 
+{
+    attackPower = 0;
+}
+
+void Player::AddAttackPower(float value) 
+{
+    attackPower += value;
+}
+
+void Player::ResetMana() 
+{
+    mana = 0;
+}
+
+void Player::AddMana(int value) 
+{
+    mana += value;
 }
 
 void Player::Render()
