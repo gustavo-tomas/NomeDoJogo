@@ -12,10 +12,10 @@ EndState::EndState()
     const char* bgFile;
 
     if (GameData::playerVictory)
-        bgFile = "./assets/image/win.png";
+        bgFile = "./assets/image/background.png";
 
     else
-        bgFile = "./assets/image/lose.png";
+        bgFile = "./assets/image/background.png";
     
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, bgFile);
@@ -29,6 +29,12 @@ EndState::EndState()
 EndState::~EndState()
 {
     objectArray.clear();
+}
+
+void EndState::Start()
+{
+    LoadAssets();
+    StartArray();
 }
 
 void EndState::Update(float dt)
@@ -49,13 +55,13 @@ void EndState::LoadAssets()
     const char* musicFile;
 
     if (GameData::playerVictory)
-        musicFile = "./assets/audio/endStateWin.ogg";
+        musicFile = "./assets/audio/papapa.mp3";
 
     else
-        musicFile = "./assets/audio/endStateLose.ogg";
+        musicFile = "./assets/audio/doom.mp3";
 
     backgroundMusic = Music(musicFile);
-    backgroundMusic.Play(1);
+    backgroundMusic.Play(-1);
 
     // Writes text
     GameObject* textGo = new GameObject();
@@ -78,12 +84,6 @@ void EndState::LoadAssets()
 void EndState::Render()
 {
     RenderArray();
-}
-
-void EndState::Start()
-{
-    LoadAssets();
-    StartArray();
 }
 
 void EndState::Pause()

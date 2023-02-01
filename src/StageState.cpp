@@ -162,6 +162,24 @@ void StageState::Update(float dt)
             if (objectArray[i][j]->IsDead())
                 objectArray[i].erase(objectArray[i].begin() + j--);
 
+    // Checks for Player Victory
+    if (Minion::minionCount <= 0)
+    {
+        GameData::playerVictory = true;
+        Game::GetInstance().Push(new EndState());
+        popRequested = true;
+        return;
+    }
+
+    // Checks for Player Defeat
+    if (Player::player == nullptr)
+    {
+        GameData::playerVictory = false;
+        Game::GetInstance().Push(new EndState());
+        popRequested = true;
+        return;
+    }
+
     // Checks for colisions
     for (uint32_t i = 0; i < colliderArray.size(); i++)
     {
