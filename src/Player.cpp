@@ -50,19 +50,19 @@ void Player::Update(float dt)
     Vec2 velocity = Vec2(0.f, 0.f);
 
     // Up
-    if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > 120)) 
+    if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT/5)) 
         velocity.y -= 1.f;
 
     // Down
-    if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < 380))
+    if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT/3))
         velocity.y += 1.f;
 
     // Right
-    if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < 300)) 
+    if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH/3)) 
         velocity.x += 1.f;
 
     // Left
-    if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > 40))
+    if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH/20))
         velocity.x -= 1.f;
 
     // Shoot
