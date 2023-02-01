@@ -11,6 +11,7 @@
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 #include "../header/StageState.h"
+#include "../header/TestBox.h"
 #include <fstream>
 #include <string>
 

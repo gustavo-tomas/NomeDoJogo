@@ -7,7 +7,7 @@
 
 class Player : public Component {
     public:
-        Player(GameObject& associated);
+        Player(GameObject& associated, bool moveLimits = false);
         ~Player();
         void Start();
         void Update(float dt);
@@ -15,14 +15,10 @@ class Player : public Component {
         bool Is(const char* type);
         void NotifyCollision(GameObject& other);
         void Shoot();
-        
-        void ResetAttackPower() {
-            attackPower = 0;
-        }
-
-        void AddAttackPower(float value) {
-            attackPower += value;
-        }
+        void ResetAttackPower();
+        void AddAttackPower(float value);
+        void ResetMana();
+        void AddMana(int value);
 
         static Player* player;
 
@@ -32,6 +28,7 @@ class Player : public Component {
         int hp;
         int mana;
         float attackPower;
+        bool moveLimits;
         Timer shootTimer;
 };
 

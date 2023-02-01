@@ -11,12 +11,15 @@
 
 Player* Player::player;
 
-Player::Player(GameObject& associated) : Component(associated)
+Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 {
     linearSpeed = 0;
     angle = 0;
     hp = 100;
+    mana = 0;
+    attackPower = 0;
     
+    this->moveLimits = moveLimits;
     Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4, 2);
     associated.AddComponent(sprite);
 
@@ -51,27 +54,24 @@ void Player::Update(float dt)
     Vec2 velocity = Vec2(0.f, 0.f);
 
     // Up
-    if (InputManager::GetInstance().IsKeyDown(W_KEY)) 
+    if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT/5)) 
         velocity.y -= 1.f;
 
     // Down
-    if (InputManager::GetInstance().IsKeyDown(S_KEY))
+    if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT/3))
         velocity.y += 1.f;
 
     // Right
-    if (InputManager::GetInstance().IsKeyDown(D_KEY)) 
+    if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH/3)) 
         velocity.x += 1.f;
 
     // Left
-    if (InputManager::GetInstance().IsKeyDown(A_KEY))
+    if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH/20))
         velocity.x -= 1.f;
 
     // Shoot
-    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY))
+    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
         Shoot();
-
-    // Updates shoot timer
-    shootTimer.Update(dt);
 
     Collider* collider = (Collider*) associated.GetComponent("Collider");
     if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
@@ -92,16 +92,12 @@ void Player::Update(float dt)
 
 void Player::Shoot()
 {
-    if (shootTimer.Get() < 0.40)
-        return;
-
     float speed = 750;
-    float damage = 20;
     float maxDistance = 1000;
 
     GameObject* bulletGo = new GameObject();
     Bullet* bullet = new Bullet(*bulletGo, angle - (M_PI / 4.0),
-                                            speed, damage, maxDistance,
+                                            speed, attackPower, maxDistance,
                                     "./assets/image/mage-bullet-13x13.png",
                                 5, 0.5, false,
                                 "./assets/audio/papapa.mp3");
@@ -113,11 +109,33 @@ void Player::Shoot()
     bulletGo->AddComponent(bullet);
 
     Game::GetInstance().GetCurrentState().AddObject(bulletGo);
-    shootTimer.Restart();
 
     Sound* shootSound = (Sound *) associated.GetComponent("Sound");
     if (shootSound != nullptr)
         shootSound->Play();
+
+    ResetMana();
+    ResetAttackPower();
+}
+
+void Player::ResetAttackPower() 
+{
+    attackPower = 0;
+}
+
+void Player::AddAttackPower(float value) 
+{
+    attackPower += value;
+}
+
+void Player::ResetMana() 
+{
+    mana = 0;
+}
+
+void Player::AddMana(int value) 
+{
+    mana += value;
 }
 
 void Player::Render()
@@ -133,5 +151,7 @@ bool Player::Is(const char* type)
 
 void Player::NotifyCollision(GameObject& other)
 {
-    
+    Bullet* bullet = (Bullet *) other.GetComponent("Bullet");
+    if (bullet != nullptr)
+        hp -= bullet->GetDamage();
 }
