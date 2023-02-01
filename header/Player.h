@@ -7,7 +7,7 @@
 
 class Player : public Component {
     public:
-        Player(GameObject& associated);
+        Player(GameObject& associated, bool moveLimits = false);
         ~Player();
         void Start();
         void Update(float dt);
@@ -32,6 +32,7 @@ class Player : public Component {
         int hp;
         int mana;
         float attackPower;
+        bool moveLimits;
         Timer shootTimer;
 };
 
