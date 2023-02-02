@@ -1,14 +1,19 @@
 #include "../header/NoteTrigger.h"
 #include "../header/Collider.h"
 #include "../header/Note.h"
-#include "../header/SpriteRect.h"
+#include "../header/Sprite.h"
 #include "../header/InputManager.h"
 #include "../header/Player.h"
 
 NoteTrigger::NoteTrigger(GameObject& associated, int triggerKey) : Component(associated)
 {
-    associated.box.h = associated.box.w = 20;
     this->triggerKey = triggerKey;
+
+    Sprite *sprite = new Sprite(associated, "assets/image/circle.png");
+    sprite->SetScale(20.0 / sprite->GetWidth(), 20.0 / sprite->GetHeight());  
+    associated.AddComponent(sprite);
+    
+    associated.box.h = associated.box.w = 20;
 
     Collider *collider = new Collider(associated, Vec2(1, 1), Vec2(0, 0), false);   
     associated.AddComponent(collider);

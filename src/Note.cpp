@@ -1,6 +1,6 @@
 #include "../header/Note.h"
 #include "../header/Collider.h"
-#include "../header/SpriteRect.h"
+#include "../header/Sprite.h"
 
 Note::Note(GameObject& associated) : Component(associated)
 {
@@ -10,6 +10,13 @@ Note::Note(GameObject& associated) : Component(associated)
 Note::Note(GameObject& associated, float speed) : Component(associated)
 {
     this->speed = speed;
+
+    Sprite *sprite = new Sprite(associated, "assets/image/circle.png");
+    sprite->SetScale(18.0 / sprite->GetWidth(), 18.0 / sprite->GetHeight());  
+    sprite->SetScale(18.0 / sprite->GetWidth(), 18.0 / sprite->GetHeight());  
+    sprite->SetScale(18.0 / sprite->GetWidth(), 18.0 / sprite->GetHeight());  
+    associated.AddComponent(sprite);
+    
     associated.box.h = associated.box.w = 18;
 
     Collider *collider = new Collider(associated, Vec2(1, 1), Vec2(0, 0), false);  
