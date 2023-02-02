@@ -30,6 +30,7 @@ class Player : public Component {
         float attackPower;
         bool moveLimits;
         Timer shootTimer;
+        vector<weak_ptr<GameObject>> lives;
 };
 
 #endif // PLAYER_H
