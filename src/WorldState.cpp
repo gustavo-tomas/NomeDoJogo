@@ -146,9 +146,8 @@ void WorldState::Update(float dt)
 
     // Deletes GOs
     for (uint32_t i = 0; i < objectArray.size(); i++)
-        for (uint32_t j = 0; j < objectArray[i].size(); j++)
-            if (objectArray[i][j]->IsDead()) 
-                objectArray[i].erase(objectArray[i].begin() + j);
+        if (objectArray[i]->IsDead())
+            objectArray.erase(objectArray.begin() + i--);
 
     // Checks for colisions
     for (uint32_t i = 0; i < colliderArray.size(); i++)

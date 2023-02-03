@@ -26,7 +26,7 @@ class StageState : public State {
     private:
         Music backgroundMusic;
         GameObject* fpsCounter;
-        vector<weak_ptr<GameObject>> colliderArray;
+        // vector<weak_ptr<GameObject>> colliderArray;
 };
 
 #endif // STAGESTATE_H

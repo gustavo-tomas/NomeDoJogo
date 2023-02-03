@@ -53,6 +53,7 @@ void Player::Update(float dt)
     float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
 
+
     // Up
     if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT/5)) 
         velocity.y -= 1.f;
@@ -72,6 +73,8 @@ void Player::Update(float dt)
     // Shoot
     if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
         Shoot();
+
+    Game::GetInstance().GetCurrentState().UpdateLayer(&associated, associated.box.y);
 
     Collider* collider = (Collider*) associated.GetComponent("Collider");
     if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))

@@ -1,0 +1,4 @@
+src/NoteSpawner.cpp: In member function ‘virtual void NoteSpawner::Update(float)’:
+src/NoteSpawner.cpp:51:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<NoteInfo>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+   51 |     while (ind < notes.size())
+      |            ~~~~^~~~~~~~~~~~~~
