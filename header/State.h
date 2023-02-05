@@ -22,9 +22,8 @@ class State {
         virtual void Pause() = 0; // pure
         virtual void Resume() = 0; // pure
         virtual void AddColliderObject(weak_ptr<GameObject>& object);
-        virtual weak_ptr<GameObject> AddObject(GameObject* object, uint32_t layer = 0);
+        virtual weak_ptr<GameObject> AddObject(GameObject* object, int32_t layer = 0);
         virtual weak_ptr<GameObject> GetObjectPtr(GameObject* object);
-        virtual void UpdateLayer(GameObject *go, uint32_t newLayer = 0);
         bool PopRequested();
         bool QuitRequested();
 
@@ -37,7 +36,6 @@ class State {
         bool started;
         vector<shared_ptr<GameObject>> objectArray;
         vector<weak_ptr<GameObject>> colliderArray;
-        multiset<pair<uint32_t, weak_ptr<GameObject>>, pointer_compare<pair<uint32_t, weak_ptr<GameObject>>>> renderArray;
 };
 
 #endif // STATE_H

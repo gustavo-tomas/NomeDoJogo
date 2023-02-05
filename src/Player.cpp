@@ -74,8 +74,6 @@ void Player::Update(float dt)
     if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
         Shoot();
 
-    Game::GetInstance().GetCurrentState().UpdateLayer(&associated, associated.box.y);
-
     Collider* collider = (Collider*) associated.GetComponent("Collider");
     if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
         collider->velocity = velocity.GetNormalized() * speed;

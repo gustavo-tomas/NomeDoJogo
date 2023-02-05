@@ -1,4 +1,5 @@
 #include "../header/State.h"
+#include <algorithm>
 
 State::State()
 {
@@ -44,18 +45,16 @@ void State::Render()
 
 void State::AddColliderObject(weak_ptr<GameObject>& object)
 {
-
+    colliderArray.emplace_back(object);
 }
 
-weak_ptr<GameObject> State::AddObject(GameObject* go, uint32_t layer)
+weak_ptr<GameObject> State::AddObject(GameObject* go, int32_t layer)
 {
     auto ptr = shared_ptr<GameObject>(go);
+    go->SetLayer(layer);
     objectArray.push_back(ptr);
 
     auto weakPtr =  weak_ptr<GameObject>(ptr);
-
-    go->SetLayer(layer);
-    renderArray.insert({layer, weakPtr});
 
     if (go->GetComponent("Collider") != nullptr)
         AddColliderObject(weakPtr);
@@ -72,13 +71,6 @@ weak_ptr<GameObject> State::GetObjectPtr(GameObject* go)
     return {};
 }
 
-void State::UpdateLayer(GameObject *go, uint32_t newLayer){
-    uint32_t layer = go->GetLayer();
-    auto obj = GetObjectPtr(go);
-    renderArray.erase({layer, obj});
-    renderArray.insert({newLayer, obj});
-}
-
 void State::StartArray()
 {
     for(uint32_t i = 0; i < objectArray.size(); i++)
@@ -93,9 +85,11 @@ void State::UpdateArray(float dt)
 
 void State::RenderArray()
 {
-    for(auto &obj: renderArray)
-        if(!obj.second.expired())
-            obj.second.lock()->Render();
+    std::sort(objectArray.begin(), objectArray.end(), [](shared_ptr<GameObject> &a, shared_ptr<GameObject> &b){
+        return a->GetLayer() + a->box.y + a->box.h < b->GetLayer() + b->box.y + b->box.h;
+    });
+    for(auto &obj: objectArray)
+        obj->Render();
 }
 
 bool State::PopRequested()

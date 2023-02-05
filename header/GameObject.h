@@ -24,8 +24,8 @@ class GameObject {
         void RemoveComponent(Component* cpt);
         Component* GetComponent(const char* type);
         void NotifyCollision(GameObject& other);
-        void SetLayer(uint32_t layer);
-        uint32_t GetLayer();
+        void SetLayer(int32_t layer);
+        int32_t GetLayer();
         Rect box;
         bool started;
         double angleDeg;
@@ -34,7 +34,7 @@ class GameObject {
     
         vector<unique_ptr<Component>> components;
         bool isDead;
-        uint32_t layer = 0;
+        int32_t layer = 0;
 };
 
 #endif // GAMEOBJECT_H

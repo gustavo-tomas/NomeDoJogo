@@ -55,14 +55,14 @@ void StageState::LoadAssets()
 
     bgGo->AddComponent(bg);
     bgGo->AddComponent(cf);
-    AddObject(bgGo);
+    AddObject(bgGo, -GameData::HEIGHT);
 
     // Player
     GameObject* playerGo = new GameObject();
     Player* player = new Player(*playerGo, true);
     playerGo->box.SetVec(Vec2(104, 154));
     playerGo->AddComponent(player);
-    AddObject(playerGo, 1);
+    AddObject(playerGo, 10000);
     
     // Camera
     Camera::Unfollow();
@@ -75,7 +75,7 @@ void StageState::LoadAssets()
 
     guitarGo->AddComponent(guitarCf);
     guitarGo->AddComponent(guitarSprite);
-    AddObject(guitarGo);
+    AddObject(guitarGo, 10020);
 
     // Health UI
     GameObject* uiGo = new GameObject();
@@ -85,7 +85,7 @@ void StageState::LoadAssets()
     uiSprite->SetScale(1.5, 1.5);
     uiGo->AddComponent(uiCf);
     uiGo->AddComponent(uiSprite);
-    AddObject(uiGo);
+    AddObject(uiGo, 10020);
 
     // Minion
     for (int i = 0; i < 2; i++)
@@ -94,7 +94,7 @@ void StageState::LoadAssets()
         Minion* minion = new Minion(*minionGo, Vec2(704, 100 + i * 150));
         
         minionGo->AddComponent(minion);
-        AddObject(minionGo);
+        AddObject(minionGo, 10020);
     }
 
     // FPS counter
@@ -111,7 +111,7 @@ void StageState::LoadAssets()
     Text* text = new Text(*fpsCounter, fontFile, fontSize, style, textStr, color);
     fpsCounter->AddComponent(text);
     
-    AddObject(fpsCounter);
+    AddObject(fpsCounter, 10020);
 
     // NoteSpawner
     GameObject *spawnerGo = new GameObject(); 
@@ -213,11 +213,6 @@ void StageState::Update(float dt)
     Text* FPS_Text = (Text*) fpsCounter->GetComponent("Text");
     if (FPS_Text != nullptr)
         FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
-}
-
-void StageState::AddColliderObject(weak_ptr<GameObject>& object)
-{
-    colliderArray.emplace_back(object);
 }
 
 void StageState::Render()
