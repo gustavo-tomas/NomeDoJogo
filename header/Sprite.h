@@ -18,6 +18,7 @@ class Sprite : public Component {
         Sprite(GameObject& associated, const char* file, int frameCountX = 1, int frameCountY = 1, float frameTime = 1, float secondsToSelfDestruct = 0);
         ~Sprite();
         void Open(const char* file);
+        void ChangeSprite(const char* file, int frameCountX = 1, int frameCountY = 1, float frameTime = 1);
         void SetClip(int x, int y, int w, int h);
         void Update(float dt);
         bool Is(const char* type);

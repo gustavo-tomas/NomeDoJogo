@@ -9,7 +9,19 @@
 #include "../header/Bullet.h"
 #include "../header/GameData.h"
 
+#define ATTACK_ANIMATION_DURATION 0.25
+#define KNOCKBACK_DURATION 1
+
 Player* Player::player;
+const Player::SpriteInfo files[7] = { 
+    {"./assets/image/player/Magic_Girl_Idle.png", 8, 1},        // IDLE
+    {"./assets/image/player/Magic_Girl_Walk_Left.png", 6, 1},   // LEFT
+    {"./assets/image/player/Magic_Girl_Walk_Up.png", 8, 1},     // UP
+    {"./assets/image/player/Magic_Girl_Walk_Right.png", 6, 1},  // RIGHT
+    {"./assets/image/player/Magic_Girl_Walk_Down.png", 8, 1},   // DOWN
+    {"./assets/image/player/Magic_Girl_Idle.png", 8, 1},        // ATTACK
+    {"./assets/image/player/Magic_Girl_Idle.png", 8, 1}         // DAMAGED
+};
 
 Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 {
@@ -18,14 +30,17 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     hp = 100;
     mana = 0;
     attackPower = 0;
-    
+    currentAction = previousAction = Action::IDLE;
+
     this->moveLimits = moveLimits;
-    Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4, 2);
+    Sprite* sprite = new Sprite(
+        associated, files[Action::IDLE].fileName, files[Action::IDLE].frameCountX, files[Action::IDLE].frameCountY, 0.2
+    );
     associated.AddComponent(sprite);
 
-    // Collider* collider = new Collider(associated);
+    Collider* collider = new Collider(associated);
     // Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25));
-    Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25), false);
+    // Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25), false);
     associated.AddComponent(collider);
 
     player = this;
@@ -49,8 +64,8 @@ void Player::Update(float dt)
         return;
     }
 
-    // float speed = 300.0;
-    float speed = 900.0; // For tests
+    float speed = 300.0;
+    // float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
 
     // Up
@@ -69,9 +84,67 @@ void Player::Update(float dt)
     if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH/20))
         velocity.x -= 1.f;
 
-    // Shoot
-    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
-        Shoot();
+    if(currentAction != previousAction)
+        ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
+            files[currentAction].fileName, files[currentAction].frameCountX, files[currentAction].frameCountY, 0.2
+        );
+
+    switch(currentAction)
+    {
+    case Action::IDLE:
+        ActionsHandler(velocity);
+
+        previousAction = Action::IDLE;
+        break;
+
+    case Action::WALKING_UP:            
+        ActionsHandler(velocity);
+
+        previousAction = Action::WALKING_UP;
+        break;
+
+    case Action::WALKING_DOWN:      
+        ActionsHandler(velocity);
+
+        previousAction = Action::WALKING_DOWN;
+        break;
+
+    case Action::WALKING_LEFT:            
+        ActionsHandler(velocity);
+
+        previousAction = Action::WALKING_LEFT;
+        break;
+
+    case Action::WALKING_RIGHT:            
+        ActionsHandler(velocity);
+
+        previousAction = Action::WALKING_RIGHT;
+        break;
+
+    case Action::ATTACKING:
+        actionTimer.Update(dt);
+
+        if(actionTimer.Get() > ATTACK_ANIMATION_DURATION){
+            Shoot();
+            ActionsHandler(velocity);
+            actionTimer.Restart();
+        }
+
+        previousAction = Action::ATTACKING;
+        break;
+
+    case Action::TAKING_DAMAGE:
+        actionTimer.Update(dt);
+
+        velocity = { 0, 0 }; // Can't move when hit
+        if(actionTimer.Get() > KNOCKBACK_DURATION){
+            ActionsHandler(velocity);
+            actionTimer.Restart();
+        }
+
+        previousAction = Action::TAKING_DAMAGE;
+        break;
+    }
 
     Collider* collider = (Collider*) associated.GetComponent("Collider");
     if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
@@ -88,6 +161,28 @@ void Player::Update(float dt)
         cout << "Player doesn't have a Collider, using associated position instead!\n";
         GameData::playerPos = associated.box.GetCenter();
     }
+}
+
+void Player::ActionsHandler(Vec2 velocity){
+    if(InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20){
+        currentAction = Action::ATTACKING;
+        actionTimer.Restart();
+    }
+
+    else if(velocity.x > 0)
+        currentAction = Action::WALKING_RIGHT;
+    
+    else if(velocity.x < 0)
+        currentAction = Action::WALKING_LEFT;
+    
+    else if(velocity.y > 0)
+        currentAction = Action::WALKING_DOWN;
+    
+    else if(velocity.y < 0)
+        currentAction = Action::WALKING_UP;    
+
+    else
+        currentAction = Action::IDLE;
 }
 
 void Player::Shoot()
@@ -152,6 +247,9 @@ bool Player::Is(const char* type)
 void Player::NotifyCollision(GameObject& other)
 {
     Bullet* bullet = (Bullet *) other.GetComponent("Bullet");
-    if (bullet != nullptr)
+    if (bullet != nullptr){
         hp -= bullet->GetDamage();
+        currentAction = Action::TAKING_DAMAGE;
+        actionTimer.Restart();
+    }
 }
