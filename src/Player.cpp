@@ -84,10 +84,13 @@ void Player::Update(float dt)
     if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH/20))
         velocity.x -= 1.f;
 
-    if(currentAction != previousAction)
+    if(currentAction != previousAction){
+        Vec2 currentPos = associated.box.GetCenter();
         ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
             files[currentAction].fileName, files[currentAction].frameCountX, files[currentAction].frameCountY, 0.2
         );
+        associated.box.SetCenter(currentPos);
+    }
 
     switch(currentAction)
     {

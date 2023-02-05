@@ -40,7 +40,6 @@ void Sprite::ChangeSprite(const char* file, int frameCountX, int frameCountY, fl
 {
     texture = nullptr;
 
-
     this->frameCountX = frameCountX;
     this->frameCountY = frameCountY;
     this->frameTime = frameTime;
