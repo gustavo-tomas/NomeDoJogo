@@ -138,9 +138,6 @@ void WorldState::Update(float dt)
     if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
         Game::GetInstance().Push(new StageState());
 
-    // Updates the camera
-    Camera::Update(dt);
-
     // Updates GOs
     UpdateArray(dt);
 
@@ -179,6 +176,9 @@ void WorldState::Update(float dt)
             colliderB->ResolveCollisionUpdate(dt);
         }
     }
+
+    // Updates the camera
+    Camera::Update(dt);
 }
 
 void WorldState::AddColliderObject(weak_ptr<GameObject>& object)

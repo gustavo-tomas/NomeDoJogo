@@ -150,9 +150,6 @@ void StageState::Update(float dt)
         return;
     }
 
-    // Updates the camera
-    Camera::Update(dt);
-
     // Updates GOs
     UpdateArray(dt);
 
@@ -209,6 +206,9 @@ void StageState::Update(float dt)
             colliderB->ResolveCollisionUpdate(dt);
         }
     }
+
+    // Updates the camera
+    Camera::Update(dt);
 
     // Updates FPS counter
     Text* FPS_Text = (Text*) fpsCounter->GetComponent("Text");
