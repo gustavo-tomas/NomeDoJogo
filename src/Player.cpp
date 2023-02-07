@@ -18,6 +18,7 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     hp = 100;
     mana = 0;
     attackPower = 0;
+    stunHeat = 0;
     
     this->moveLimits = moveLimits;
     Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4, 2);
@@ -53,32 +54,46 @@ void Player::Update(float dt)
     float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
 
-    // Up
-    if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT/5)) 
-        velocity.y -= 1.f;
+    // Stunned
+    if (stunHeat >= 30)
+    {
+        stunTimer.Update(dt);
+        if (stunTimer.Get() >= 1.5)
+        {
+            stunHeat = 0;
+            stunTimer.Restart();
+        }
+    }
 
-    // Down
-    if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT/3))
-        velocity.y += 1.f;
+    if (stunHeat < 30)
+    {
+        // Up
+        if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT/5)) 
+            velocity.y -= 1.f;
 
-    // Right
-    if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH/3)) 
-        velocity.x += 1.f;
+        // Down
+        if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT/3))
+            velocity.y += 1.f;
 
-    // Left
-    if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH/20))
-        velocity.x -= 1.f;
+        // Right
+        if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH/3)) 
+            velocity.x += 1.f;
 
-    // Shoot
-    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
-        Shoot();
+        // Left
+        if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH/20))
+            velocity.x -= 1.f;
+
+        // Shoot
+        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
+            Shoot();
+    }
 
     Collider* collider = (Collider*) associated.GetComponent("Collider");
     if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
         collider->velocity = velocity.GetNormalized() * speed;
 
     else
-        collider->velocity = velocity; // {0, 0}
+        collider->velocity = {0, 0};
 
     if (collider != nullptr)
         GameData::playerPos = collider->box.GetCenter();
@@ -153,5 +168,9 @@ void Player::NotifyCollision(GameObject& other)
 {
     Bullet* bullet = (Bullet *) other.GetComponent("Bullet");
     if (bullet != nullptr)
-        hp -= bullet->GetDamage();
+    {
+        int damage = bullet->GetDamage();
+        hp -= damage;
+        stunHeat += damage;
+    }
 }

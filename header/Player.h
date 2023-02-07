@@ -30,6 +30,8 @@ class Player : public Component {
         float attackPower;
         bool moveLimits;
         Timer shootTimer;
+        Timer stunTimer;
+        int stunHeat;
 };
 
 #endif // PLAYER_H
