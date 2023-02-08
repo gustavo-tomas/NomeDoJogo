@@ -36,6 +36,9 @@ class Player : public Component {
         int mana;
         float attackPower;
         bool moveLimits;
+        Timer shootTimer;
+        Timer stunTimer, actionTimer;
+        int stunHeat;
         Timer actionTimer;
 
         void ActionsHandler(Vec2 velocity);

@@ -31,6 +31,8 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     hp = 100;
     mana = 0;
     attackPower = 0;
+    stunHeat = 0;
+
     currentAction = previousAction = Action::IDLE;
 
     this->moveLimits = moveLimits;
@@ -81,22 +83,37 @@ void Player::Update(float dt)
     // float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
 
-    // Up
-    if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT / 5.0)) 
-        velocity.y -= 1.f;
+    // Stunned
+    if (stunHeat >= 30)
+    {
+        stunTimer.Update(dt);
+        if (stunTimer.Get() >= 1.5)
+        {
+            stunHeat = 0;
+            stunTimer.Restart();
+        }
+    }
 
-    // Down
-    if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
-        velocity.y += 1.f;
+    if (stunHeat < 30)
+    {
+     
+      // Up
+      if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT / 5.0)) 
+          velocity.y -= 1.f;
 
-    // Right
-    if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH / 3.0)) 
-        velocity.x += 1.f;
+      // Down
+      if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
+          velocity.y += 1.f;
 
-    // Left
-    if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
-        velocity.x -= 1.f;
+      // Right
+      if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH / 3.0)) 
+          velocity.x += 1.f;
 
+      // Left
+      if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
+          velocity.x -= 1.f;
+    }
+  
     if(currentAction != previousAction){
         Vec2 currentPos = associated.box.GetCenter();
         ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
@@ -167,7 +184,7 @@ void Player::Update(float dt)
         collider->velocity = velocity.GetNormalized() * speed;
 
     else
-        collider->velocity = velocity; // {0, 0}
+        collider->velocity = {0, 0};
 
     if (collider != nullptr)
         GameData::playerPos = collider->box.GetCenter();
@@ -267,11 +284,15 @@ void Player::NotifyCollision(GameObject& other)
 
     if (bullet != nullptr)
     {
+        int damage = bullet->GetDamage();
+        hp -= damage;
+
         int bulletDamage = bullet->GetDamage();
         currentAction = Action::TAKING_DAMAGE;
         actionTimer.Restart();
 
         hp -= bulletDamage;
+        stunHeat += bulletDamage;
         if (!lives.empty())
         {
             for (int i = 0; i * 10 < bulletDamage && !lives.empty(); i++)
