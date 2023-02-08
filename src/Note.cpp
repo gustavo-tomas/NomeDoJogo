@@ -38,7 +38,6 @@ Note::~Note()
 
 void Note::Update(float dt)
 {
-    associated.box.x -= speed * dt;
     if (associated.box.x < 0)
     {
         associated.RequestDelete();
