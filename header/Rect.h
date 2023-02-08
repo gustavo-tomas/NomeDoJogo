@@ -17,6 +17,7 @@ class Rect {
         bool Contains(Vec2 point);
         Vec2 GetVec();
         Vec2 GetCenter();
+        void SetCenter(Vec2 vec);
         void SetVec(Vec2 vec);
 };
 

@@ -36,6 +36,17 @@ void Sprite::Open(const char* file)
     associated.box.h = height / frameCountY;
 }
 
+void Sprite::ChangeSprite(const char* file, int frameCountX, int frameCountY, float frameTime)
+{
+    texture = nullptr;
+
+    this->frameCountX = frameCountX;
+    this->frameCountY = frameCountY;
+    this->frameTime = frameTime;
+
+    Open(file);
+}
+
 void Sprite::SetClip(int x, int y, int width, int height)
 {
     clipRect.x = x;
