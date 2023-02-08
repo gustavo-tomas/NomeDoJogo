@@ -52,6 +52,7 @@ class Player : public Component {
         };
 
         Action currentAction, previousAction;
+        vector<weak_ptr<GameObject>> lives;
 };
 
 #endif // PLAYER_H

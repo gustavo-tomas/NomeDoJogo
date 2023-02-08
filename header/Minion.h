@@ -21,6 +21,7 @@ class Minion : public Component {
     private:
         int hp;
         Timer shootTimer;
+        vector<weak_ptr<GameObject>> lives;
 };
 
 #endif // MINION_H

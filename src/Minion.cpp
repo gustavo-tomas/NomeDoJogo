@@ -2,6 +2,7 @@
 #include "../header/Sprite.h"
 #include "../header/Bullet.h"
 #include "../header/Game.h"
+#include "../header/CameraFollower.h"
 #include "../header/Collider.h"
 #include "../header/Camera.h"
 #include "../header/GameData.h"
@@ -24,11 +25,25 @@ Minion::Minion(GameObject& associated, Vec2 initialPos) : Component(associated)
 Minion::~Minion()
 {
     Minion::minionCount--;
+    lives.clear();
 }
 
 void Minion::Start()
 {
     hp = 100;
+
+    State& state = Game::GetInstance().GetCurrentState();
+    for (int i = 0; i * 10 < hp; i++)
+    {
+        GameObject* heartGo = new GameObject();
+        CameraFollower* cameraFollower = new CameraFollower(*heartGo, {(float) GameData::WIDTH - 35 - i * 24, 20});
+        Sprite* sprite = new Sprite(*heartGo, "./assets/image/hearty_strip6.png", 6, 1);
+        sprite->SetScale(0.5, 0.5);
+
+        heartGo->AddComponent(sprite);
+        heartGo->AddComponent(cameraFollower);
+        lives.push_back(state.AddObject(heartGo));
+    }
 }
 
 void Minion::Update(float dt)
@@ -51,12 +66,21 @@ void Minion::NotifyCollision(GameObject& other)
 
     Bullet* bullet = (Bullet*) other.GetComponent("Bullet");
     if (bullet != nullptr)
-        hp -= bullet->GetDamage();
+    {
+        int bulletDamage = bullet->GetDamage();
+        hp -= bulletDamage;
+        if (!lives.empty())
+        {
+            for (int i = 0; i * 10 < bulletDamage && !lives.empty(); i++)
+            {
+                lives[lives.size() - 1].lock().get()->RequestDelete();
+                lives.erase(lives.begin() + lives.size() - 1);
+            }
+        }
+    }
 
     if (hp <= 0)
         associated.RequestDelete();
-
-    cout << "HP: " << hp << endl;
 }
 
 void Minion::Shoot(Vec2 pos)

@@ -2,6 +2,7 @@
 #include "../header/Sprite.h"
 #include "../header/Game.h"
 #include "../header/InputManager.h"
+#include "../header/CameraFollower.h"
 #include "../header/Collider.h"
 #include "../header/Collision.h"
 #include "../header/Camera.h"
@@ -49,11 +50,23 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 Player::~Player()
 {
     player = nullptr;
+    lives.clear();
 }
 
 void Player::Start()
 {
-    
+    State& state = Game::GetInstance().GetCurrentState();
+
+    for (int i = 0; i * 10 < hp; i++)
+    {
+        GameObject* heartGo = new GameObject();
+        CameraFollower* cameraFollower = new CameraFollower(*heartGo, {(float) i * 22, 20});
+        Sprite* sprite = new Sprite(*heartGo, "./assets/image/Heart.png");
+
+        heartGo->AddComponent(sprite);
+        heartGo->AddComponent(cameraFollower);
+        lives.push_back(state.AddObject(heartGo));
+    }
 }
 
 void Player::Update(float dt)
@@ -69,19 +82,19 @@ void Player::Update(float dt)
     Vec2 velocity = Vec2(0.f, 0.f);
 
     // Up
-    if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT/5)) 
+    if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT / 5.0)) 
         velocity.y -= 1.f;
 
     // Down
-    if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT/3))
+    if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
         velocity.y += 1.f;
 
     // Right
-    if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH/3)) 
+    if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH / 3.0)) 
         velocity.x += 1.f;
 
     // Left
-    if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH/20))
+    if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
         velocity.x -= 1.f;
 
     if(currentAction != previousAction){
@@ -167,7 +180,8 @@ void Player::Update(float dt)
 }
 
 void Player::ActionsHandler(Vec2 velocity){
-    if(InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20){
+    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
+    {
         currentAction = Action::ATTACKING;
         actionTimer.Restart();
     }
@@ -250,9 +264,21 @@ bool Player::Is(const char* type)
 void Player::NotifyCollision(GameObject& other)
 {
     Bullet* bullet = (Bullet *) other.GetComponent("Bullet");
-    if (bullet != nullptr){
-        hp -= bullet->GetDamage();
+
+    if (bullet != nullptr)
+    {
+        int bulletDamage = bullet->GetDamage();
         currentAction = Action::TAKING_DAMAGE;
         actionTimer.Restart();
+
+        hp -= bulletDamage;
+        if (!lives.empty())
+        {
+            for (int i = 0; i * 10 < bulletDamage && !lives.empty(); i++)
+            {
+                lives[lives.size() - 1].lock().get()->RequestDelete();
+                lives.erase(lives.begin() + lives.size() - 1);
+            }
+        }
     }
 }
