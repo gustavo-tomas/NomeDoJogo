@@ -99,7 +99,7 @@ void Minion::Shoot(Vec2 pos)
     bulletGo->box.SetVec(center + offset);
     bulletGo->AddComponent(bullet);
 
-    Game::GetInstance().GetCurrentState().AddObject(bulletGo);
+    Game::GetInstance().GetCurrentState().AddObject(bulletGo,10020);
     shootTimer.Restart();
 }
 

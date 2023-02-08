@@ -76,3 +76,11 @@ void GameObject::NotifyCollision(GameObject& other)
     for (auto& cpt : components)
         cpt->NotifyCollision(other);
 }
+
+void GameObject::SetLayer(int32_t layer){
+    this->layer = layer;
+}
+
+int32_t GameObject::GetLayer(){
+    return layer;
+}

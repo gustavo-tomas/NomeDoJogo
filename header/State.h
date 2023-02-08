@@ -2,8 +2,12 @@
 #define STATE_H
 
 #include "GameObject.h"
+#include "util.h"
 #include <vector>
 #include <memory>
+#include <map>
+#include <set>
+#include <utility>
 
 using namespace std;
 
@@ -18,7 +22,7 @@ class State {
         virtual void Pause() = 0; // pure
         virtual void Resume() = 0; // pure
         virtual void AddColliderObject(weak_ptr<GameObject>& object);
-        virtual weak_ptr<GameObject> AddObject(GameObject* object, uint32_t layer = 0);
+        virtual weak_ptr<GameObject> AddObject(GameObject* object, int32_t layer = 0);
         virtual weak_ptr<GameObject> GetObjectPtr(GameObject* object);
         bool PopRequested();
         bool QuitRequested();
@@ -30,7 +34,8 @@ class State {
         bool popRequested;
         bool quitRequested;
         bool started;
-        vector<vector<shared_ptr<GameObject>>> objectArray;
+        vector<shared_ptr<GameObject>> objectArray;
+        vector<weak_ptr<GameObject>> colliderArray;
 };
 
 #endif // STATE_H
