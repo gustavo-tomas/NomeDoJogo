@@ -1,15 +1,30 @@
 #include "../header/Note.h"
 #include "../header/Collider.h"
-#include "../header/SpriteRect.h"
+#include "../header/Sprite.h"
 
 Note::Note(GameObject& associated) : Component(associated)
 {
     this->speed = 1;
 }
 
-Note::Note(GameObject& associated, float speed) : Component(associated)
+Note::Note(GameObject& associated, float speed, int32_t spriteNum) : Component(associated)
 {
     this->speed = speed;
+
+    
+    Sprite *sprite = nullptr;
+    if(spriteNum == 0){
+        sprite = new Sprite(associated, "assets/image/circle11.png");
+    } else if(spriteNum == 1){
+        sprite = new Sprite(associated, "assets/image/circle21.png");
+    } else if(spriteNum == 2){
+        sprite = new Sprite(associated, "assets/image/circle31.png");
+    } else{
+        sprite = new Sprite(associated, "assets/image/circle41.png");
+    }
+    sprite->SetScale(18.0 / sprite->GetWidth(), 18.0 / sprite->GetHeight());  
+    associated.AddComponent(sprite);
+    
     associated.box.h = associated.box.w = 18;
 
     Collider *collider = new Collider(associated, Vec2(1, 1), Vec2(0, 0), false);  

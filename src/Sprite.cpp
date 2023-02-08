@@ -123,19 +123,25 @@ void Sprite::SetScale(float scaleX, float scaleY)
 {
     scale = Vec2(scaleX, scaleY);
 
+    cerr << "associated.box.x = " << associated.box.x << "\n";
+    cerr << "associated.box.y = " << associated.box.y << "\n";
+
     if (scaleX > 0)
     {
-        float diff = ((width / frameCountX * scaleX) - width / frameCountX) / 2.0;
-        associated.box.x -= diff;
+        // float diff = ((width / frameCountX * scaleX) - width / frameCountX) / 2.0;
+        // associated.box.x -= diff;
         associated.box.w = (width / frameCountX) * scaleX;
     }
 
     if (scaleY > 0)
     {
-        float diff = ((height / frameCountY * scaleY) - height / frameCountY) / 2.0;
-        associated.box.y -= diff;
+        // float diff = ((height / frameCountY * scaleY) - height / frameCountY) / 2.0;
+        // associated.box.y -= diff;
         associated.box.h = (height / frameCountY) * scaleY;
     }
+
+    cerr << "associated.box.x = " << associated.box.x << "\n";
+    cerr << "associated.box.y = " << associated.box.y << "\n";
 }
 
 Vec2 Sprite::GetScale()

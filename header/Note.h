@@ -7,7 +7,7 @@
 class Note : public Component {
     public:
         Note(GameObject& associated);
-        Note(GameObject& associated, float speed);
+        Note(GameObject& associated, float speed, int32_t spriteNum);
         ~Note();
         void Update(float dt);
         void Render();

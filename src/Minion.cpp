@@ -7,7 +7,7 @@
 #include "../header/Camera.h"
 #include "../header/GameData.h"
 
-int Minion::minionCount = 0;
+int Minion::minionCount = 1;
 
 Minion::Minion(GameObject& associated, Vec2 initialPos) : Component(associated)
 {

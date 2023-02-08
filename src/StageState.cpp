@@ -115,7 +115,7 @@ void StageState::LoadAssets()
     {
         GameObject *noteTriggerGo = new GameObject(); 
         noteTriggerGo->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * (i + 1)));
-        NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo, triggers[4 - i - 1]);
+        NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo, triggers[4 - i - 1], i);
         noteTriggerGo->AddComponent(noteTrigger);
         AddObject(noteTriggerGo, 1);
     }
