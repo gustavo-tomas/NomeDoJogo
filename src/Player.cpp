@@ -2,6 +2,7 @@
 #include "../header/Sprite.h"
 #include "../header/Game.h"
 #include "../header/InputManager.h"
+#include "../header/CameraFollower.h"
 #include "../header/Collider.h"
 #include "../header/Collision.h"
 #include "../header/Camera.h"
@@ -9,7 +10,19 @@
 #include "../header/Bullet.h"
 #include "../header/GameData.h"
 
+#define ATTACK_ANIMATION_DURATION 0.25
+#define KNOCKBACK_DURATION 1
+
 Player* Player::player;
+const Player::SpriteInfo files[7] = { 
+    {"./assets/image/player/Magic_Girl_Idle.png", 8, 1},        // IDLE
+    {"./assets/image/player/Magic_Girl_Walk_Left.png", 6, 1},   // LEFT
+    {"./assets/image/player/Magic_Girl_Walk_Up.png", 8, 1},     // UP
+    {"./assets/image/player/Magic_Girl_Walk_Right.png", 6, 1},  // RIGHT
+    {"./assets/image/player/Magic_Girl_Walk_Down.png", 8, 1},   // DOWN
+    {"./assets/image/player/Magic_Girl_Idle.png", 8, 1},        // ATTACK
+    {"./assets/image/player/Magic_Girl_Idle.png", 8, 1}         // DAMAGED
+};
 
 Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 {
@@ -19,14 +32,18 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     mana = 0;
     attackPower = 0;
     stunHeat = 0;
-    
+
+    currentAction = previousAction = Action::IDLE;
+
     this->moveLimits = moveLimits;
-    Sprite* sprite = new Sprite(associated, "./assets/image/mage-1-85x94.png", 4, 2);
+    Sprite* sprite = new Sprite(
+        associated, files[Action::IDLE].fileName, files[Action::IDLE].frameCountX, files[Action::IDLE].frameCountY, 0.2
+    );
     associated.AddComponent(sprite);
 
-    // Collider* collider = new Collider(associated);
+    Collider* collider = new Collider(associated);
     // Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25));
-    Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25), false);
+    // Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25), false);
     associated.AddComponent(collider);
 
     player = this;
@@ -35,11 +52,23 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 Player::~Player()
 {
     player = nullptr;
+    lives.clear();
 }
 
 void Player::Start()
 {
-    
+    State& state = Game::GetInstance().GetCurrentState();
+
+    for (int i = 0; i * 10 < hp; i++)
+    {
+        GameObject* heartGo = new GameObject();
+        CameraFollower* cameraFollower = new CameraFollower(*heartGo, {(float) i * 22, 20});
+        Sprite* sprite = new Sprite(*heartGo, "./assets/image/Heart.png");
+
+        heartGo->AddComponent(sprite);
+        heartGo->AddComponent(cameraFollower);
+        lives.push_back(state.AddObject(heartGo));
+    }
 }
 
 void Player::Update(float dt)
@@ -50,8 +79,8 @@ void Player::Update(float dt)
         return;
     }
 
-    // float speed = 300.0;
-    float speed = 900.0; // For tests
+    float speed = 300.0;
+    // float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
 
     // Stunned
@@ -67,25 +96,87 @@ void Player::Update(float dt)
 
     if (stunHeat < 30)
     {
-        // Up
-        if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT/5)) 
-            velocity.y -= 1.f;
+     
+      // Up
+      if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT / 5.0)) 
+          velocity.y -= 1.f;
 
-        // Down
-        if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT/3))
-            velocity.y += 1.f;
+      // Down
+      if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
+          velocity.y += 1.f;
 
-        // Right
-        if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH/3)) 
-            velocity.x += 1.f;
+      // Right
+      if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH / 3.0)) 
+          velocity.x += 1.f;
 
-        // Left
-        if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH/20))
-            velocity.x -= 1.f;
+      // Left
+      if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
+          velocity.x -= 1.f;
+    }
+  
+    if(currentAction != previousAction){
+        Vec2 currentPos = associated.box.GetCenter();
+        ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
+            files[currentAction].fileName, files[currentAction].frameCountX, files[currentAction].frameCountY, 0.2
+        );
+        associated.box.SetCenter(currentPos);
+    }
 
-        // Shoot
-        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
+    switch(currentAction)
+    {
+    case Action::IDLE:
+        ActionsHandler(velocity);
+
+        previousAction = Action::IDLE;
+        break;
+
+    case Action::WALKING_UP:            
+        ActionsHandler(velocity);
+
+        previousAction = Action::WALKING_UP;
+        break;
+
+    case Action::WALKING_DOWN:      
+        ActionsHandler(velocity);
+
+        previousAction = Action::WALKING_DOWN;
+        break;
+
+    case Action::WALKING_LEFT:            
+        ActionsHandler(velocity);
+
+        previousAction = Action::WALKING_LEFT;
+        break;
+
+    case Action::WALKING_RIGHT:            
+        ActionsHandler(velocity);
+
+        previousAction = Action::WALKING_RIGHT;
+        break;
+
+    case Action::ATTACKING:
+        actionTimer.Update(dt);
+
+        if(actionTimer.Get() > ATTACK_ANIMATION_DURATION){
             Shoot();
+            ActionsHandler(velocity);
+            actionTimer.Restart();
+        }
+
+        previousAction = Action::ATTACKING;
+        break;
+
+    case Action::TAKING_DAMAGE:
+        actionTimer.Update(dt);
+
+        velocity = { 0, 0 }; // Can't move when hit
+        if(actionTimer.Get() > KNOCKBACK_DURATION){
+            ActionsHandler(velocity);
+            actionTimer.Restart();
+        }
+
+        previousAction = Action::TAKING_DAMAGE;
+        break;
     }
 
     Collider* collider = (Collider*) associated.GetComponent("Collider");
@@ -103,6 +194,29 @@ void Player::Update(float dt)
         cout << "Player doesn't have a Collider, using associated position instead!\n";
         GameData::playerPos = associated.box.GetCenter();
     }
+}
+
+void Player::ActionsHandler(Vec2 velocity){
+    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
+    {
+        currentAction = Action::ATTACKING;
+        actionTimer.Restart();
+    }
+
+    else if(velocity.x > 0)
+        currentAction = Action::WALKING_RIGHT;
+    
+    else if(velocity.x < 0)
+        currentAction = Action::WALKING_LEFT;
+    
+    else if(velocity.y > 0)
+        currentAction = Action::WALKING_DOWN;
+    
+    else if(velocity.y < 0)
+        currentAction = Action::WALKING_UP;    
+
+    else
+        currentAction = Action::IDLE;
 }
 
 void Player::Shoot()
@@ -167,10 +281,25 @@ bool Player::Is(const char* type)
 void Player::NotifyCollision(GameObject& other)
 {
     Bullet* bullet = (Bullet *) other.GetComponent("Bullet");
+
     if (bullet != nullptr)
     {
         int damage = bullet->GetDamage();
         hp -= damage;
-        stunHeat += damage;
+
+        int bulletDamage = bullet->GetDamage();
+        currentAction = Action::TAKING_DAMAGE;
+        actionTimer.Restart();
+
+        hp -= bulletDamage;
+        stunHeat += bulletDamage;
+        if (!lives.empty())
+        {
+            for (int i = 0; i * 10 < bulletDamage && !lives.empty(); i++)
+            {
+                lives[lives.size() - 1].lock().get()->RequestDelete();
+                lives.erase(lives.begin() + lives.size() - 1);
+            }
+        }
     }
 }
