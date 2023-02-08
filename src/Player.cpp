@@ -53,7 +53,6 @@ void Player::Update(float dt)
     float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
 
-
     // Up
     if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT/5)) 
         velocity.y -= 1.f;
