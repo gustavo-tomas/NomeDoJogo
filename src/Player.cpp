@@ -169,7 +169,6 @@ void Player::Update(float dt)
     case Action::TAKING_DAMAGE:
         actionTimer.Update(dt);
 
-        velocity = { 0, 0 }; // Can't move when hit
         if(actionTimer.Get() > KNOCKBACK_DURATION){
             ActionsHandler(velocity);
             actionTimer.Restart();
@@ -284,9 +283,6 @@ void Player::NotifyCollision(GameObject& other)
 
     if (bullet != nullptr)
     {
-        int damage = bullet->GetDamage();
-        hp -= damage;
-
         int bulletDamage = bullet->GetDamage();
         currentAction = Action::TAKING_DAMAGE;
         actionTimer.Restart();
