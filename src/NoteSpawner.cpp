@@ -54,7 +54,7 @@ void NoteSpawner::Update(float dt)
         {
             GameObject *noteGo = new GameObject();
             noteGo->box.SetVec(Vec2(associated.box.x, associated.box.y + 20 * notes[ind].h + 1));
-            Note *note = new Note(*noteGo, speed);
+            Note *note = new Note(*noteGo, speed, 3 - notes[ind].h);
             noteGo->AddComponent(note);
             state.AddObject(noteGo, 10050);
             ind++;

@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "GameObject.h"
 #include "Timer.h"
+#include <string>
 
 class Player : public Component {
     public:
@@ -22,6 +23,12 @@ class Player : public Component {
 
         static Player* player;
 
+        struct SpriteInfo
+        {
+            const char* fileName;
+            int frameCountX, frameCountY;
+        };
+
     private:
         float linearSpeed;
         float angle;
@@ -30,6 +37,25 @@ class Player : public Component {
         float attackPower;
         bool moveLimits;
         Timer shootTimer;
+        Timer stunTimer, actionTimer;
+        int stunHeat;
+        Timer actionTimer;
+
+        void ActionsHandler(Vec2 velocity);
+        
+        enum Action
+        {
+            IDLE,
+            WALKING_LEFT,
+            WALKING_UP,
+            WALKING_RIGHT,
+            WALKING_DOWN,
+            ATTACKING,
+            TAKING_DAMAGE
+        };
+
+        Action currentAction, previousAction;
+        vector<weak_ptr<GameObject>> lives;
 };
 
 #endif // PLAYER_H

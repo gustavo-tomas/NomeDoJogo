@@ -77,18 +77,8 @@ void StageState::LoadAssets()
     guitarGo->AddComponent(guitarSprite);
     AddObject(guitarGo, 10020);
 
-    // Health UI
-    GameObject* uiGo = new GameObject();
-    Sprite* uiSprite = new Sprite(*uiGo, "./assets/image/ui.png");
-    CameraFollower* uiCf = new CameraFollower(*uiGo, Vec2(0, 0));
-
-    uiSprite->SetScale(1.5, 1.5);
-    uiGo->AddComponent(uiCf);
-    uiGo->AddComponent(uiSprite);
-    AddObject(uiGo, 10020);
-
     // Minion
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 1; i++)
     {
         GameObject* minionGo = new GameObject();
         Minion* minion = new Minion(*minionGo, Vec2(704, 100 + i * 150));
@@ -125,7 +115,7 @@ void StageState::LoadAssets()
     {
         GameObject *noteTriggerGo = new GameObject(); 
         noteTriggerGo->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * (i + 1)));
-        NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo, triggers[4 - i - 1]);
+        NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo, triggers[4 - i - 1], i);
         noteTriggerGo->AddComponent(noteTrigger);
         AddObject(noteTriggerGo, 1);
     }

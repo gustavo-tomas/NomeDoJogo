@@ -6,7 +6,7 @@
 
 class NoteTrigger : public Component {
     public:
-        NoteTrigger(GameObject& associated, int triggerKey = 0);
+        NoteTrigger(GameObject& associated, int triggerKey = 0, int32_t spriteNum = 0);
         ~NoteTrigger();
         void Update(float dt);
         void Render();
