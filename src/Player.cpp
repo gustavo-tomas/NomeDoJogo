@@ -5,7 +5,6 @@
 #include "../header/CameraFollower.h"
 #include "../header/Collider.h"
 #include "../header/Collision.h"
-#include "../header/Camera.h"
 #include "../header/Sound.h"
 #include "../header/Bullet.h"
 #include "../header/GameData.h"
@@ -59,16 +58,40 @@ void Player::Start()
 {
     State& state = Game::GetInstance().GetCurrentState();
 
-    for (int i = 0; i * 10 < hp; i++)
-    {
-        GameObject* heartGo = new GameObject();
-        CameraFollower* cameraFollower = new CameraFollower(*heartGo, {(float) i * 22, 20});
-        Sprite* sprite = new Sprite(*heartGo, "./assets/image/Heart.png");
+    // Heart
+    GameObject* heartGo = new GameObject();
+    heartGo->box.SetCenter({25, 25});
 
-        heartGo->AddComponent(sprite);
-        heartGo->AddComponent(cameraFollower);
-        lives.push_back(state.AddObject(heartGo));
-    }
+    CameraFollower* cameraFollower = new CameraFollower(*heartGo, {25, 25});
+
+    Sprite* sprite = new Sprite(*heartGo, "./assets/image/heart/full.png");
+    sprite->SetScale(0.5, 0.5);
+
+    heartGo->AddComponent(sprite);
+    heartGo->AddComponent(cameraFollower);
+    state.AddObject(heartGo, 20021);
+
+    // Lifebar @TODO: refactor lives array
+    GameObject* lifebarGo = new GameObject();
+    CameraFollower* lifeFollower = new CameraFollower(*lifebarGo, heartGo->box.GetCenter() + Vec2(25, -10));
+
+    Sprite* lifeSprite = new Sprite(*lifebarGo, "./assets/image/lifebar/10.png");
+    lifeSprite->SetScale(0.5, 0.5);
+
+    lifebarGo->AddComponent(lifeSprite);
+    lifebarGo->AddComponent(lifeFollower);
+    state.AddObject(lifebarGo, 20021);
+
+    // Manabar
+    GameObject* manabarGo = new GameObject();
+    CameraFollower* manaFollower = new CameraFollower(*manabarGo, heartGo->box.GetCenter() + Vec2(25, 5));
+
+    Sprite* manaSprite = new Sprite(*manabarGo, "./assets/image/manabar/4.png");
+    manaSprite->SetScale(0.5, 0.5);
+
+    manabarGo->AddComponent(manaSprite);
+    manabarGo->AddComponent(manaFollower);
+    state.AddObject(manabarGo, 20021);
 }
 
 void Player::Update(float dt)
