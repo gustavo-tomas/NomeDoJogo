@@ -5,7 +5,7 @@
 
 class DialogBox : public Component {
     public:
-        DialogBox(GameObject& associated, string dialogText);
+        DialogBox(GameObject& associated, string title, string text);
         void Update(float dt);
         void Render();
         bool Is(const char* type);
