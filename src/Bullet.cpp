@@ -1,7 +1,7 @@
 #include "../header/Bullet.h"
 #include "../header/Sprite.h"
 #include "../header/Collider.h"
-#include "../header/Minion.h"
+#include "../header/Sound.h"
 #include <cmath>
 
 Bullet::Bullet(GameObject& associated, float angle, float speed,
