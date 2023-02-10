@@ -51,7 +51,6 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 Player::~Player()
 {
     player = nullptr;
-    lives.clear();
 }
 
 void Player::Start()
@@ -119,25 +118,25 @@ void Player::Update(float dt)
 
     if (stunHeat < 30)
     {
-     
-      // Up
-      if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT / 5.0)) 
-          velocity.y -= 1.f;
+        // Up
+        if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT / 5.0)) 
+            velocity.y -= 1.f;
 
-      // Down
-      if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
-          velocity.y += 1.f;
+        // Down
+        if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
+            velocity.y += 1.f;
 
-      // Right
-      if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH / 3.0)) 
-          velocity.x += 1.f;
+        // Right
+        if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH / 3.0)) 
+            velocity.x += 1.f;
 
-      // Left
-      if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
-          velocity.x -= 1.f;
+        // Left
+        if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
+            velocity.x -= 1.f;
     }
   
-    if(currentAction != previousAction){
+    if (currentAction != previousAction)
+    {
         Vec2 currentPos = associated.box.GetCenter();
         ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
             files[currentAction].fileName, files[currentAction].frameCountX, files[currentAction].frameCountY, 0.2
@@ -225,16 +224,16 @@ void Player::ActionsHandler(Vec2 velocity){
         actionTimer.Restart();
     }
 
-    else if(velocity.x > 0)
+    else if (velocity.x > 0)
         currentAction = Action::WALKING_RIGHT;
     
-    else if(velocity.x < 0)
+    else if (velocity.x < 0)
         currentAction = Action::WALKING_LEFT;
     
-    else if(velocity.y > 0)
+    else if (velocity.y > 0)
         currentAction = Action::WALKING_DOWN;
     
-    else if(velocity.y < 0)
+    else if (velocity.y < 0)
         currentAction = Action::WALKING_UP;    
 
     else
@@ -247,19 +246,19 @@ void Player::Shoot()
     float maxDistance = 1000;
 
     GameObject* bulletGo = new GameObject();
+    Vec2 center = associated.box.GetCenter();
+    Vec2 offset = Vec2(associated.box.w, -associated.box.h / 4.0);
+    bulletGo->box.SetCenter(center + offset);
+
     Bullet* bullet = new Bullet(*bulletGo, angle - (M_PI / 4.0),
                                             speed, attackPower, maxDistance,
                                     "./assets/image/mage-bullet-13x13.png",
                                 5, 0.5, false,
                                 "./assets/audio/papapa.mp3");
     
-    Vec2 center = associated.box.GetCenter();
-    Vec2 offset = Vec2(associated.box.w, -bulletGo->box.h / 2.0);
-
-    bulletGo->box.SetVec(center + offset);
     bulletGo->AddComponent(bullet);
 
-    Game::GetInstance().GetCurrentState().AddObject(bulletGo);
+    Game::GetInstance().GetCurrentState().AddObject(bulletGo, 10020);
 
     Sound* shootSound = (Sound *) associated.GetComponent("Sound");
     if (shootSound != nullptr)
@@ -312,13 +311,5 @@ void Player::NotifyCollision(GameObject& other)
 
         hp -= bulletDamage;
         stunHeat += bulletDamage;
-        if (!lives.empty())
-        {
-            for (int i = 0; i * 10 < bulletDamage && !lives.empty(); i++)
-            {
-                lives[lives.size() - 1].lock().get()->RequestDelete();
-                lives.erase(lives.begin() + lives.size() - 1);
-            }
-        }
     }
 }
