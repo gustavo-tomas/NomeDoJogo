@@ -16,7 +16,8 @@ class Text : public Component {
             BLENDED
         };
         Text(GameObject& associated, const char* fontFile, int fontSize,
-             TextStyle style, const char* text, SDL_Color color, float timeToBlink = -1);
+             TextStyle style, const char* text, SDL_Color color, 
+             unsigned wrappingLength = 2500, float timeToBlink = -1);
         ~Text();
         void Update(float dt);
         void Render();
@@ -26,6 +27,7 @@ class Text : public Component {
         void SetStyle(TextStyle style);
         void SetFontFile(const char* fontFile);
         void SetFontSize(int fontSize);
+        void SetWrappingLength(unsigned length);
 
     private:
         void RemakeTexture();
@@ -39,6 +41,7 @@ class Text : public Component {
         Timer timer;
         float timeToBlink;
         bool showText;
+        unsigned wrappingLength;
 };
 
 #endif // TEXT_H

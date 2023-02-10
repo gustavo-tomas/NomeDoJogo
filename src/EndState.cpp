@@ -12,10 +12,10 @@ EndState::EndState()
     const char* bgFile;
 
     if (GameData::playerVictory)
-        bgFile = "./assets/image/background.png";
+        bgFile = "./assets/image/ui_background.jpg";
 
     else
-        bgFile = "./assets/image/background.png";
+        bgFile = "./assets/image/ui_background.jpg";
     
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, bgFile);
@@ -69,16 +69,17 @@ void EndState::LoadAssets()
     CameraFollower* textFollower = new CameraFollower(*textGo, textGo->box.GetVec());
     textGo->AddComponent(textFollower);
 
-    const char* fontFile = "./assets/font/call_me_maybe.ttf";
-    const char* textStr = "aperte a tecla esc para sair do jogo ou space para voltar ao inicio";
+    const char* fontFile = "./assets/font/Inder-Regular.ttf";
+    const char* textStr = "Aperte a tecla ESC para sair do jogo ou SPACE para voltar ao inicio";
     int fontSize = 32;
     Text::TextStyle style = Text::BLENDED;
-    SDL_Color color = {195, 35, 35, 255};
+    SDL_Color color = {255, 255, 255, 255};
+    unsigned int wrappingLength = 800;
     
-    Text* text = new Text(*textGo, fontFile, fontSize, style, textStr, color);
+    Text* text = new Text(*textGo, fontFile, fontSize, style, textStr, color, wrappingLength);
     textGo->AddComponent(text);
 
-    AddObject(textGo);
+    AddObject(textGo, 10020);
 }
 
 void EndState::Render()

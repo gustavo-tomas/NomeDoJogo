@@ -11,17 +11,8 @@ Note::Note(GameObject& associated, float speed, int32_t spriteNum) : Component(a
 {
     this->speed = speed;
 
+    Sprite *sprite = new Sprite(associated, "assets/image/icons/note7.png");
     
-    Sprite *sprite = nullptr;
-    if(spriteNum == 0){
-        sprite = new Sprite(associated, "assets/image/circle11.png");
-    } else if(spriteNum == 1){
-        sprite = new Sprite(associated, "assets/image/circle21.png");
-    } else if(spriteNum == 2){
-        sprite = new Sprite(associated, "assets/image/circle31.png");
-    } else{
-        sprite = new Sprite(associated, "assets/image/circle41.png");
-    }
     sprite->SetScale(18.0 / sprite->GetWidth(), 18.0 / sprite->GetHeight());  
     associated.AddComponent(sprite);
     

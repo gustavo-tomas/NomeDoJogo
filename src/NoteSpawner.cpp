@@ -2,7 +2,6 @@
 #include "../header/GameObject.h"
 #include "../header/State.h"
 #include "../header/Game.h"
-#include "../header/SpriteRect.h"
 #include "../header/CameraFollower.h"
 #include "../header/GameData.h"
 #include "../header/Note.h"
@@ -25,9 +24,7 @@ NoteSpawner::NoteSpawner(GameObject& associated, string sheetMusic) : Component(
     speed = stoll(buff);
     ind = 0;
 
-    SpriteRect *spriteRect = new SpriteRect(associated, 0xFF3333FF, 20*4, 20);
-    associated.AddComponent(spriteRect);
-    CameraFollower *spawnerCF = new CameraFollower(associated, Vec2(GameData::WIDTH + 20, GameData::HEIGHT - 20*4));
+    CameraFollower *spawnerCF = new CameraFollower(associated, Vec2(GameData::WIDTH + 20, GameData::HEIGHT - 20*4 - 40));
     associated.AddComponent(spawnerCF);
 
     while (getline(myfile, buff, ':') && buff == "note")
@@ -48,7 +45,7 @@ NoteSpawner::~NoteSpawner()
 void NoteSpawner::Update(float dt)
 {
     State& state = Game::GetInstance().GetCurrentState();
-    while (ind < notes.size())
+    while ((unsigned long int) ind < notes.size())
     {
         if (timer.Get() >= notes[ind].time)
         {

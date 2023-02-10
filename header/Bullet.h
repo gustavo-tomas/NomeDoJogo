@@ -3,7 +3,6 @@
 
 #include "Component.h"
 #include "GameObject.h"
-#include "Sound.h"
 #include "Vec2.h"
 
 class Bullet : public Component {
