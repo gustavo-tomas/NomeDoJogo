@@ -2,9 +2,8 @@
 #include "../header/Sprite.h"
 #include "../header/Bullet.h"
 #include "../header/Game.h"
-#include "../header/CameraFollower.h"
 #include "../header/Collider.h"
-#include "../header/Camera.h"
+#include "../header/UserInterface.h"
 #include "../header/GameData.h"
 
 int Minion::minionCount = 0;
@@ -31,6 +30,9 @@ Minion::~Minion()
 void Minion::Start()
 {
     hp = 100;
+
+    UserInterface* ui = new UserInterface(associated, Vec2(GameData::WIDTH - 75, 25), true);
+    associated.AddComponent(ui);
 }
 
 void Minion::Update(float dt)
@@ -56,10 +58,13 @@ void Minion::NotifyCollision(GameObject& other)
     {
         int bulletDamage = bullet->GetDamage();
         hp -= bulletDamage;
-    }
 
-    if (hp <= 0)
-        associated.RequestDelete();
+        if (hp <= 0) return;
+
+        auto ui = (UserInterface *) associated.GetComponent("UserInterface");
+        if (ui != nullptr)
+            ui->UpdateLifebar(hp / 10);
+    }
 }
 
 void Minion::Shoot(Vec2 pos)
@@ -74,7 +79,7 @@ void Minion::Shoot(Vec2 pos)
     Vec2 offset = Vec2(-associated.box.w - 10, -bulletGo->box.h / 2.0);
     bulletGo->box.SetVec(center + offset);
     
-    Bullet* bullet = new Bullet(*bulletGo, angle, speed, damage, maxDistance, "./assets/image/mage-bullet-13x13.png", 5, 0.5);
+    Bullet* bullet = new Bullet(*bulletGo, angle, speed, damage, maxDistance, "./assets/image/icons/note4.png");
     bulletGo->AddComponent(bullet);
 
     Game::GetInstance().GetCurrentState().AddObject(bulletGo,10020);
