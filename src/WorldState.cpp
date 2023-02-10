@@ -34,6 +34,10 @@ void WorldState::Start()
 
 void WorldState::LoadAssets()
 {
+    // Music
+    backgroundMusic = Music("./assets/audio/musics/background.mp3");
+    backgroundMusic.Play();
+
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/background.png");
