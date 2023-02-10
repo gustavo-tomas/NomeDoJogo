@@ -68,15 +68,6 @@ void StageState::LoadAssets()
     Camera::Unfollow();
     Camera::Reset();
 
-    // Guitar UI
-    GameObject* guitarGo = new GameObject();
-    Sprite* guitarSprite = new Sprite(*guitarGo, "./assets/image/GuitarNeckFinalized.png");
-    CameraFollower* guitarCf = new CameraFollower(*guitarGo, Vec2(60, 400));
-
-    guitarGo->AddComponent(guitarCf);
-    guitarGo->AddComponent(guitarSprite);
-    AddObject(guitarGo, 10020);
-
     // Minion
     for (int i = 0; i < 1; i++)
     {
@@ -92,11 +83,11 @@ void StageState::LoadAssets()
     CameraFollower* textFollower = new CameraFollower(*fpsCounter, fpsCounter->box.GetVec());
     fpsCounter->AddComponent(textFollower);
 
-    const char* fontFile = "./assets/font/call_me_maybe.ttf";
+    const char* fontFile = "./assets/font/Inder-Regular.ttf";
     const char* textStr = "FPS ";
     int fontSize = 16;
     Text::TextStyle style = Text::BLENDED;
-    SDL_Color color = {212, 15, 15, 255};
+    SDL_Color color = {255, 255, 255, 255};
     
     Text* text = new Text(*fpsCounter, fontFile, fontSize, style, textStr, color);
     fpsCounter->AddComponent(text);
