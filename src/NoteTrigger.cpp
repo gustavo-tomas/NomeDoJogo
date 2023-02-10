@@ -9,18 +9,7 @@ NoteTrigger::NoteTrigger(GameObject& associated, int triggerKey, int32_t spriteN
 {
     this->triggerKey = triggerKey;
 
-    Sprite *sprite = nullptr;
-    if(spriteNum == 0)
-        sprite = new Sprite(associated, "assets/image/icons/note1.png");
-
-    else if(spriteNum == 1)
-        sprite = new Sprite(associated, "assets/image/icons/note2.png");
-
-    else if(spriteNum == 2)
-        sprite = new Sprite(associated, "assets/image/icons/note3.png");
-
-    else
-        sprite = new Sprite(associated, "assets/image/icons/note4.png");
+    Sprite *sprite = new Sprite(associated, "assets/image/icons/note7.png");
 
     sprite->SetScale(20.0 / sprite->GetWidth(), 20.0 / sprite->GetHeight());  
     associated.AddComponent(sprite);
