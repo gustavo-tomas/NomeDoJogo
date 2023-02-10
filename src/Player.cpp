@@ -2,7 +2,6 @@
 #include "../header/Sprite.h"
 #include "../header/Game.h"
 #include "../header/InputManager.h"
-#include "../header/CameraFollower.h"
 #include "../header/Collider.h"
 #include "../header/Collision.h"
 #include "../header/Sound.h"
@@ -58,45 +57,9 @@ Player::~Player()
 
 void Player::Start()
 {
-    State& state = Game::GetInstance().GetCurrentState();
-
-    // Heart
-    GameObject* heartGo = new GameObject();
-    heartGo->box.SetCenter({25, 25});
-
-    CameraFollower* cameraFollower = new CameraFollower(*heartGo, {25, 25});
-
-    Sprite* sprite = new Sprite(*heartGo, "./assets/image/heart/full.png");
-    sprite->SetScale(0.5, 0.5);
-
-    heartGo->AddComponent(sprite);
-    heartGo->AddComponent(cameraFollower);
-    state.AddObject(heartGo, 20021);
-    ui["Heart"] = heartGo;
-
-    // Lifebar @TODO: refactor lives array
-    GameObject* lifebarGo = new GameObject();
-    CameraFollower* lifeFollower = new CameraFollower(*lifebarGo, heartGo->box.GetCenter() + Vec2(25, -10));
-
-    Sprite* lifeSprite = new Sprite(*lifebarGo, "./assets/image/lifebar/10.png");
-    lifeSprite->SetScale(0.5, 0.5);
-
-    lifebarGo->AddComponent(lifeSprite);
-    lifebarGo->AddComponent(lifeFollower);
-    state.AddObject(lifebarGo, 20021);
-    ui["Lifebar"] = lifebarGo;
-
-    // Manabar
-    GameObject* manabarGo = new GameObject();
-    CameraFollower* manaFollower = new CameraFollower(*manabarGo, heartGo->box.GetCenter() + Vec2(25, 5));
-
-    Sprite* manaSprite = new Sprite(*manabarGo, "./assets/image/manabar/1.png");
-    manaSprite->SetScale(0.5, 0.5);
-
-    manabarGo->AddComponent(manaSprite);
-    manabarGo->AddComponent(manaFollower);
-    state.AddObject(manabarGo, 20021);
-    ui["Manabar"] = manabarGo;
+    // UI Elements
+    ui = new UserInterface(associated);
+    associated.AddComponent(ui);
 }
 
 void Player::Update(float dt)
@@ -286,44 +249,15 @@ void Player::AddAttackPower(float value)
 
 void Player::ResetMana() 
 {
-    mana = 0;
-    UpdateManabar();
+    mana = 10;
+    ui->UpdateManabar(mana / 10);
 }
 
 void Player::AddMana(int value) 
 {
     mana = min(mana + value, MAX_MANA);
     mana = max(mana, MIN_MANA);
-    UpdateManabar();
-}
-
-void Player::UpdateHeart()
-{
-
-}
-
-void Player::UpdateLifebar()
-{
-    if (hp <= 0 || hp > 100) return;
-
-    auto lifebar = (Sprite *) ui["Lifebar"]->GetComponent("Sprite");
-    if (lifebar != nullptr)
-    {
-        // HP = 1 <-> 10 refactor needed if HP > 100
-        string nextSprite = "./assets/image/lifebar/" + to_string(hp / 10) + ".png";
-        lifebar->ChangeSprite(nextSprite.c_str());
-    }
-}
-
-void Player::UpdateManabar()
-{
-    auto manabar = (Sprite *) ui["Manabar"]->GetComponent("Sprite");
-    if (manabar != nullptr)
-    {
-        // MANA = 1 <-> 4 refactor needed if MANA > 40
-        string nextSprite = "./assets/image/manabar/" + to_string(mana / 10) + ".png";
-        manabar->ChangeSprite(nextSprite.c_str());
-    }
+    ui->UpdateManabar(mana / 10);
 }
 
 void Player::Render()
@@ -349,6 +283,8 @@ void Player::NotifyCollision(GameObject& other)
 
         hp -= bulletDamage;
         stunHeat += bulletDamage;
-        UpdateLifebar();
+
+        if (hp > 0)
+            ui->UpdateLifebar(hp / 10);
     }
 }
