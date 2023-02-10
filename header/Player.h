@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "GameObject.h"
 #include "Timer.h"
+#include <map>
 #include <string>
 
 class Player : public Component {
@@ -31,6 +32,9 @@ class Player : public Component {
 
     private:
         void ActionsHandler(Vec2 velocity);
+        void UpdateHeart();
+        void UpdateLifebar();
+        void UpdateManabar();
 
         float linearSpeed;
         float angle;
@@ -40,6 +44,7 @@ class Player : public Component {
         bool moveLimits;
         Timer stunTimer, actionTimer;
         int stunHeat;
+        map<string, GameObject*> ui;
         
         enum Action
         {

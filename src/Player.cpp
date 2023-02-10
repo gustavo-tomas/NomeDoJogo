@@ -8,6 +8,7 @@
 #include "../header/Sound.h"
 #include "../header/Bullet.h"
 #include "../header/GameData.h"
+#include <string>
 
 #define ATTACK_ANIMATION_DURATION 0.25
 #define KNOCKBACK_DURATION 1
@@ -28,7 +29,7 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     linearSpeed = 0;
     angle = 0;
     hp = 100;
-    mana = 0;
+    mana = 10;
     attackPower = 0;
     stunHeat = 0;
 
@@ -69,6 +70,7 @@ void Player::Start()
     heartGo->AddComponent(sprite);
     heartGo->AddComponent(cameraFollower);
     state.AddObject(heartGo, 20021);
+    ui["Heart"] = heartGo;
 
     // Lifebar @TODO: refactor lives array
     GameObject* lifebarGo = new GameObject();
@@ -80,17 +82,19 @@ void Player::Start()
     lifebarGo->AddComponent(lifeSprite);
     lifebarGo->AddComponent(lifeFollower);
     state.AddObject(lifebarGo, 20021);
+    ui["Lifebar"] = lifebarGo;
 
     // Manabar
     GameObject* manabarGo = new GameObject();
     CameraFollower* manaFollower = new CameraFollower(*manabarGo, heartGo->box.GetCenter() + Vec2(25, 5));
 
-    Sprite* manaSprite = new Sprite(*manabarGo, "./assets/image/manabar/4.png");
+    Sprite* manaSprite = new Sprite(*manabarGo, "./assets/image/manabar/1.png");
     manaSprite->SetScale(0.5, 0.5);
 
     manabarGo->AddComponent(manaSprite);
     manabarGo->AddComponent(manaFollower);
     state.AddObject(manabarGo, 20021);
+    ui["Manabar"] = manabarGo;
 }
 
 void Player::Update(float dt)
@@ -264,7 +268,7 @@ void Player::Shoot()
     if (shootSound != nullptr)
         shootSound->Play();
 
-    ResetMana();
+    AddMana(-10);
     ResetAttackPower();
 }
 
@@ -281,11 +285,45 @@ void Player::AddAttackPower(float value)
 void Player::ResetMana() 
 {
     mana = 0;
+    UpdateManabar();
 }
 
 void Player::AddMana(int value) 
 {
     mana += value;
+    UpdateManabar();
+}
+
+void Player::UpdateHeart()
+{
+
+}
+
+void Player::UpdateLifebar()
+{
+    if (hp <= 0 || hp > 100) return;
+
+    auto lifebar = (Sprite *) ui["Lifebar"]->GetComponent("Sprite");
+    if (lifebar != nullptr)
+    {
+        // HP = 1 <-> 10 refactor needed if HP > 100
+        string nextSprite = "./assets/image/lifebar/" + to_string(hp / 10) + ".png";
+        lifebar->ChangeSprite(nextSprite.c_str());
+    }
+}
+
+void Player::UpdateManabar()
+{
+    if (mana < 0 || mana > 40) return;
+    if (mana == 0) mana = 10;
+
+    auto manabar = (Sprite *) ui["Manabar"]->GetComponent("Sprite");
+    if (manabar != nullptr)
+    {
+        // MANA = 1 <-> 4 refactor needed if MANA > 4
+        string nextSprite = "./assets/image/manabar/" + to_string(mana / 10) + ".png";
+        manabar->ChangeSprite(nextSprite.c_str());
+    }
 }
 
 void Player::Render()
@@ -311,5 +349,6 @@ void Player::NotifyCollision(GameObject& other)
 
         hp -= bulletDamage;
         stunHeat += bulletDamage;
+        UpdateLifebar();
     }
 }
