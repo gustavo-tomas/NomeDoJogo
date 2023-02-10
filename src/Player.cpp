@@ -7,6 +7,7 @@
 #include "../header/Sound.h"
 #include "../header/Bullet.h"
 #include "../header/GameData.h"
+#include "../header/UserInterface.h"
 #include <string>
 
 #define ATTACK_ANIMATION_DURATION 0.25
@@ -58,7 +59,7 @@ Player::~Player()
 void Player::Start()
 {
     // UI Elements
-    ui = new UserInterface(associated);
+    UserInterface* ui = new UserInterface(associated, {25, 25});
     associated.AddComponent(ui);
 }
 
@@ -220,10 +221,9 @@ void Player::Shoot()
     bulletGo->box.SetCenter(center + offset);
 
     Bullet* bullet = new Bullet(*bulletGo, angle - (M_PI / 4.0),
-                                            speed, attackPower, maxDistance,
-                                    "./assets/image/mage-bullet-13x13.png",
-                                5, 0.5, false,
-                                "./assets/audio/papapa.mp3");
+                                    speed, attackPower, maxDistance,
+                                    "./assets/image/icons/note1.png", 1, 1, false,
+                                    "./assets/audio/papapa.mp3");
     
     bulletGo->AddComponent(bullet);
 
@@ -250,14 +250,20 @@ void Player::AddAttackPower(float value)
 void Player::ResetMana() 
 {
     mana = 10;
-    ui->UpdateManabar(mana / 10);
+    
+    auto ui = (UserInterface *) associated.GetComponent("UserInterface");
+    if (ui != nullptr)
+        ui->UpdateManabar(mana / 10);
 }
 
 void Player::AddMana(int value) 
 {
     mana = min(mana + value, MAX_MANA);
     mana = max(mana, MIN_MANA);
-    ui->UpdateManabar(mana / 10);
+
+    auto ui = (UserInterface *) associated.GetComponent("UserInterface");
+    if (ui != nullptr)
+        ui->UpdateManabar(mana / 10);
 }
 
 void Player::Render()
@@ -284,7 +290,10 @@ void Player::NotifyCollision(GameObject& other)
         hp -= bulletDamage;
         stunHeat += bulletDamage;
 
-        if (hp > 0)
+        if (hp <= 0) return;
+
+        auto ui = (UserInterface *) associated.GetComponent("UserInterface");
+        if (ui != nullptr)
             ui->UpdateLifebar(hp / 10);
     }
 }

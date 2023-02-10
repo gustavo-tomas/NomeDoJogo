@@ -4,7 +4,6 @@
 #include "Component.h"
 #include "GameObject.h"
 #include "Timer.h"
-#include "UserInterface.h"
 #include <map>
 #include <string>
 
@@ -42,7 +41,6 @@ class Player : public Component {
         bool moveLimits;
         Timer stunTimer, actionTimer;
         int stunHeat;
-        UserInterface* ui;
         
         enum Action
         {
