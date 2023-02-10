@@ -12,6 +12,8 @@
 
 #define ATTACK_ANIMATION_DURATION 0.25
 #define KNOCKBACK_DURATION 1
+#define MAX_MANA 40
+#define MIN_MANA 10
 
 Player* Player::player;
 const Player::SpriteInfo files[7] = { 
@@ -290,7 +292,8 @@ void Player::ResetMana()
 
 void Player::AddMana(int value) 
 {
-    mana += value;
+    mana = min(mana + value, MAX_MANA);
+    mana = max(mana, MIN_MANA);
     UpdateManabar();
 }
 
@@ -314,13 +317,10 @@ void Player::UpdateLifebar()
 
 void Player::UpdateManabar()
 {
-    if (mana < 0 || mana > 40) return;
-    if (mana == 0) mana = 10;
-
     auto manabar = (Sprite *) ui["Manabar"]->GetComponent("Sprite");
     if (manabar != nullptr)
     {
-        // MANA = 1 <-> 4 refactor needed if MANA > 4
+        // MANA = 1 <-> 4 refactor needed if MANA > 40
         string nextSprite = "./assets/image/manabar/" + to_string(mana / 10) + ".png";
         manabar->ChangeSprite(nextSprite.c_str());
     }
