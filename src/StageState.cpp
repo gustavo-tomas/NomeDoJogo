@@ -1,9 +1,6 @@
 #include "../header/StageState.h"
 #include "../header/Game.h"
-#include "../header/Sound.h"
 #include "../header/Vec2.h"
-#include "../header/TileSet.h"
-#include "../header/TileMap.h"
 #include "../header/InputManager.h"
 #include "../header/Camera.h"
 #include "../header/CameraFollower.h"
@@ -13,10 +10,7 @@
 #include "../header/EndState.h"
 #include "../header/Text.h"
 #include "../header/Player.h"
-#include "../header/TestBox.h"
-#include "../header/DialogBox.h"
 #include "../header/Minion.h"
-#include "../header/Bullet.h"
 #include "../header/NoteSpawner.h"
 #include "../header/NoteTrigger.h"
 
@@ -105,7 +99,7 @@ void StageState::LoadAssets()
     for (int i = 0; i < 4; i++)
     {
         GameObject *noteTriggerGo = new GameObject(); 
-        noteTriggerGo->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * (i + 1)));
+        noteTriggerGo->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * (i + 1) - 40));
         NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo, triggers[4 - i - 1], i);
         noteTriggerGo->AddComponent(noteTrigger);
         AddObject(noteTriggerGo, 1);
