@@ -4,15 +4,15 @@
 #include "../header/State.h"
 #include "../header/Game.h"
 
-UserInterface::UserInterface(GameObject& associated) : Component(associated)
+UserInterface::UserInterface(GameObject& associated, Vec2 position, bool flipped) : Component(associated)
 {
     State& state = Game::GetInstance().GetCurrentState();
 
     // Heart
     GameObject* heartGo = new GameObject();
-    heartGo->box.SetCenter({25, 25});
+    heartGo->box.SetCenter(position);
 
-    CameraFollower* cameraFollower = new CameraFollower(*heartGo, {25, 25});
+    CameraFollower* cameraFollower = new CameraFollower(*heartGo, position);
 
     Sprite* sprite = new Sprite(*heartGo, "./assets/image/heart/full.png");
     sprite->SetScale(0.5, 0.5);
@@ -24,10 +24,18 @@ UserInterface::UserInterface(GameObject& associated) : Component(associated)
 
     // Lifebar
     GameObject* lifebarGo = new GameObject();
-    CameraFollower* lifeFollower = new CameraFollower(*lifebarGo, heartGo->box.GetCenter() + Vec2(25, -10));
-
+    CameraFollower* lifeFollower = nullptr;
     Sprite* lifeSprite = new Sprite(*lifebarGo, "./assets/image/lifebar/10.png");
     lifeSprite->SetScale(0.5, 0.5);
+    
+    if (flipped)
+    {
+        lifeFollower = new CameraFollower(*lifebarGo, heartGo->box.GetCenter() + Vec2(-lifeSprite->GetWidth() - 25, -10));
+        lifebarGo->angleDeg = M_PI;
+    }
+    
+    else
+        lifeFollower = new CameraFollower(*lifebarGo, heartGo->box.GetCenter() + Vec2(25, -10));
 
     lifebarGo->AddComponent(lifeSprite);
     lifebarGo->AddComponent(lifeFollower);
@@ -40,6 +48,15 @@ UserInterface::UserInterface(GameObject& associated) : Component(associated)
 
     Sprite* manaSprite = new Sprite(*manabarGo, "./assets/image/manabar/1.png");
     manaSprite->SetScale(0.5, 0.5);
+
+    if (flipped)
+    {
+        manaFollower = new CameraFollower(*manabarGo, heartGo->box.GetCenter() + Vec2(-manaSprite->GetWidth() - 25, 5));
+        manabarGo->angleDeg = M_PI;
+    }
+
+    else
+        manaFollower = new CameraFollower(*manabarGo, heartGo->box.GetCenter() + Vec2(25, 5));
 
     manabarGo->AddComponent(manaSprite);
     manabarGo->AddComponent(manaFollower);

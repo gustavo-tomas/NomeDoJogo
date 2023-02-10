@@ -6,7 +6,7 @@
 
 class UserInterface : public Component {
     public:
-        UserInterface(GameObject& associated);
+        UserInterface(GameObject& associated, Vec2 position = Vec2(0, 0), bool flipped = false);
         void Update(float dt);
         void Render();
         bool Is(const char* type);
