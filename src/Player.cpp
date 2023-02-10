@@ -61,6 +61,10 @@ void Player::Start()
     // UI Elements
     UserInterface* ui = new UserInterface(associated, {25, 25});
     associated.AddComponent(ui);
+
+    // SFX
+    Sound* walkingSound = new Sound(associated, "./assets/audio/sfx/walking_concrete.mp3", MIX_MAX_VOLUME);
+    associated.AddComponent(walkingSound);
 }
 
 void Player::Update(float dt)
@@ -103,8 +107,22 @@ void Player::Update(float dt)
         // Left
         if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
             velocity.x -= 1.f;
+        
+        // Walking SFX
+        Sound* sound = (Sound *) associated.GetComponent("Sound");
+        if (sound != nullptr)
+        {
+            if (velocity.x != 0 || velocity.y != 0)
+            {
+                if (!sound->IsOpen())
+                    sound->Play(1);
+            }
+
+            else if (sound->IsOpen())
+                sound->Stop();
+        }
     }
-  
+
     if (currentAction != previousAction)
     {
         Vec2 currentPos = associated.box.GetCenter();
@@ -187,7 +205,8 @@ void Player::Update(float dt)
     }
 }
 
-void Player::ActionsHandler(Vec2 velocity){
+void Player::ActionsHandler(Vec2 velocity)
+{
     if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
     {
         currentAction = Action::ATTACKING;
@@ -223,15 +242,11 @@ void Player::Shoot()
     Bullet* bullet = new Bullet(*bulletGo, angle - (M_PI / 4.0),
                                     speed, attackPower, maxDistance,
                                     "./assets/image/icons/note1.png", 1, 1, false,
-                                    "./assets/audio/papapa.mp3");
+                                    "./assets/audio/sfx/attack.mp3");
     
     bulletGo->AddComponent(bullet);
 
     Game::GetInstance().GetCurrentState().AddObject(bulletGo, 10020);
-
-    Sound* shootSound = (Sound *) associated.GetComponent("Sound");
-    if (shootSound != nullptr)
-        shootSound->Play();
 
     AddMana(-10);
     ResetAttackPower();
