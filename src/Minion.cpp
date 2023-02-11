@@ -2,9 +2,8 @@
 #include "../header/Sprite.h"
 #include "../header/Bullet.h"
 #include "../header/Game.h"
-#include "../header/CameraFollower.h"
 #include "../header/Collider.h"
-#include "../header/Camera.h"
+#include "../header/UserInterface.h"
 #include "../header/GameData.h"
 
 int Minion::minionCount = 0;
@@ -26,25 +25,14 @@ Minion::~Minion()
 {
     cout << minionCount << endl;
     Minion::minionCount--;
-    lives.clear();
 }
 
 void Minion::Start()
 {
     hp = 100;
 
-    State& state = Game::GetInstance().GetCurrentState();
-    for (int i = 0; i * 10 < hp; i++)
-    {
-        GameObject* heartGo = new GameObject();
-        CameraFollower* cameraFollower = new CameraFollower(*heartGo, {(float) GameData::WIDTH - 35 - i * 24, 20});
-        Sprite* sprite = new Sprite(*heartGo, "./assets/image/hearty_strip6.png", 6, 1);
-        sprite->SetScale(0.5, 0.5);
-
-        heartGo->AddComponent(sprite);
-        heartGo->AddComponent(cameraFollower);
-        lives.push_back(state.AddObject(heartGo));
-    }
+    UserInterface* ui = new UserInterface(associated, Vec2(GameData::WIDTH - 75, 25), true);
+    associated.AddComponent(ui);
 }
 
 void Minion::Update(float dt)
@@ -70,18 +58,13 @@ void Minion::NotifyCollision(GameObject& other)
     {
         int bulletDamage = bullet->GetDamage();
         hp -= bulletDamage;
-        if (!lives.empty())
-        {
-            for (int i = 0; i * 10 < bulletDamage && !lives.empty(); i++)
-            {
-                lives[lives.size() - 1].lock().get()->RequestDelete();
-                lives.erase(lives.begin() + lives.size() - 1);
-            }
-        }
-    }
 
-    if (hp <= 0)
-        associated.RequestDelete();
+        if (hp <= 0) return;
+
+        auto ui = (UserInterface *) associated.GetComponent("UserInterface");
+        if (ui != nullptr)
+            ui->UpdateLifebar(hp / 10);
+    }
 }
 
 void Minion::Shoot(Vec2 pos)
@@ -92,12 +75,11 @@ void Minion::Shoot(Vec2 pos)
     float maxDistance = 1000;
 
     GameObject* bulletGo = new GameObject();
-    Bullet* bullet = new Bullet(*bulletGo, angle, speed, damage, maxDistance, "./assets/image/mage-bullet-13x13.png", 5, 0.5);
-    
     Vec2 center = associated.box.GetCenter();
     Vec2 offset = Vec2(-associated.box.w - 10, -bulletGo->box.h / 2.0);
-    
     bulletGo->box.SetVec(center + offset);
+    
+    Bullet* bullet = new Bullet(*bulletGo, angle, speed, damage, maxDistance, "./assets/image/icons/note4.png");
     bulletGo->AddComponent(bullet);
 
     Game::GetInstance().GetCurrentState().AddObject(bulletGo,10020);

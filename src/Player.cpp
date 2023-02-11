@@ -2,16 +2,18 @@
 #include "../header/Sprite.h"
 #include "../header/Game.h"
 #include "../header/InputManager.h"
-#include "../header/CameraFollower.h"
 #include "../header/Collider.h"
 #include "../header/Collision.h"
-#include "../header/Camera.h"
 #include "../header/Sound.h"
 #include "../header/Bullet.h"
 #include "../header/GameData.h"
+#include "../header/UserInterface.h"
+#include <string>
 
 #define ATTACK_ANIMATION_DURATION 0.25
 #define KNOCKBACK_DURATION 1
+#define MAX_MANA 40
+#define MIN_MANA 10
 
 Player* Player::player;
 const Player::SpriteInfo files[7] = { 
@@ -31,7 +33,7 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     linearSpeed = 0;
     angle = 0;
     hp = 100;
-    mana = 0;
+    mana = 10;
     attackPower = 0;
     stunHeat = 0;
 
@@ -56,23 +58,13 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 Player::~Player()
 {
     player = nullptr;
-    lives.clear();
 }
 
 void Player::Start()
 {
-    State& state = Game::GetInstance().GetCurrentState();
-
-    for (int i = 0; i * 10 < hp; i++)
-    {
-        GameObject* heartGo = new GameObject();
-        CameraFollower* cameraFollower = new CameraFollower(*heartGo, {(float) i * 22, 20});
-        Sprite* sprite = new Sprite(*heartGo, "./assets/image/Heart.png");
-
-        heartGo->AddComponent(sprite);
-        heartGo->AddComponent(cameraFollower);
-        lives.push_back(state.AddObject(heartGo));
-    }
+    // UI Elements
+    UserInterface* ui = new UserInterface(associated, {25, 25});
+    associated.AddComponent(ui);
 }
 
 void Player::Update(float dt)
@@ -100,25 +92,25 @@ void Player::Update(float dt)
 
     if (stunHeat < 30)
     {
-     
-      // Up
-      if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT / 5.0)) 
-          velocity.y -= 1.f;
+        // Up
+        if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT / 5.0)) 
+            velocity.y -= 1.f;
 
-      // Down
-      if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
-          velocity.y += 1.f;
+        // Down
+        if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
+            velocity.y += 1.f;
 
-      // Right
-      if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH / 3.0)) 
-          velocity.x += 1.f;
+        // Right
+        if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH / 3.0)) 
+            velocity.x += 1.f;
 
-      // Left
-      if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
-          velocity.x -= 1.f;
+        // Left
+        if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
+            velocity.x -= 1.f;
     }
   
-    if(currentAction != previousAction){
+    if (currentAction != previousAction)
+    {
         Vec2 currentPos = associated.box.GetCenter();
         ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
             files[currentAction].fileName, files[currentAction].frameCountX, files[currentAction].frameCountY, 0.2
@@ -208,16 +200,16 @@ void Player::ActionsHandler(Vec2 velocity){
         actionTimer.Restart();
     }
 
-    else if(velocity.x > 0)
+    else if (velocity.x > 0)
         currentAction = Action::WALKING_RIGHT;
     
-    else if(velocity.x < 0)
+    else if (velocity.x < 0)
         currentAction = Action::WALKING_LEFT;
     
-    else if(velocity.y > 0)
+    else if (velocity.y > 0)
         currentAction = Action::WALKING_DOWN;
     
-    else if(velocity.y < 0)
+    else if (velocity.y < 0)
         currentAction = Action::WALKING_UP;    
 
     else
@@ -230,25 +222,24 @@ void Player::Shoot()
     float maxDistance = 1000;
 
     GameObject* bulletGo = new GameObject();
-    Bullet* bullet = new Bullet(*bulletGo, angle - (M_PI / 4.0),
-                                            speed, attackPower, maxDistance,
-                                    "./assets/image/mage-bullet-13x13.png",
-                                5, 0.5, false,
-                                "./assets/audio/papapa.mp3");
-    
     Vec2 center = associated.box.GetCenter();
-    Vec2 offset = Vec2(associated.box.w, -bulletGo->box.h / 2.0);
+    Vec2 offset = Vec2(associated.box.w, -associated.box.h / 4.0);
+    bulletGo->box.SetCenter(center + offset);
 
-    bulletGo->box.SetVec(center + offset);
+    Bullet* bullet = new Bullet(*bulletGo, angle - (M_PI / 4.0),
+                                    speed, attackPower, maxDistance,
+                                    "./assets/image/icons/note1.png", 1, 1, false,
+                                    "./assets/audio/papapa.mp3");
+    
     bulletGo->AddComponent(bullet);
 
-    Game::GetInstance().GetCurrentState().AddObject(bulletGo);
+    Game::GetInstance().GetCurrentState().AddObject(bulletGo, 10020);
 
     Sound* shootSound = (Sound *) associated.GetComponent("Sound");
     if (shootSound != nullptr)
         shootSound->Play();
 
-    ResetMana();
+    AddMana(-10);
     ResetAttackPower();
 }
 
@@ -264,12 +255,21 @@ void Player::AddAttackPower(float value)
 
 void Player::ResetMana() 
 {
-    mana = 0;
+    mana = 10;
+    
+    auto ui = (UserInterface *) associated.GetComponent("UserInterface");
+    if (ui != nullptr)
+        ui->UpdateManabar(mana / 10);
 }
 
 void Player::AddMana(int value) 
 {
-    mana += value;
+    mana = min(mana + value, MAX_MANA);
+    mana = max(mana, MIN_MANA);
+
+    auto ui = (UserInterface *) associated.GetComponent("UserInterface");
+    if (ui != nullptr)
+        ui->UpdateManabar(mana / 10);
 }
 
 void Player::Render()
@@ -295,13 +295,11 @@ void Player::NotifyCollision(GameObject& other)
 
         hp -= bulletDamage;
         stunHeat += bulletDamage;
-        if (!lives.empty())
-        {
-            for (int i = 0; i * 10 < bulletDamage && !lives.empty(); i++)
-            {
-                lives[lives.size() - 1].lock().get()->RequestDelete();
-                lives.erase(lives.begin() + lives.size() - 1);
-            }
-        }
+
+        if (hp <= 0) return;
+
+        auto ui = (UserInterface *) associated.GetComponent("UserInterface");
+        if (ui != nullptr)
+            ui->UpdateLifebar(hp / 10);
     }
 }

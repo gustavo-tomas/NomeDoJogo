@@ -6,13 +6,13 @@
 #include "../header/Game.h"
 #include "../header/GameData.h"
 #include "../header/InputManager.h"
-#include "../header/Minion.h"
 #include "../header/Player.h"
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 #include "../header/StageState.h"
 #include "../header/TestBox.h"
 #include "../header/NPC.h"
+#include "../header/DialogBox.h"
 #include <fstream>
 #include <string>
 
@@ -72,6 +72,16 @@ void WorldState::LoadAssets()
 
     // Camera
     Camera::Follow(playerGo);
+
+    // Dialog
+    GameObject* dialogGo = new GameObject();
+    DialogBox* dialog = new DialogBox(*dialogGo, "LOOOLL", 
+                                                            "Lorem ipsum dolor amet."
+                                                            " Eu esqueci o resto da frase."
+                                                            " Aqui vai uma receita de bolo entao: "
+                                                            " ... eu nao sei fazer bolo :(");
+    dialogGo->AddComponent(dialog);
+    AddObject(dialogGo, 20002);
 
     // World Objects
     vector<WorldObject> objects = {};
@@ -156,9 +166,6 @@ void WorldState::Update(float dt)
     if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
         Game::GetInstance().Push(new StageState());
 
-    // Updates the camera
-    Camera::Update(dt);
-
     // Updates GOs
     UpdateArray(dt);
 
@@ -196,6 +203,14 @@ void WorldState::Update(float dt)
             colliderB->ResolveCollisionUpdate(dt);
         }
     }
+
+    // Updates the camera
+    Camera::Update(dt);
+
+    // Updates camera followers (o fix mais feio da história)
+    for(uint32_t i = 0; i < objectArray.size(); i++)
+        if ((CameraFollower *) objectArray[i]->GetComponent("CameraFollower") != nullptr)
+            objectArray[i]->GetComponent("CameraFollower") ->Update(dt);
 }
 
 void WorldState::Render()
