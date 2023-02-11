@@ -35,7 +35,7 @@ void WorldState::Start()
 void WorldState::LoadAssets()
 {
     // Music
-    backgroundMusic = Music("./assets/audio/musics/background.mp3");
+    backgroundMusic = Music("./assets/audio/musics/background.mp3", 15);
     backgroundMusic.Play();
 
     // Background

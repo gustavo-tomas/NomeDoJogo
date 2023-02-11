@@ -11,7 +11,7 @@
 TitleState::TitleState() : State()
 {
     // Music
-    backgroundMusic = Music("./assets/audio/musics/main_theme.mp3");
+    backgroundMusic = Music("./assets/audio/musics/main_theme.mp3", 20);
     backgroundMusic.Play(1);
 
     // Background
