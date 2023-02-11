@@ -26,6 +26,8 @@ void StageState::Start()
     LoadAssets();
     StartArray();
     started = true;
+    
+    ((Sound *) player.lock().get()->GetComponent("Sound"))->SetVolume(0);
 }
 
 void StageState::Pause()
@@ -58,12 +60,13 @@ void StageState::LoadAssets()
     bgGo->AddComponent(cf);
     AddObject(bgGo, -GameData::HEIGHT);
 
-    // Player
+    // Player (muted footsteps)
     GameObject* playerGo = new GameObject();
-    Player* player = new Player(*playerGo, true);
+    Player* playerComp = new Player(*playerGo, true);
     playerGo->box.SetVec(Vec2(104, 154));
-    playerGo->AddComponent(player);
-    AddObject(playerGo, 10000);
+    playerGo->AddComponent(playerComp);
+
+    player = AddObject(playerGo, 10000);
     
     // Camera
     Camera::Unfollow();

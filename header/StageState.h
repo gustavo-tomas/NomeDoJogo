@@ -19,6 +19,7 @@ class StageState : public State {
         void Resume();
 
     private:
+        weak_ptr<GameObject> player;
         weak_ptr<GameObject> backgroundMusic;
         weak_ptr<GameObject> fpsCounter;
 };
