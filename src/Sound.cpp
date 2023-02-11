@@ -20,6 +20,7 @@ void Sound::Play(int times)
 
 void Sound::SetVolume(int volume)
 {
+    this->volume = volume;
     Mix_Volume(channel, volume);
 }
 
@@ -37,7 +38,7 @@ void Sound::Stop(int msToStop)
 {
     if (chunk != nullptr && channel > -1)
     {
-        if (Mix_FadeOutChannel(channel, msToStop) != 0)
+        if (Mix_FadeOutChannel(channel, msToStop) < 0)
         {
             cout << "Failed to halt channel: " << channel << "\n";
             cout << SDL_GetError() << "\n";
