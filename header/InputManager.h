@@ -9,6 +9,7 @@
 #define ESCAPE_KEY         SDLK_ESCAPE
 #define SPACE_KEY          SDLK_SPACE
 #define TAB_KEY            SDLK_TAB
+#define ENTER_KEY          SDLK_RETURN
 
 #define A_KEY              SDLK_a
 #define W_KEY              SDLK_w
