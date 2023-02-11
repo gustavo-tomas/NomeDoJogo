@@ -7,8 +7,9 @@ Sound::Sound(GameObject& associated) : Component(associated)
     chunk = nullptr;
 }
 
-Sound::Sound(GameObject& associated, const char* file) : Sound(associated)
+Sound::Sound(GameObject& associated, const char* file, int volume) : Sound(associated)
 {
+    this->volume = volume;
     channel = -1;
     Open(file);
 }
@@ -16,6 +17,12 @@ Sound::Sound(GameObject& associated, const char* file) : Sound(associated)
 void Sound::Play(int times)
 {
     channel = Mix_PlayChannel(channel, chunk, times - 1);
+    SetVolume(volume);
+}
+
+void Sound::SetVolume(int volume)
+{
+    Mix_Volume(channel, volume);
 }
 
 void Sound::Stop()
@@ -45,6 +52,7 @@ void Sound::Open(const char* file)
 
 Sound::~Sound()
 {
+    if (IsOpen()) return; // Hopefully it wont come back to bite me later :)
     Stop();
 }
 

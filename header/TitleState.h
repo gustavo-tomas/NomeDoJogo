@@ -1,6 +1,7 @@
 #ifndef TITLESTATE_H
 #define TITLESTATE_H
 
+#include "Music.h"
 #include "State.h"
 
 class TitleState : public State {
@@ -16,6 +17,7 @@ class TitleState : public State {
 
     private:
         weak_ptr<GameObject> cursor;
+        Music backgroundMusic;
 };
 
 #endif // TITLESTATE_H

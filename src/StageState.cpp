@@ -40,7 +40,7 @@ void StageState::Resume()
 void StageState::LoadAssets()
 {
     // Background Music
-    backgroundMusic = Music("./assets/audio/doom.mp3");
+    backgroundMusic = Music("./assets/audio/doom.mp3", 15);
     backgroundMusic.Play();
 
     // Background
