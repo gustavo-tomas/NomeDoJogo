@@ -4,6 +4,7 @@
 #include "../header/InputManager.h"
 #include "../header/Game.h"
 #include "../header/WorldState.h"
+#include "../header/Camera.h"
 #include "../header/CameraFollower.h"
 #include "../header/Text.h"
 #include "../header/GameData.h"
@@ -41,7 +42,7 @@ void TitleState::LoadAssets()
     // Title
     GameObject* titleGo = new GameObject();
     Sprite* title = new Sprite(*titleGo, "./assets/image/title.png");
-    title->SetScale(0.7, 0.7);
+    title->SetScale(0.5, 0.5);
 
     Vec2 offset = Vec2(GameData::WIDTH / 2.0 - title->GetWidth() / 2.0, GameData::HEIGHT / 2.5 - title->GetHeight() / 2.0);
     CameraFollower* titleCf = new CameraFollower(*titleGo, offset);
@@ -51,22 +52,37 @@ void TitleState::LoadAssets()
     AddObject(titleGo);
 
     // Options
-    GameObject* textGo = new GameObject();
-    textGo->box.SetVec(Vec2(250, 400));
+    vector<string> options = {"NOVO JOGO", "SAIR DO JOGO"};
 
-    CameraFollower* textFollower = new CameraFollower(*textGo, textGo->box.GetVec());
-    textGo->AddComponent(textFollower);
+    for (unsigned i = 0; i < options.size(); i++)
+    {
+        GameObject* textGo = new GameObject();
+        textGo->box.SetVec(Vec2(450, 350 + 35 * i));
 
-    const char* fontFile = "./assets/font/Inder-Regular.ttf";
-    const char* textStr = "Aperte a tecla SPACE para continuar";
-    int fontSize = 32;
-    Text::TextStyle style = Text::BLENDED;
-    SDL_Color color = {255, 255, 255, 255};
-    
-    Text* text = new Text(*textGo, fontFile, fontSize, style, textStr, color);
-    textGo->AddComponent(text);
-    
-    AddObject(textGo);
+        CameraFollower* textFollower = new CameraFollower(*textGo, textGo->box.GetVec());
+        textGo->AddComponent(textFollower);
+
+        const char* fontFile = "./assets/font/Inder-Regular.ttf";
+        const char* textStr = options[i].c_str();
+        int fontSize = 18;
+        Text::TextStyle style = Text::BLENDED;
+        SDL_Color color = {255, 255, 255, 255};
+        
+        Text* text = new Text(*textGo, fontFile, fontSize, style, textStr, color);
+        textGo->AddComponent(text);
+        
+        AddObject(textGo);
+    }
+
+    // Cursor
+    GameObject* cursor = new GameObject();
+    cursor->box.SetVec(Vec2(435, 357));
+
+    Sprite* cursorSprite = new Sprite(*cursor, "./assets/image/icons/diamond.png");
+    cursorSprite->SetScale(0.06, 0.06);
+    cursor->AddComponent(cursorSprite);
+
+    this->cursor = AddObject(cursor, 20020);
 }
 
 void TitleState::Update(float dt)
@@ -79,9 +95,23 @@ void TitleState::Update(float dt)
         return;
     }
 
+    // Cursor displacement
+    if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
+        cursor.lock().get()->box.y += 35;
+
+    if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
+        cursor.lock().get()->box.y -= 35;
+
+    cursor.lock().get()->box.y = max(357.f, cursor.lock().get()->box.y);
+    cursor.lock().get()->box.y = min(392.f, cursor.lock().get()->box.y);
+
     // Creates new WorldState
-    if (InputManager::GetInstance().KeyPress(SPACE_KEY))
+    if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357)
         Game::GetInstance().Push(new WorldState());
+
+    // Quits
+    if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y >= 392)
+        quitRequested = true;
 
     UpdateArray(dt);
 }
@@ -98,5 +128,5 @@ void TitleState::Pause()
 
 void TitleState::Resume()
 {
-
+    Camera::Reset();
 }

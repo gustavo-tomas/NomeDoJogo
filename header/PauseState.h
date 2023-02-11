@@ -13,6 +13,9 @@ class PauseState : public State {
         void Start();
         void Pause();
         void Resume();
+
+    private:
+        weak_ptr<GameObject> cursor;
 };
 
 #endif // PAUSESTATE_H

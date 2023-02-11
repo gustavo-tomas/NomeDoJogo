@@ -2,7 +2,6 @@
 #define TITLESTATE_H
 
 #include "State.h"
-#include "Timer.h"
 
 class TitleState : public State {
     public:
@@ -14,6 +13,9 @@ class TitleState : public State {
         void Start();
         void Pause();
         void Resume();
+
+    private:
+        weak_ptr<GameObject> cursor;
 };
 
 #endif // TITLESTATE_H
