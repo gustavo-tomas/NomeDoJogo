@@ -115,11 +115,14 @@ void Player::Update(float dt)
             if (velocity.x != 0 || velocity.y != 0)
             {
                 if (!sound->IsOpen())
-                    sound->Play(1);
+                    sound->Play(-1);
+
+                else if (sound->IsOpen())
+                    sound->Resume();
             }
 
             else if (sound->IsOpen())
-                sound->Stop();
+                sound->Pause();
         }
     }
 
