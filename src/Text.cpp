@@ -4,7 +4,8 @@
 #include "../header/Sprite.h"
 
 Text::Text(GameObject& associated, const char* fontFile, int fontSize,
-           TextStyle style, const char* text, SDL_Color color, float timeToBlink) : Component(associated)
+           TextStyle style, const char* text, SDL_Color color, 
+           unsigned wrappingLength, float timeToBlink) : Component(associated)
 {
     this->fontFile = fontFile;
     this->fontSize = fontSize;
@@ -15,6 +16,7 @@ Text::Text(GameObject& associated, const char* fontFile, int fontSize,
     this->showText = true;
     this->texture = nullptr;
     this->font = nullptr;
+    this->wrappingLength = wrappingLength;
     RemakeTexture();
 }
 
@@ -105,6 +107,12 @@ void Text::SetFontSize(int fontSize)
     RemakeTexture();
 }
 
+void Text::SetWrappingLength(unsigned int length)
+{
+    this->wrappingLength = length;
+    RemakeTexture();
+}
+
 void Text::RemakeTexture()
 {
     if (texture != nullptr)
@@ -117,13 +125,13 @@ void Text::RemakeTexture()
     switch (style)
     {
         case SOLID:
-            surface = TTF_RenderText_Solid(font, text, color);
+            surface = TTF_RenderText_Solid_Wrapped(font, text, color, wrappingLength);
             break;
         case SHADED: // No support for shaded text
             // surface = TTF_RenderText_Shaded(font, text, color);
             break;
         case BLENDED:
-            surface = TTF_RenderText_Blended(font, text, color);
+            surface = TTF_RenderText_Blended_Wrapped(font, text, color, wrappingLength);
             break;
         default:
             break;

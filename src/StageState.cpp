@@ -1,9 +1,6 @@
 #include "../header/StageState.h"
 #include "../header/Game.h"
-#include "../header/Sound.h"
 #include "../header/Vec2.h"
-#include "../header/TileSet.h"
-#include "../header/TileMap.h"
 #include "../header/InputManager.h"
 #include "../header/Camera.h"
 #include "../header/CameraFollower.h"
@@ -13,10 +10,7 @@
 #include "../header/EndState.h"
 #include "../header/Text.h"
 #include "../header/Player.h"
-#include "../header/TestBox.h"
-#include "../header/DialogBox.h"
 #include "../header/Minion.h"
-#include "../header/Bullet.h"
 #include "../header/NoteSpawner.h"
 #include "../header/NoteTrigger.h"
 
@@ -45,7 +39,7 @@ void StageState::Resume()
 void StageState::LoadAssets()
 {
     // Background Music
-    backgroundMusic = Music("./assets/audio/doom.mp3");
+    backgroundMusic = Music("./assets/audio/doom.mp3", 15);
     backgroundMusic.Play();
 
     // Background
@@ -68,15 +62,6 @@ void StageState::LoadAssets()
     Camera::Unfollow();
     Camera::Reset();
 
-    // Guitar UI
-    GameObject* guitarGo = new GameObject();
-    Sprite* guitarSprite = new Sprite(*guitarGo, "./assets/image/GuitarNeckFinalized.png");
-    CameraFollower* guitarCf = new CameraFollower(*guitarGo, Vec2(60, 400));
-
-    guitarGo->AddComponent(guitarCf);
-    guitarGo->AddComponent(guitarSprite);
-    AddObject(guitarGo, 10020);
-
     // Minion
     for (int i = 0; i < 1; i++)
     {
@@ -92,11 +77,11 @@ void StageState::LoadAssets()
     CameraFollower* textFollower = new CameraFollower(*fpsCounter, fpsCounter->box.GetVec());
     fpsCounter->AddComponent(textFollower);
 
-    const char* fontFile = "./assets/font/call_me_maybe.ttf";
+    const char* fontFile = "./assets/font/Inder-Regular.ttf";
     const char* textStr = "FPS ";
     int fontSize = 16;
     Text::TextStyle style = Text::BLENDED;
-    SDL_Color color = {212, 15, 15, 255};
+    SDL_Color color = {255, 255, 255, 255};
     
     Text* text = new Text(*fpsCounter, fontFile, fontSize, style, textStr, color);
     fpsCounter->AddComponent(text);
@@ -114,7 +99,7 @@ void StageState::LoadAssets()
     for (int i = 0; i < 4; i++)
     {
         GameObject *noteTriggerGo = new GameObject(); 
-        noteTriggerGo->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * (i + 1)));
+        noteTriggerGo->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * (i + 1) - 40));
         NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo, triggers[4 - i - 1], i);
         noteTriggerGo->AddComponent(noteTrigger);
         AddObject(noteTriggerGo, 1);

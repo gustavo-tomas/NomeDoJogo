@@ -6,19 +6,26 @@ Music::Music()
     music = nullptr;
 }
 
-Music::Music(const char* file)
+Music::Music(const char* file, int volume)
 {
+    this->volume = volume;
     music = nullptr;
     Open(file);
 }
 
 void Music::Play(int times)
 {
+    SetVolume(volume);
     if (Mix_PlayMusic(music, times) < 0)
     {
         cout << "Error playing music" << endl;
         cout << SDL_GetError() << endl;
     }
+}
+
+void Music::SetVolume(int volume)
+{
+    Mix_VolumeMusic(volume);
 }
 
 void Music::Stop(int msToStop)
