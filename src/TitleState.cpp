@@ -100,7 +100,7 @@ void TitleState::Start()
 
 void TitleState::Pause()
 {
-    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Stop(1500);
+    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Stop(2500);
 }
 
 void TitleState::Resume()
