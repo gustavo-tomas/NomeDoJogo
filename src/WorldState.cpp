@@ -12,6 +12,7 @@
 #include "../header/Sound.h"
 #include "../header/StageState.h"
 #include "../header/TestBox.h"
+#include "../header/NPC.h"
 #include <fstream>
 #include <string>
 
@@ -51,6 +52,23 @@ void WorldState::LoadAssets()
     playerGo->box.SetVec(Vec2(1650, 350));
     playerGo->AddComponent(player);
     AddObject(playerGo, 10020);
+
+    // NPC 1
+    GameObject* npcGo = new GameObject();
+    Sprite npcSprite = Sprite(*npcGo, "./assets/image/250_scout.png");
+    npcSprite.SetScale(0.5, 0.5);
+    NPC* npc = new NPC(*npcGo, Vec2(1800, 500), npcSprite);
+    
+    npcGo->AddComponent(npc);
+    AddObject(npcGo, 10020);
+
+    // NPC 2
+
+    GameObject* npcGo2 = new GameObject();
+    NPC* npc2 = new NPC(*npcGo2, Vec2(850, 300), Sprite(*npcGo2, "./assets/image/mage-1-85x94.png", 4, 2, 0.2));
+    
+    npcGo2->AddComponent(npc2);
+    AddObject(npcGo2, 10020);
 
     // Camera
     Camera::Follow(playerGo);

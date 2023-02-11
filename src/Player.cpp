@@ -24,6 +24,8 @@ const Player::SpriteInfo files[7] = {
     {"./assets/image/player/Magic_Girl_Idle.png", 8, 1}         // DAMAGED
 };
 
+const Vec2 playerScale(1.5, 1.5);
+
 Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 {
     linearSpeed = 0;
@@ -39,6 +41,8 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     Sprite* sprite = new Sprite(
         associated, files[Action::IDLE].fileName, files[Action::IDLE].frameCountX, files[Action::IDLE].frameCountY, 0.2
     );
+    sprite->SetScale(playerScale.x, playerScale.y);
+    
     associated.AddComponent(sprite);
 
     Collider* collider = new Collider(associated);
@@ -119,6 +123,8 @@ void Player::Update(float dt)
         ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
             files[currentAction].fileName, files[currentAction].frameCountX, files[currentAction].frameCountY, 0.2
         );
+        ((Sprite *) associated.GetComponent("Sprite"))->SetScale(playerScale.x, playerScale.y);
+
         associated.box.SetCenter(currentPos);
     }
 
