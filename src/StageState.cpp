@@ -43,13 +43,9 @@ void StageState::Resume()
 void StageState::LoadAssets()
 {
     // Background Music
-    GameObject* bgMusic = new GameObject();
-    Sound* music = new Sound(*bgMusic, "./assets/audio/doom.mp3", 2);
-    
-    bgMusic->AddComponent(music);
-    music->Play(1);
-
-    backgroundMusic = AddObject(bgMusic);
+    string music = GameData::audiosPath + "musics/tree.mp3";
+    backgroundMusic = Music(music.c_str(), 15);
+    backgroundMusic.Play(1);
 
     // Background
     GameObject* bgGo = new GameObject();

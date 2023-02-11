@@ -2,8 +2,8 @@
 #define STAGESTATE_H
 
 #include "GameObject.h"
+#include "Music.h"
 #include "State.h"
-#include <memory>
 
 using namespace std;
 
@@ -19,8 +19,8 @@ class StageState : public State {
         void Resume();
 
     private:
+        Music backgroundMusic;
         weak_ptr<GameObject> player;
-        weak_ptr<GameObject> backgroundMusic;
         weak_ptr<GameObject> fpsCounter;
 };
 
