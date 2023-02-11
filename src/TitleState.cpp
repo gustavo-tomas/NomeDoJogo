@@ -10,6 +10,24 @@
 
 TitleState::TitleState() : State()
 {
+    cout << "\nTitle State\n";
+}
+
+TitleState::~TitleState()
+{
+    objectArray.clear();
+    cout << "TitleState deleted successfully!\n";
+}
+
+void TitleState::Start()
+{
+    LoadAssets();
+    StartArray();
+    started = true;
+}
+
+void TitleState::LoadAssets()
+{
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/ui_background.jpg");
@@ -51,16 +69,6 @@ TitleState::TitleState() : State()
     AddObject(textGo);
 }
 
-TitleState::~TitleState()
-{
-    objectArray.clear();
-}
-
-void TitleState::LoadAssets()
-{
-
-}
-
 void TitleState::Update(float dt)
 {
     // Sets quit requested
@@ -81,11 +89,6 @@ void TitleState::Update(float dt)
 void TitleState::Render()
 {
     RenderArray();
-}
-
-void TitleState::Start()
-{
-    StartArray();
 }
 
 void TitleState::Pause()
