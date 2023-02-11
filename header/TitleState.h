@@ -1,7 +1,7 @@
 #ifndef TITLESTATE_H
 #define TITLESTATE_H
 
-#include "Music.h"
+#include "GameObject.h"
 #include "State.h"
 
 class TitleState : public State {
@@ -16,7 +16,7 @@ class TitleState : public State {
         void Resume();
 
     private:
-        Music backgroundMusic;
+        weak_ptr<GameObject> backgroundMusic;
 };
 
 #endif // TITLESTATE_H

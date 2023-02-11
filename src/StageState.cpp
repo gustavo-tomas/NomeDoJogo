@@ -13,6 +13,8 @@
 #include "../header/Minion.h"
 #include "../header/NoteSpawner.h"
 #include "../header/NoteTrigger.h"
+#include "../header/Sprite.h"
+#include "../header/Sound.h"
 
 StageState::StageState() : State()
 {
@@ -39,8 +41,13 @@ void StageState::Resume()
 void StageState::LoadAssets()
 {
     // Background Music
-    backgroundMusic = Music("./assets/audio/doom.mp3", 15);
-    backgroundMusic.Play();
+    GameObject* bgMusic = new GameObject();
+    Sound* music = new Sound(*bgMusic, "./assets/audio/doom.mp3", 2);
+    
+    bgMusic->AddComponent(music);
+    music->Play(1);
+
+    backgroundMusic = AddObject(bgMusic);
 
     // Background
     GameObject* bgGo = new GameObject();
@@ -63,19 +70,16 @@ void StageState::LoadAssets()
     Camera::Reset();
 
     // Minion
-    for (int i = 0; i < 1; i++)
-    {
-        GameObject* minionGo = new GameObject();
-        Minion* minion = new Minion(*minionGo, Vec2(704, 100 + i * 150));
-        
-        minionGo->AddComponent(minion);
-        AddObject(minionGo, 10020);
-    }
+    GameObject* minionGo = new GameObject();
+    Minion* minion = new Minion(*minionGo, Vec2(704, 150));
+    
+    minionGo->AddComponent(minion);
+    AddObject(minionGo, 10020);
 
     // FPS counter
-    fpsCounter = new GameObject();
-    CameraFollower* textFollower = new CameraFollower(*fpsCounter, fpsCounter->box.GetVec());
-    fpsCounter->AddComponent(textFollower);
+    GameObject* fps = new GameObject();
+    CameraFollower* textFollower = new CameraFollower(*fps, fps->box.GetVec());
+    fps->AddComponent(textFollower);
 
     const char* fontFile = "./assets/font/Inder-Regular.ttf";
     const char* textStr = "FPS ";
@@ -83,10 +87,10 @@ void StageState::LoadAssets()
     Text::TextStyle style = Text::BLENDED;
     SDL_Color color = {255, 255, 255, 255};
     
-    Text* text = new Text(*fpsCounter, fontFile, fontSize, style, textStr, color);
-    fpsCounter->AddComponent(text);
+    Text* text = new Text(*fps, fontFile, fontSize, style, textStr, color);
+    fps->AddComponent(text);
     
-    AddObject(fpsCounter, 10020);
+    fpsCounter = AddObject(fps, 10020);
 
     // NoteSpawner
     GameObject *spawnerGo = new GameObject(); 
@@ -185,7 +189,7 @@ void StageState::Update(float dt)
     }
 
     // Updates FPS counter
-    Text* FPS_Text = (Text*) fpsCounter->GetComponent("Text");
+    Text* FPS_Text = (Text*) fpsCounter.lock().get()->GetComponent("Text");
     if (FPS_Text != nullptr)
         FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
 }
