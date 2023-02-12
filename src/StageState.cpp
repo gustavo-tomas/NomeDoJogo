@@ -33,12 +33,12 @@ void StageState::Start()
 
 void StageState::Pause()
 {
-
+    backgroundMusic.Pause();
 }
 
 void StageState::Resume()
 {
-    
+    backgroundMusic.Resume();
 }
 
 void StageState::LoadAssets()

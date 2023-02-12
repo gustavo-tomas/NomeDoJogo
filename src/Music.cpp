@@ -1,5 +1,6 @@
 #include "../header/Music.h"
 #include "../header/Resources.h"
+#include <SDL2/SDL_mixer.h>
 
 Music::Music()
 {
@@ -21,6 +22,16 @@ void Music::Play(int times)
         cout << "Error playing music" << endl;
         cout << SDL_GetError() << endl;
     }
+}
+
+void Music::Pause()
+{
+    Mix_PauseMusic();
+}
+
+void Music::Resume()
+{
+    Mix_ResumeMusic();
 }
 
 void Music::SetVolume(int volume)
