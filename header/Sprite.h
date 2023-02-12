@@ -24,14 +24,18 @@ class Sprite : public Component {
         bool Is(const char* type);
         void Render();
         void Render(int x, int y);
+        void Render(int x, int y, int w, int h);
         int GetWidth();
         int GetHeight();
+        int GetUnscaledWidth();
+        int GetUnscaledHeight();
         void SetScale(float scaleX, float scaleY);
         Vec2 GetScale();
         void SetFrame(int frame);
         void SetFrameCount(int frameCountX, int frameCountY);
         void SetFrameTime(float frameTime);
         bool IsOpen();
+        bool isProportionActive{};
 
     private:
         SDL_Texture* texture;

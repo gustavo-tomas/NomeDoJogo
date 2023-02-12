@@ -12,7 +12,7 @@ TileSet::TileSet(int tileWidth, int tileHeight, const char* file)
     columns = tileSet->GetWidth() / this->tileWidth;
 }
 
-void TileSet::RenderTile(unsigned index, float x, float y)
+void TileSet::RenderTile(unsigned index, float x, float y, float scale)
 {
     // 0 <= index <= numOfTiles - 1
     if (index >= 0 && index <= (unsigned) rows * columns - 1)

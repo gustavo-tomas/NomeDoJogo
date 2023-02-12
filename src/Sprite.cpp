@@ -2,6 +2,7 @@
 #include "../header/Game.h"
 #include "../header/Resources.h"
 #include "../header/Camera.h"
+#include "../header/GameData.h"
 
 Sprite::Sprite(GameObject& associated) : Component(associated)
 {
@@ -85,8 +86,33 @@ void Sprite::Render(int x, int y)
     SDL_Rect dstRect;
     dstRect.x = x;
     dstRect.y = y;
-    dstRect.w = clipRect.w * scale.x;
-    dstRect.h = clipRect.h * scale.y;
+    dstRect.w = clipRect.w * scale.x * (isProportionActive? GameData::WIDTH * 1.0 / GameData::BASE_WIDTH : 1.0);
+    dstRect.h = clipRect.h * scale.y * (isProportionActive? GameData::HEIGHT * 1.0 / GameData::BASE_HEIGHT : 1.0);
+
+    if (SDL_RenderCopyEx(
+        Game::GetInstance().GetRenderer(),
+        texture,
+        &clipRect,
+        &dstRect,
+        associated.angleDeg * DEG, // 0° to 360° clockwise
+        nullptr,
+        SDL_FLIP_NONE) < 0)
+    {
+        cout << "Error rendering copy" << endl;
+        cout << SDL_GetError() << endl;
+        exit(1);
+    }
+}
+
+
+
+void Sprite::Render(int x, int y, int w, int h)
+{
+    SDL_Rect dstRect;
+    dstRect.x = x;
+    dstRect.y = y;
+    dstRect.w = w * scale.x * (isProportionActive? GameData::WIDTH * 1.0 / GameData::BASE_WIDTH : 1.0);
+    dstRect.h = h * scale.y * (isProportionActive? GameData::HEIGHT * 1.0 / GameData::BASE_HEIGHT : 1.0);
 
     if (SDL_RenderCopyEx(
         Game::GetInstance().GetRenderer(),
@@ -111,12 +137,22 @@ bool Sprite::Is(const char* type)
 
 int Sprite::GetWidth()
 {
-    return (width / frameCountX) * scale.x;
+    return (width / frameCountX) * scale.x * (isProportionActive? GameData::WIDTH * 1.0 / GameData::BASE_WIDTH : 1.0);
 }
 
 int Sprite::GetHeight()
 {
-    return (height / frameCountY) * scale.y;
+    return (height / frameCountY) * scale.y * (isProportionActive? GameData::HEIGHT * 1.0 / GameData::BASE_HEIGHT : 1.0);
+}
+
+int Sprite::GetUnscaledWidth()
+{
+    return (width / frameCountX);
+}
+
+int Sprite::GetUnscaledHeight()
+{
+    return (height / frameCountY);
 }
 
 void Sprite::SetScale(float scaleX, float scaleY)

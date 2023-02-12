@@ -3,6 +3,8 @@
 
 #include "Music.h"
 #include "State.h"
+#include "CameraFollower.h"
+#include "Sprite.h"
 
 class TitleState : public State {
     public:
@@ -17,6 +19,8 @@ class TitleState : public State {
 
     private:
         Music backgroundMusic;
+        CameraFollower* titleCf;
+        Sprite* title;
 };
 
 #endif // TITLESTATE_H

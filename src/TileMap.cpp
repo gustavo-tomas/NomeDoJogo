@@ -80,8 +80,9 @@ void TileMap::RenderLayer(int layer, float cameraX, float cameraY)
     {
         tileSet->RenderTile(
             tileMatrix[i],
-            tileSet->GetTileWidth() * countCol - cameraX,
-            tileSet->GetTileHeight() * countRow - cameraY
+            floor(tileSet->GetTileWidth() * countCol * scale) - cameraX,
+            floor(tileSet->GetTileHeight() * countRow * scale) - cameraY,
+            scale
         );
         countCol = (countCol + 1) % mapWidth;
 
