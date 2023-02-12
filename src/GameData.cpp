@@ -11,3 +11,6 @@ float GameData::currentFPS = 0.0f;
 float GameData::delay = 1000.0f / targetFPS;
 
 const string GameData::objectsPath = "./assets/image/world/";
+const string GameData::imagesPath = "./assets/image/";
+const string GameData::fontsPath = "./assets/font/";
+const string GameData::audiosPath = "./assets/audio/";

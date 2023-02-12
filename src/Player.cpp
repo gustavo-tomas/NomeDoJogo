@@ -48,6 +48,10 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     // Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25), false);
     associated.AddComponent(collider);
 
+    // UI Elements
+    UserInterface* ui = new UserInterface(associated, {25, 25});
+    associated.AddComponent(ui);
+
     player = this;
 }
 
@@ -58,11 +62,7 @@ Player::~Player()
 
 void Player::Start()
 {
-    // UI Elements
-    UserInterface* ui = new UserInterface(associated, {25, 25});
-    associated.AddComponent(ui);
-
-    // SFX
+    // SFX // ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
     Sound* walkingSound = new Sound(associated, "./assets/audio/sfx/walking_concrete.mp3", MIX_MAX_VOLUME);
     associated.AddComponent(walkingSound);
 }
@@ -115,11 +115,14 @@ void Player::Update(float dt)
             if (velocity.x != 0 || velocity.y != 0)
             {
                 if (!sound->IsOpen())
-                    sound->Play(1);
+                    sound->Play(-1);
+
+                else if (sound->IsOpen())
+                    sound->Resume();
             }
 
             else if (sound->IsOpen())
-                sound->Stop();
+                sound->Pause();
         }
     }
 

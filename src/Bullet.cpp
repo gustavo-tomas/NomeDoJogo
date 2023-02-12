@@ -36,6 +36,13 @@ void Bullet::Update(float dt)
 {
     if (distanceLeft <= 0)
     {
+        associated.RemoveComponent(associated.GetComponent("Collider"));
+        associated.RemoveComponent(associated.GetComponent("Sprite"));
+        
+        Sound* sound = (Sound *) associated.GetComponent("Sound");
+        if (sound != nullptr && sound->IsOpen())
+            return;
+
         cout << "Bullet deleted" << endl;
         associated.RequestDelete();
         return;
@@ -65,8 +72,11 @@ bool Bullet::Is(const char* type)
 
 void Bullet::NotifyCollision(GameObject& other)
 {
-    if (!associated.IsDead() && other.GetComponent("Bullet") == nullptr)
-        associated.RequestDelete();
+    if (other.GetComponent("Bullet") == nullptr)
+    {
+        associated.RemoveComponent(associated.GetComponent("Collider"));
+        associated.RemoveComponent(associated.GetComponent("Sprite"));
+    }
 }
 
 int Bullet::GetDamage()
