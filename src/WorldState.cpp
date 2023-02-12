@@ -35,8 +35,13 @@ void WorldState::Start()
 void WorldState::LoadAssets()
 {
     // Music
-    backgroundMusic = Music("./assets/audio/musics/background.mp3", 15);
-    backgroundMusic.Play();
+    GameObject* bgMusic = new GameObject();
+    Sound* music = new Sound(*bgMusic, "./assets/audio/musics/background.mp3", 15);
+    
+    bgMusic->AddComponent(music);
+    music->Play(-1);
+
+    backgroundMusic = AddObject(bgMusic);
 
     // Background
     GameObject* bgGo = new GameObject();
@@ -49,11 +54,11 @@ void WorldState::LoadAssets()
     AddObject(bgGo, -GameData::HEIGHT);
 
     // Player
-    playerGo = new GameObject();
-    Player* player = new Player(*playerGo);
+    GameObject* playerGo = new GameObject();
+    Player* playerComp = new Player(*playerGo);
     playerGo->box.SetVec(Vec2(1650, 350));
-    playerGo->AddComponent(player);
-    AddObject(playerGo, 10020);
+    playerGo->AddComponent(playerComp);
+    player = AddObject(playerGo, 10020);
 
     // Camera
     Camera::Follow(playerGo);
@@ -205,10 +210,11 @@ void WorldState::Render()
 
 void WorldState::Pause()
 {
-    Sound::StopAllSounds();
+    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Pause();
 }
 
 void WorldState::Resume()
 {
-    Camera::Follow(playerGo);
+    Camera::Follow(player.lock().get());
+    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Resume();
 }

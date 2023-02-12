@@ -26,6 +26,7 @@ class Game {
         float GetDeltaTime();
 
     private:
+        void PreLoadAssets();
         void CalculateDeltaTime();
         void UpdateDelay(Uint64 start, Uint64 end);
         void UpdateFPS(Uint64 start, Uint64 end);

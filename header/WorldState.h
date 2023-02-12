@@ -1,7 +1,6 @@
 #ifndef WORLDSTATE_H
 #define WORLDSTATE_H
 
-#include "Music.h"
 #include "GameObject.h"
 #include "State.h"
 
@@ -27,9 +26,9 @@ class WorldState : public State {
         void Resume();
 
     private:
-        Music backgroundMusic;
-        GameObject* fpsCounter;
-        GameObject* playerGo;
+        weak_ptr<GameObject> backgroundMusic;
+        weak_ptr<GameObject> fpsCounter; // for tests
+        weak_ptr<GameObject> player;
 };
 
 #endif // WORLDSTATE_H
