@@ -8,6 +8,7 @@
 #include "../header/Collision.h"
 #include "../header/GameData.h"
 #include "../header/EndState.h"
+#include "../header/PauseState.h"
 #include "../header/Text.h"
 #include "../header/Player.h"
 #include "../header/Minion.h"
@@ -121,10 +122,10 @@ void StageState::Update(float dt)
         return;
     }
 
-    // Returns to title screen
+    // Pause
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY))
     {
-        popRequested = true;
+        Game::GetInstance().Push(new PauseState());
         return;
     }
 

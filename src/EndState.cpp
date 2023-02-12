@@ -35,6 +35,7 @@ void EndState::Start()
 {
     LoadAssets();
     StartArray();
+    started = true;
 }
 
 void EndState::Update(float dt)

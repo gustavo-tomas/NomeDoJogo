@@ -1,13 +1,12 @@
-#ifndef TITLESTATE_H
-#define TITLESTATE_H
+#ifndef PAUSESTATE_H
+#define PAUSESTATE_H
 
-#include "GameObject.h"
 #include "State.h"
 
-class TitleState : public State {
+class PauseState : public State {
     public:
-        TitleState();
-        ~TitleState();
+        PauseState();
+        ~PauseState();
         void LoadAssets();
         void Update(float dt);
         void Render();
@@ -17,7 +16,6 @@ class TitleState : public State {
 
     private:
         weak_ptr<GameObject> cursor;
-        weak_ptr<GameObject> backgroundMusic;
 };
 
-#endif // TITLESTATE_H
+#endif // PAUSESTATE_H
