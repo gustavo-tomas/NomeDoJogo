@@ -69,6 +69,14 @@ void TitleState::LoadAssets()
 
 void TitleState::Update(float dt)
 {
+
+    if(currResolution.x != GameData::WIDTH && currResolution.y != GameData::HEIGHT){
+        currResolution = Vec2(GameData::WIDTH, GameData::HEIGHT);
+        Vec2 offset = Vec2(GameData::WIDTH / 2.0 - title->GetWidth() / 2.0, GameData::HEIGHT / 2.5 - title->GetHeight() / 2.0);
+        titleCf->setOffset(offset);
+    }
+
+
     // Sets quit requested
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) ||
         InputManager::GetInstance().QuitRequested())
@@ -80,11 +88,6 @@ void TitleState::Update(float dt)
     // Creates new WorldState
     if (InputManager::GetInstance().KeyPress(SPACE_KEY))
         Game::GetInstance().Push(new WorldState());
-
-    if(GameData::fullscreenUpdateCounter > 0){
-        Vec2 offset = Vec2(GameData::WIDTH / 2.0 - title->GetWidth() / 2.0, GameData::HEIGHT / 2.5 - title->GetHeight() / 2.0);
-        titleCf->setOffset(offset);
-    }
     
     UpdateArray(dt);
 }

@@ -34,6 +34,7 @@ class State {
         bool popRequested;
         bool quitRequested;
         bool started;
+        Vec2 currResolution{};
         vector<shared_ptr<GameObject>> objectArray;
         vector<weak_ptr<GameObject>> colliderArray;
 };

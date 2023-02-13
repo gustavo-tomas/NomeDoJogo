@@ -1,4 +1,5 @@
 #include "../header/State.h"
+#include "../header/GameData.h"
 #include <algorithm>
 
 State::State()
@@ -6,6 +7,7 @@ State::State()
     popRequested = false;
     quitRequested = false;
     started = false;
+    currResolution = Vec2(GameData::WIDTH, GameData::HEIGHT);
 }
 
 State::~State()
