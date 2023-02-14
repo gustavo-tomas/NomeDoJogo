@@ -287,7 +287,7 @@ void Player::AddAttackPower(float value)
 
 void Player::ResetMana() 
 {
-    mana = 10;
+    mana = MIN_MANA;
     
     auto ui = (UserInterface *) associated.GetComponent("UserInterface");
     if (ui != nullptr)
