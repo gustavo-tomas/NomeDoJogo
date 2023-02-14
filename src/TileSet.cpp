@@ -21,7 +21,8 @@ void TileSet::RenderTile(unsigned index, float x, float y, float scale)
         unsigned column = (index % columns) * tileWidth;
         
         tileSet->SetClip(column, row, tileWidth, tileHeight);
-        tileSet->Render(x, y);    
+        tileSet->Render(x, y, ceil(tileWidth * scale), ceil(tileHeight * scale));
+
     }
 }
 
