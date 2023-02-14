@@ -20,6 +20,7 @@ class GameData {
         static const string imagesPath;
         static const string fontsPath;
         static const string audiosPath;
+        static bool returnToMenu;
 };
 
 #endif // GAMEDATA_H
