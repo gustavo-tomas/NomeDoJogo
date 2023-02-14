@@ -3,33 +3,42 @@
 
 Sound::Sound(GameObject& associated) : Component(associated)
 {
-    channel = -1;
     chunk = nullptr;
 }
 
 Sound::Sound(GameObject& associated, const char* file, int volume) : Sound(associated)
 {
     this->volume = volume;
-    channel = -1;
     Open(file);
 }
 
 void Sound::Play(int times)
 {
-    channel = Mix_PlayChannel(channel, chunk, times - 1);
+    channel = Mix_PlayChannel(-1, chunk, times - 1);
     SetVolume(volume);
 }
 
 void Sound::SetVolume(int volume)
 {
+    this->volume = volume;
     Mix_Volume(channel, volume);
 }
 
-void Sound::Stop()
+void Sound::Pause()
+{
+    Mix_Pause(channel);
+}
+
+void Sound::Resume()
+{
+    Mix_Resume(channel);
+}
+
+void Sound::Stop(int msToStop)
 {
     if (chunk != nullptr && channel > -1)
     {
-        if (Mix_HaltChannel(channel) != 0)
+        if (Mix_FadeOutChannel(channel, msToStop) < 0)
         {
             cout << "Failed to halt channel: " << channel << "\n";
             cout << SDL_GetError() << "\n";
@@ -52,8 +61,7 @@ void Sound::Open(const char* file)
 
 Sound::~Sound()
 {
-    if (IsOpen()) return; // Hopefully it wont come back to bite me later :)
-    Stop();
+    Stop(0);
 }
 
 bool Sound::IsOpen()

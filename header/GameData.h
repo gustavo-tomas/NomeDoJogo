@@ -21,9 +21,11 @@ class GameData {
         static float currentFPS;
         static float delay;
         static Vec2 playerPos;
-        static const string objectsPath;
-
         static int32_t fullscreenUpdateCounter;
+        static const string objectsPath;
+        static const string imagesPath;
+        static const string fontsPath;
+        static const string audiosPath;
 };
 
 #endif // GAMEDATA_H

@@ -10,6 +10,8 @@
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 #include "../header/StageState.h"
+#include "../header/TestBox.h"
+#include "../header/NPC.h"
 #include "../header/DialogBox.h"
 #include <fstream>
 #include <string>
@@ -35,8 +37,13 @@ void WorldState::Start()
 void WorldState::LoadAssets()
 {
     // Music
-    backgroundMusic = Music("./assets/audio/musics/background.mp3", 15);
-    backgroundMusic.Play();
+    GameObject* bgMusic = new GameObject();
+    Sound* music = new Sound(*bgMusic, "./assets/audio/musics/background.mp3", 15);
+    
+    bgMusic->AddComponent(music);
+    music->Play(-1);
+
+    backgroundMusic = AddObject(bgMusic);
 
     // Background
     GameObject* bgGo = new GameObject();
@@ -49,22 +56,47 @@ void WorldState::LoadAssets()
     AddObject(bgGo, -GameData::HEIGHT);
 
     // Player
-    playerGo = new GameObject();
-    Player* player = new Player(*playerGo);
+    GameObject* playerGo = new GameObject();
+    Player* playerComp = new Player(*playerGo);
     playerGo->box.SetVec(Vec2(1650, 350));
-    playerGo->AddComponent(player);
-    AddObject(playerGo, 10020);
+    playerGo->AddComponent(playerComp);
+    player = AddObject(playerGo, 10020);
+
+    // NPC 1
+    GameObject* npcGo = new GameObject();
+    Sprite npcSprite = Sprite(*npcGo, "./assets/image/250_scout.png");
+    npcSprite.SetScale(0.5, 0.5);
+    NPC* npc = new NPC(*npcGo, "Scout", Vec2(1800, 500), npcSprite);
+    npc->AddSpeech("Ola!");
+    npc->AddSpeech("Bom Dia!");
+
+    
+    npcGo->AddComponent(npc);
+    AddObject(npcGo, 10020);
+
+    // NPC 2
+
+    GameObject* npcGo2 = new GameObject();
+    NPC* npc2 = new NPC(*npcGo2, "Mage", Vec2(850, 300), Sprite(*npcGo2, "./assets/image/mage-1-85x94.png", 4, 2, 0.2));
+    npc2->AddSpeech("Lorem ipsum dolor amet."
+                    " Eu esqueci o resto da frase."
+                    " Aqui vai uma receita de bolo entao: "
+                    " ... eu nao sei fazer bolo :(");
+    
+    npcGo2->AddComponent(npc2);
+    AddObject(npcGo2, 10020);
 
     // Camera
     Camera::Follow(playerGo);
 
     // Dialog
     GameObject* dialogGo = new GameObject();
-    DialogBox* dialog = new DialogBox(*dialogGo, "LOOOLL", 
-                                                            "Lorem ipsum dolor amet."
-                                                            " Eu esqueci o resto da frase."
-                                                            " Aqui vai uma receita de bolo entao: "
-                                                            " ... eu nao sei fazer bolo :(");
+    DialogBox* dialog = new DialogBox(*dialogGo, "Sua missão", 
+                                                            "Encontre todas as partituras "
+                                                            "Para aprender a tocar a sua flauta. "
+                                                            "Com isso venca as batalhas musicais "
+                                                            "para se tornar a flautista oficial da banda!!",
+                                                            Vec2(GameData::WIDTH - 250, 20));
     dialogGo->AddComponent(dialog);
     AddObject(dialogGo, 20002);
 
@@ -205,10 +237,11 @@ void WorldState::Render()
 
 void WorldState::Pause()
 {
-    Sound::StopAllSounds();
+    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Pause();
 }
 
 void WorldState::Resume()
 {
-    Camera::Follow(playerGo);
+    Camera::Follow(player.lock().get());
+    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Resume();
 }

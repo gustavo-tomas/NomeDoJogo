@@ -23,6 +23,16 @@ void Music::Play(int times)
     }
 }
 
+void Music::Pause()
+{
+    Mix_PauseMusic();
+}
+
+void Music::Resume()
+{
+    Mix_ResumeMusic();
+}
+
 void Music::SetVolume(int volume)
 {
     Mix_VolumeMusic(volume);

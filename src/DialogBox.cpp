@@ -4,30 +4,38 @@
 #include "../header/DialogBox.h"
 #include "../header/Text.h"
 
-DialogBox::DialogBox(GameObject& associated, string title, string text) : Component(associated)
+DialogBox::DialogBox(GameObject& associated, string title, string text, Vec2 pos, int wrappingLength) : Component(associated)
 {
     const char* fontFile = "./assets/font/Inder-Regular.ttf";
     Text::TextStyle style = Text::BLENDED;
     SDL_Color color = {255, 255, 255, 255};
-    unsigned int wrappingLength = 200;
 
-    // Title
-    GameObject* titleGo = new GameObject();
-    CameraFollower* titleCf = new CameraFollower(*titleGo, Vec2(GameData::WIDTH - 250, 25));
-    Text* titleText = new Text(*titleGo, fontFile, 18, style, title.c_str(), color);
+    this->title = title;
+    this->text = text;
     
-    titleGo->AddComponent(titleText);
-    titleGo->AddComponent(titleCf);
-    Game::GetInstance().GetCurrentState().AddObject(titleGo, 20002);
+    // Title
+    GameObject* titleGoInitializer = new GameObject();
+    CameraFollower* titleCf = new CameraFollower(*titleGoInitializer, pos);
+    Text* titleText = new Text(*titleGoInitializer, fontFile, 18, style, title.c_str(), color);
+    
+    titleGoInitializer->AddComponent(titleText);
+    titleGoInitializer->AddComponent(titleCf);
+    titleGo = Game::GetInstance().GetCurrentState().AddObject(titleGoInitializer, 20002);
 
     // Dialog
-    GameObject* dialogGo = new GameObject();
-    CameraFollower* dialogCf = new CameraFollower(*dialogGo, Vec2(GameData::WIDTH - 250, 55));
-    Text* dialogText = new Text(*dialogGo, fontFile, 14, style, text.c_str(), color, wrappingLength);
+    GameObject* dialogGoInitializer = new GameObject();
+    CameraFollower* dialogCf = new CameraFollower(*dialogGoInitializer, pos + Vec2(40, 30));
+    Text* dialogText = new Text(*dialogGoInitializer, fontFile, 14, style, text.c_str(), color, wrappingLength);
     
-    dialogGo->AddComponent(dialogText);
-    dialogGo->AddComponent(dialogCf);
-    Game::GetInstance().GetCurrentState().AddObject(dialogGo, 20002);
+    dialogGoInitializer->AddComponent(dialogText);
+    dialogGoInitializer->AddComponent(dialogCf);
+    dialogGo = Game::GetInstance().GetCurrentState().AddObject(dialogGoInitializer, 20002);
+}
+
+DialogBox::~DialogBox()
+{
+    dialogGo.lock()->RequestDelete();
+    titleGo.lock()->RequestDelete();
 }
 
 void DialogBox::Update(float dt)
@@ -44,4 +52,21 @@ bool DialogBox::Is(const char* type)
 {
     string str_type = type; 
     return str_type == "DialogBox";
+}
+
+void DialogBox::Close()
+{
+    associated.RequestDelete();
+}
+
+void DialogBox::SetText(string text)
+{
+    this->text = text;
+    ((Text *) dialogGo.lock()->GetComponent("Text"))->SetText(text.c_str());
+}
+
+void DialogBox::SetTitle(string title)
+{
+    this->title = title;
+    ((Text *) titleGo.lock()->GetComponent("Text"))->SetText(title.c_str());
 }

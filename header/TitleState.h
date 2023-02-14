@@ -1,7 +1,7 @@
 #ifndef TITLESTATE_H
 #define TITLESTATE_H
 
-#include "Music.h"
+#include "GameObject.h"
 #include "State.h"
 #include "CameraFollower.h"
 #include "Sprite.h"
@@ -21,6 +21,8 @@ class TitleState : public State {
         Music backgroundMusic;
         CameraFollower* titleCf;
         Sprite* title;
+        weak_ptr<GameObject> cursor;
+        weak_ptr<GameObject> backgroundMusic;
 };
 
 #endif // TITLESTATE_H

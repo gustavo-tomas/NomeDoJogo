@@ -16,13 +16,15 @@ class Sound : public Component {
         Sound(GameObject& associated, const char* file, int volume = MIX_MAX_VOLUME);
         ~Sound();
         void Play(int times = 1);
-        void Stop();
+        void Stop(int msToStop = 1500);
         void Open(const char* file);
         bool IsOpen();
         void Update(float dt);
         void Render();
         bool Is(const char* type);
         void SetVolume(int volume);
+        void Pause();
+        void Resume();
         static void StopAllSounds();
 
     private:

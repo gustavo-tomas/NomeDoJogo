@@ -9,12 +9,14 @@
 #define ESCAPE_KEY         SDLK_ESCAPE
 #define SPACE_KEY          SDLK_SPACE
 #define TAB_KEY            SDLK_TAB
+#define ENTER_KEY          SDLK_RETURN
 
 #define F_KEY              SDLK_f
 #define A_KEY              SDLK_a
 #define W_KEY              SDLK_w
 #define S_KEY              SDLK_s
 #define D_KEY              SDLK_d
+#define E_KEY              SDLK_e
 
 #define LEFT_MOUSE_BUTTON  SDL_BUTTON_LEFT
 #define RIGHT_MOUSE_BUTTON SDL_BUTTON_RIGHT

@@ -2,7 +2,6 @@
 #include "../header/InputManager.h"
 #include "../header/EventManager.h"
 #include "../header/GameData.h"
-#include "../header/CameraFollower.h"
 #include "../header/Resources.h"
 
 Game* Game::instance = nullptr;
@@ -143,6 +142,26 @@ State& Game::GetCurrentState()
     return *(stateStack.top());
 }
 
+// Moving this to Resources might be nice :)
+void Game::PreLoadAssets()
+{
+    // Images
+    vector<string> images = { "ui_background.jpg", "background.png", "player/Magic_Girl_Idle.png",
+    "player/Magic_Girl_Walk_Down.png", "player/Magic_Girl_Walk_Left.png", "player/Magic_Girl_Walk_Right.png",
+    "player/Magic_Girl_Walk_Up.png" };
+
+    // Audios
+    vector<string> audios = { "musics/background.mp3", "musics/main_theme.mp3",
+        "musics/tree.mp3", "musics/victory.mp3", "sfx/attack.mp3",
+        "sfx/walking_concrete.mp3", "doom.mp3" };
+
+    for (string image : images)
+        Resources::GetImage(GameData::imagesPath + image);
+    
+    for (string audio : audios)
+        Resources::GetSound(GameData::audiosPath + audio);
+}
+
 void Game::Push(State* state)
 {
     storedState = state;
@@ -155,6 +174,8 @@ void Game::Run()
         delete this;
         return;
     }
+
+    PreLoadAssets();
 
     stateStack.push(unique_ptr<State>(storedState));
     stateStack.top()->Start();

@@ -35,6 +35,7 @@ void EndState::Start()
 {
     LoadAssets();
     StartArray();
+    started = true;
 }
 
 void EndState::Update(float dt)
@@ -52,15 +53,15 @@ void EndState::Update(float dt)
 void EndState::LoadAssets()
 {
     // Chooses music depending on the ending
-    const char* musicFile;
+    string musicFile;
 
     if (GameData::playerVictory)
-        musicFile = "./assets/audio/papapa.mp3";
+        musicFile = GameData::audiosPath + "musics/victory.mp3";
 
     else
-        musicFile = "./assets/audio/doom.mp3";
+        musicFile = "./assets/audio/papapa.mp3";
 
-    backgroundMusic = Music(musicFile);
+    backgroundMusic = Music(musicFile.c_str(), 15);
     backgroundMusic.Play(-1);
 
     // Writes text
