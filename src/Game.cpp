@@ -139,7 +139,9 @@ State& Game::GetCurrentState()
 void Game::PreLoadAssets()
 {
     // Images
-    vector<string> images = { "ui_background.jpg", "background.png" };
+    vector<string> images = { "ui_background.jpg", "background.png", "player/Magic_Girl_Idle.png",
+    "player/Magic_Girl_Walk_Down.png", "player/Magic_Girl_Walk_Left.png", "player/Magic_Girl_Walk_Right.png",
+    "player/Magic_Girl_Walk_Up.png" };
 
     // Audios
     vector<string> audios = { "musics/background.mp3", "musics/main_theme.mp3",
