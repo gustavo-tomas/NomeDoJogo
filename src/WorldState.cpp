@@ -61,7 +61,10 @@ void WorldState::LoadAssets()
     GameObject* npcGo = new GameObject();
     Sprite npcSprite = Sprite(*npcGo, "./assets/image/250_scout.png");
     npcSprite.SetScale(0.5, 0.5);
-    NPC* npc = new NPC(*npcGo, Vec2(1800, 500), npcSprite);
+    NPC* npc = new NPC(*npcGo, "Scout", Vec2(1800, 500), npcSprite);
+    npc->AddSpeech("Ola!");
+    npc->AddSpeech("Bom Dia!");
+
     
     npcGo->AddComponent(npc);
     AddObject(npcGo, 10020);
@@ -69,7 +72,11 @@ void WorldState::LoadAssets()
     // NPC 2
 
     GameObject* npcGo2 = new GameObject();
-    NPC* npc2 = new NPC(*npcGo2, Vec2(850, 300), Sprite(*npcGo2, "./assets/image/mage-1-85x94.png", 4, 2, 0.2));
+    NPC* npc2 = new NPC(*npcGo2, "Mage", Vec2(850, 300), Sprite(*npcGo2, "./assets/image/mage-1-85x94.png", 4, 2, 0.2));
+    npc2->AddSpeech("Lorem ipsum dolor amet."
+                    " Eu esqueci o resto da frase."
+                    " Aqui vai uma receita de bolo entao: "
+                    " ... eu nao sei fazer bolo :(");
     
     npcGo2->AddComponent(npc2);
     AddObject(npcGo2, 10020);
@@ -79,11 +86,12 @@ void WorldState::LoadAssets()
 
     // Dialog
     GameObject* dialogGo = new GameObject();
-    DialogBox* dialog = new DialogBox(*dialogGo, "LOOOLL", 
-                                                            "Lorem ipsum dolor amet."
-                                                            " Eu esqueci o resto da frase."
-                                                            " Aqui vai uma receita de bolo entao: "
-                                                            " ... eu nao sei fazer bolo :(");
+    DialogBox* dialog = new DialogBox(*dialogGo, "Sua missão", 
+                                                            "Encontre todas as partituras "
+                                                            "Para aprender a tocar a sua flauta. "
+                                                            "Com isso venca as batalhas musicais "
+                                                            "para se tornar a flautista oficial da banda!!",
+                                                            Vec2(GameData::WIDTH - 250, 20));
     dialogGo->AddComponent(dialog);
     AddObject(dialogGo, 20002);
 

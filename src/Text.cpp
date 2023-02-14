@@ -125,13 +125,13 @@ void Text::RemakeTexture()
     switch (style)
     {
         case SOLID:
-            surface = TTF_RenderText_Solid_Wrapped(font, text, color, wrappingLength);
+            surface = TTF_RenderUTF8_Solid_Wrapped(font, text, color, wrappingLength);
             break;
         case SHADED: // No support for shaded text
             // surface = TTF_RenderText_Shaded(font, text, color);
             break;
         case BLENDED:
-            surface = TTF_RenderText_Blended_Wrapped(font, text, color, wrappingLength);
+            surface = TTF_RenderUTF8_Blended_Wrapped(font, text, color, wrappingLength);
             break;
         default:
             break;
