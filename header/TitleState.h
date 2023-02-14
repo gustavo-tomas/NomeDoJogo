@@ -18,7 +18,6 @@ class TitleState : public State {
         void Resume();
 
     private:
-        Music backgroundMusic;
         CameraFollower* titleCf;
         Sprite* title;
         weak_ptr<GameObject> cursor;
