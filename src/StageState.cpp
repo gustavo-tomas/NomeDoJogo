@@ -122,6 +122,13 @@ void StageState::Update(float dt)
         return;
     }
 
+    // Returns to title screen
+    if (GameData::returnToMenu)
+    {
+        popRequested = true;
+        return;
+    }
+
     // Pause
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY))
     {
@@ -196,6 +203,7 @@ void StageState::Update(float dt)
 
 void StageState::Render()
 {
+    if (GameData::returnToMenu) return;
     RenderArray();
 }
 
