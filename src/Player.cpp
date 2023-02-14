@@ -242,17 +242,36 @@ void Player::Shoot()
     Vec2 offset = Vec2(associated.box.w, -associated.box.h / 4.0);
     bulletGo->box.SetCenter(center + offset);
 
+    string sprite = GameData::imagesPath;
+    string audio = GameData::audiosPath;
+
+    if (mana == MAX_MANA)
+    {
+        sprite += "icons/note5.png";
+        audio += "sfx/special_attack.mp3";
+        ResetMana();
+    }
+    else
+    {
+        sprite += "icons/note1.png";
+        audio += "sfx/attack.mp3";
+        AddMana(-10);
+    }
+
     Bullet* bullet = new Bullet(*bulletGo, angle - (M_PI / 4.0),
                                     speed, attackPower, maxDistance,
-                                    "./assets/image/icons/note1.png", 1, 1, false,
-                                    "./assets/audio/sfx/attack.mp3");
+                                    sprite.c_str(), 1, 1, false,
+                                    audio);
     
     bulletGo->AddComponent(bullet);
 
     Game::GetInstance().GetCurrentState().AddObject(bulletGo, 10020);
 
-    AddMana(-10);
-    ResetAttackPower();
+    if (mana == MIN_MANA)
+        ResetAttackPower();
+
+    else
+        AddAttackPower(-5);
 }
 
 void Player::ResetAttackPower() 
@@ -263,6 +282,7 @@ void Player::ResetAttackPower()
 void Player::AddAttackPower(float value) 
 {
     attackPower += value;
+    attackPower = max(0.f, attackPower);
 }
 
 void Player::ResetMana() 

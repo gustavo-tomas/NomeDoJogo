@@ -20,6 +20,7 @@
 StageState::StageState() : State()
 {
     cout << "\nStageState created successfully!\n" << endl;
+    Minion::minionCount = 0;
 }
 
 void StageState::Start()

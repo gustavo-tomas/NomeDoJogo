@@ -50,11 +50,12 @@ void NoteTrigger::NotifyCollision(GameObject& other)
         {
             float auxValue = min(abs((associated.box.x + associated.box.w) - other.box.x), abs((other.box.x + other.box.w) - associated.box.x));
             float percentage = ceil(auxValue / 5) * 25;
-            
+            float power = percentage / 10;
+
             other.RequestDelete();
 
             Player::player->AddMana(10);
-            Player::player->AddAttackPower(percentage);
+            Player::player->AddAttackPower(power);
         }
     }
 }
