@@ -1,11 +1,10 @@
 #include "../header/Game.h"
-// #include "../header/TitleState.h"
-#include "../header/CreditState.h"
+#include "../header/TitleState.h"
 
 int main(int argc, char** argv)
 {
     Game& game = Game::GetInstance();
-    game.Push(new CreditState());
+    game.Push(new TitleState());
     game.Run();
     return 0;
 }

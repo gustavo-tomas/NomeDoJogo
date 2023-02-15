@@ -1,10 +1,9 @@
 #ifndef CREDITSTATE_H
 #define CREDITSTATE_H
 
-#include "GameObject.h"
 #include "State.h"
-#include "CameraFollower.h"
-#include "Sprite.h"
+#include "Music.h"
+#include "Timer.h"
 
 class CreditState : public State {
     public:
@@ -18,6 +17,9 @@ class CreditState : public State {
         void Resume();
 
     private:
+        void AddText(string text, string fontFile, int fontSize, Vec2 position);
+        Music backgroundMusic;
+        Timer scrollTimer;
 };
 
-#endif // TITLESTATE_H
+#endif // CREDITSTATE_H
