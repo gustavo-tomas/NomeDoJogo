@@ -23,7 +23,6 @@ Minion::Minion(GameObject& associated, Vec2 initialPos) : Component(associated)
 
 Minion::~Minion()
 {
-    cout << minionCount << endl;
     Minion::minionCount--;
 }
 
@@ -59,7 +58,7 @@ void Minion::NotifyCollision(GameObject& other)
         int bulletDamage = bullet->GetDamage();
         hp -= bulletDamage;
 
-        if (hp <= 0) return;
+        if (hp < 10) return;
 
         auto ui = (UserInterface *) associated.GetComponent("UserInterface");
         if (ui != nullptr)
@@ -70,7 +69,7 @@ void Minion::NotifyCollision(GameObject& other)
 void Minion::Shoot(Vec2 pos)
 {
     float angle = associated.box.GetCenter().GetAngle(pos) - (M_PI / 4.0);
-    float speed = 150;
+    float speed = 300;
     float damage = 10;
     float maxDistance = 1000;
 
