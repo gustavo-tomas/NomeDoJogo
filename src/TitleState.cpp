@@ -1,4 +1,5 @@
 #include "../header/TitleState.h"
+#include "../header/ControlState.h"
 #include "../header/GameObject.h"
 #include "../header/Sprite.h"
 #include "../header/InputManager.h"
@@ -71,7 +72,7 @@ void TitleState::LoadAssets()
     CameraFollower* textFollower = new CameraFollower(*textGo,Vec2(250, 400));
     textGo->AddComponent(textFollower);
     
-    vector<string> options = {"NOVO JOGO", "CRÉDITOS", "CONTROLES", "SAIR DO JOGO"};
+    vector<string> options = {"NOVO JOGO", "CRÉDITOS", "CONTROLES", "SAIR"};
 
     for (unsigned i = 0; i < options.size(); i++)
     {
@@ -150,7 +151,7 @@ void TitleState::Update(float dt)
     else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 2)
     {
         GameData::returnToMenu = false;
-        Game::GetInstance().Push(new WorldState());
+        Game::GetInstance().Push(new ControlState());
     }
 
     // Quits
