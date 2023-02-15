@@ -1,5 +1,6 @@
 #include "../header/Game.h"
 #include "../header/InputManager.h"
+#include "../header/EventManager.h"
 #include "../header/GameData.h"
 #include "../header/Resources.h"
 
@@ -71,6 +72,8 @@ Game::Game(const char* title, int width, int height)
         cout << SDL_GetError() << endl;
         exit(1);
     }
+    // SDL_SetWindowResizable(window, SDL_TRUE);
+    // SDL_SetWindowFullscreen(window, SDL_TRUE);
 
     // Creates renderer
     if ((renderer = SDL_CreateRenderer(
@@ -115,6 +118,10 @@ void Game::CalculateDeltaTime()
 float Game::GetDeltaTime()
 {
     return dt;
+}
+
+SDL_Window* Game::GetWindow(){
+    return window;
 }
 
 Game& Game::GetInstance()
@@ -196,7 +203,28 @@ void Game::Run()
         }
         
         CalculateDeltaTime();
+        EventManager::GetInstance().Update();
         InputManager::GetInstance().Update();
+        if(InputManager::GetInstance().KeyPress(F_KEY)){
+            swap(GameData::HEIGHT, GameData::PREV_HEIGHT);
+            swap(GameData::WIDTH, GameData::PREV_WIDTH);
+            GameData::fullscreenUpdateCounter = 2;
+            if(GameData::isFullScreen){
+                SDL_SetWindowSize(Game::GetInstance().GetWindow(), GameData::WIDTH, GameData::HEIGHT);
+                SDL_SetWindowFullscreen(window, SDL_FALSE);
+            } else{
+                SDL_DisplayMode dm;
+                SDL_GetCurrentDisplayMode(0, &dm);
+                GameData::HEIGHT = dm.h;
+                GameData::WIDTH = dm.w;
+                SDL_SetWindowSize(Game::GetInstance().GetWindow(), GameData::WIDTH, GameData::HEIGHT);
+                SDL_SetWindowFullscreen(window, SDL_TRUE);
+            }
+            GameData::isFullScreen = !GameData::isFullScreen;
+        }
+        if(GameData::fullscreenUpdateCounter > 0){
+            GameData::fullscreenUpdateCounter--;
+        }
         stateStack.top()->Update(dt);
         stateStack.top()->Render();
 

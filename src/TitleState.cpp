@@ -42,7 +42,8 @@ void TitleState::LoadAssets()
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/ui_background.jpg");
-    bg->SetScale(0.5556, 0.5556); // Original resolution: 1920x1080
+    bg->SetScale(GameData::BASE_HEIGHT * 1.0f / bg->GetUnscaledHeight(), GameData::BASE_WIDTH * 1.0f / bg->GetUnscaledWidth()); // Original resolution: 1920x1080
+    bg->isProportionActive = true;
     CameraFollower* cf = new CameraFollower(*bgGo);
 
     bgGo->AddComponent(bg);
@@ -51,17 +52,24 @@ void TitleState::LoadAssets()
 
     // Title
     GameObject* titleGo = new GameObject();
-    Sprite* title = new Sprite(*titleGo, "./assets/image/title.png");
+    
+    title = new Sprite(*titleGo, "./assets/image/title.png");
     title->SetScale(0.5, 0.5);
 
     Vec2 offset = Vec2(GameData::WIDTH / 2.0 - title->GetWidth() / 2.0, GameData::HEIGHT / 2.5 - title->GetHeight() / 2.0);
-    CameraFollower* titleCf = new CameraFollower(*titleGo, offset);
+    titleCf = new CameraFollower(*titleGo, offset);
+    
 
     titleGo->AddComponent(title);
     titleGo->AddComponent(titleCf);
     AddObject(titleGo);
 
     // Options
+    GameObject* textGo = new GameObject();
+
+    CameraFollower* textFollower = new CameraFollower(*textGo,Vec2(250, 400));
+    textGo->AddComponent(textFollower);
+    
     vector<string> options = {"NOVO JOGO", "SAIR DO JOGO"};
 
     for (unsigned i = 0; i < options.size(); i++)
@@ -97,6 +105,14 @@ void TitleState::LoadAssets()
 
 void TitleState::Update(float dt)
 {
+
+    if(currResolution.x != GameData::WIDTH && currResolution.y != GameData::HEIGHT){
+        currResolution = Vec2(GameData::WIDTH, GameData::HEIGHT);
+        Vec2 offset = Vec2(GameData::WIDTH / 2.0 - title->GetWidth() / 2.0, GameData::HEIGHT / 2.5 - title->GetHeight() / 2.0);
+        titleCf->setOffset(offset);
+    }
+
+
     // Sets quit requested
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) ||
         InputManager::GetInstance().QuitRequested())

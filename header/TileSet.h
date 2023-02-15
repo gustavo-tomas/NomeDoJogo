@@ -7,7 +7,7 @@
 class TileSet {
     public:
         TileSet(int tileWidth, int tileHeight, const char* file);
-        void RenderTile(unsigned index, float x, float y);
+        void RenderTile(unsigned index, float x, float y, float scale = 1.0);
         int GetTileWidth();
         int GetTileHeight();
 

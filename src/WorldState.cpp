@@ -69,12 +69,10 @@ void WorldState::LoadAssets()
     npc->AddSpeech("Ola!");
     npc->AddSpeech("Bom Dia!");
 
-    
     npcGo->AddComponent(npc);
     AddObject(npcGo, 10020);
 
     // NPC 2
-
     GameObject* npcGo2 = new GameObject();
     NPC* npc2 = new NPC(*npcGo2, "Mage", Vec2(850, 300), Sprite(*npcGo2, "./assets/image/mage-1-85x94.png", 4, 2, 0.2));
     npc2->AddSpeech("Lorem ipsum dolor amet."

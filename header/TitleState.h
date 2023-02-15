@@ -3,6 +3,8 @@
 
 #include "GameObject.h"
 #include "State.h"
+#include "CameraFollower.h"
+#include "Sprite.h"
 
 class TitleState : public State {
     public:
@@ -16,6 +18,8 @@ class TitleState : public State {
         void Resume();
 
     private:
+        CameraFollower* titleCf;
+        Sprite* title;
         weak_ptr<GameObject> cursor;
         weak_ptr<GameObject> backgroundMusic;
 };

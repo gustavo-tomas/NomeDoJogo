@@ -11,6 +11,7 @@
 #define TAB_KEY            SDLK_TAB
 #define ENTER_KEY          SDLK_RETURN
 
+#define F_KEY              SDLK_f
 #define A_KEY              SDLK_a
 #define W_KEY              SDLK_w
 #define S_KEY              SDLK_s
@@ -22,6 +23,7 @@
 
 #include "SDL_include.h"
 #include <unordered_map>
+#include <queue>
 
 using namespace std;
 
@@ -38,12 +40,14 @@ class InputManager {
         int GetMouseX();
         int GetMouseY();
         bool QuitRequested();
+        bool AddEvent(SDL_Event &event);
 
     private:
         InputManager();
         ~InputManager();
         unordered_map<int, bool> keyState;
         unordered_map<int, int> keyUpdate;
+        queue<SDL_Event> eventQueue;
         bool mouseState[6];
         int mouseUpdate[6];
         bool quitRequested;
