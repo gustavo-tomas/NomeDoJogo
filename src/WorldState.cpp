@@ -10,7 +10,6 @@
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 #include "../header/StageState.h"
-#include "../header/TestBox.h"
 #include "../header/NPC.h"
 #include "../header/DialogBox.h"
 #include <fstream>
@@ -171,7 +170,7 @@ void WorldState::Update(float dt)
     }
 
     // Returns to title screen
-    if (InputManager::GetInstance().KeyPress(ESCAPE_KEY))
+    if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) || GameData::returnToMenu)
     {
         popRequested = true;
         return;
@@ -230,6 +229,7 @@ void WorldState::Update(float dt)
 
 void WorldState::Render()
 {
+    if (GameData::returnToMenu) return;
     RenderArray();
 }
 

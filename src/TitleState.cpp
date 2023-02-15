@@ -133,8 +133,11 @@ void TitleState::Update(float dt)
 
     // Creates new WorldState
     if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357)
+    {
+        GameData::returnToMenu = false;
         Game::GetInstance().Push(new WorldState());
-        
+    }
+
     // Quits
     if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y >= 392)
         quitRequested = true;

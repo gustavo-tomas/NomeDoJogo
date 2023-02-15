@@ -21,3 +21,5 @@ const string GameData::objectsPath = "./assets/image/world/";
 const string GameData::imagesPath = "./assets/image/";
 const string GameData::fontsPath = "./assets/font/";
 const string GameData::audiosPath = "./assets/audio/";
+
+bool GameData::returnToMenu = false;

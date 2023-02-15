@@ -1,9 +1,8 @@
 #include "../header/PauseState.h"
 #include "../header/CameraFollower.h"
-#include "../header/Game.h"
+#include "../header/GameData.h"
 #include "../header/InputManager.h"
 #include "../header/Text.h"
-#include "../header/TitleState.h"
 #include "../header/Sprite.h"
 
 PauseState::PauseState()
@@ -98,7 +97,7 @@ void PauseState::Update(float dt)
         quitRequested = true;
 
     // Returns to previous state
-    if (InputManager::GetInstance().KeyPress(ESCAPE_KEY))
+    if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) || GameData::returnToMenu)
         popRequested = true;
 
     // Cursor displacement
@@ -117,7 +116,7 @@ void PauseState::Update(float dt)
 
     // Returns to the menu
     if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y == 291)
-        Game::GetInstance().Push(new TitleState()); // @TODO you are better than this :)
+        GameData::returnToMenu = true;
 
     // Quits
     if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y >= 325)
@@ -129,6 +128,7 @@ void PauseState::Update(float dt)
 
 void PauseState::Render()
 {
+    if (GameData::returnToMenu) return;
     RenderArray();
 }
 
