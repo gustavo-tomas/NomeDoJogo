@@ -8,6 +8,7 @@
 #include "../header/CameraFollower.h"
 #include "../header/Text.h"
 #include "../header/GameData.h"
+#include "../header/CreditState.h"
 #include "../header/Sound.h"
 
 TitleState::TitleState() : State()
@@ -70,7 +71,7 @@ void TitleState::LoadAssets()
     CameraFollower* textFollower = new CameraFollower(*textGo,Vec2(250, 400));
     textGo->AddComponent(textFollower);
     
-    vector<string> options = {"NOVO JOGO", "SAIR DO JOGO"};
+    vector<string> options = {"NOVO JOGO", "CRÉDITOS", "CONTROLES", "SAIR DO JOGO"};
 
     for (unsigned i = 0; i < options.size(); i++)
     {
@@ -129,7 +130,7 @@ void TitleState::Update(float dt)
         cursor.lock().get()->box.y -= 35;
 
     cursor.lock().get()->box.y = max(357.f, cursor.lock().get()->box.y);
-    cursor.lock().get()->box.y = min(392.f, cursor.lock().get()->box.y);
+    cursor.lock().get()->box.y = min(357.f + 35 * 3, cursor.lock().get()->box.y);
 
     // Creates new WorldState
     if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357)
@@ -137,9 +138,23 @@ void TitleState::Update(float dt)
         GameData::returnToMenu = false;
         Game::GetInstance().Push(new WorldState());
     }
+    
+    // Créditos
+    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 1)
+    {
+        GameData::returnToMenu = false;
+        Game::GetInstance().Push(new CreditState());
+    }
+
+    // Controles
+    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 2)
+    {
+        GameData::returnToMenu = false;
+        Game::GetInstance().Push(new WorldState());
+    }
 
     // Quits
-    if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y >= 392)
+    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 3)
         quitRequested = true;
 
     UpdateArray(dt);
