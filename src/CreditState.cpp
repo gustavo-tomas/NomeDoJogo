@@ -27,7 +27,7 @@ void CreditState::Start()
 void CreditState::LoadAssets()
 {
     // Music
-    backgroundMusic = Music((GameData::audiosPath + "musics/tree.mp3").c_str());
+    backgroundMusic = Music((GameData::audiosPath + "musics/tree.mp3").c_str(), 20);
     backgroundMusic.Play(1);
 
     // Background

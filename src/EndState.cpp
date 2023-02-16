@@ -92,10 +92,10 @@ void EndState::LoadAssets()
         musicFile = GameData::audiosPath + "musics/victory.mp3";
 
     else
-        musicFile = "./assets/audio/papapa.mp3";
+        musicFile = GameData::audiosPath + "musics/Game_Over_Theme.mp3";
 
     backgroundMusic = Music(musicFile.c_str(), 15);
-    backgroundMusic.Play(-1);
+    backgroundMusic.Play(1);
 
      // Title
     GameObject* titleGo = new GameObject();

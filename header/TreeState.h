@@ -2,6 +2,7 @@
 #define TREESTATE_H
 
 #include "State.h"
+#include "Music.h"
 
 using namespace std;
 
@@ -15,6 +16,9 @@ class TreeState : public State {
         void Start();
         void Pause();
         void Resume();
+
+    private:
+        Music backgroundMusic;
 };
 
 #endif // TREESTATE_H

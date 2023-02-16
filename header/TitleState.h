@@ -21,7 +21,6 @@ class TitleState : public State {
         CameraFollower* titleCf;
         Sprite* title;
         weak_ptr<GameObject> cursor;
-        weak_ptr<GameObject> backgroundMusic;
 };
 
 #endif // TITLESTATE_H

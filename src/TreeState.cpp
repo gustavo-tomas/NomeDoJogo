@@ -24,11 +24,15 @@ void TreeState::Start()
 {
     LoadAssets();
     StartArray();
-    started = true; 
+    backgroundMusic.Play();
+    started = true;
 }
 
 void TreeState::LoadAssets()
 {
+    // Music
+    backgroundMusic = Music((GameData::audiosPath + "musics/tree.mp3").c_str(), 20);
+
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/parallax-mountain-bg.png");
