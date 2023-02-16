@@ -17,6 +17,8 @@
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 
+bool StageState::playerTurn = false;
+
 StageState::StageState() : State()
 {
     cout << "\nStageState created successfully!\n" << endl;
@@ -45,9 +47,19 @@ void StageState::Resume()
 void StageState::LoadAssets()
 {
     // Background Music
-    string music = GameData::audiosPath + "musics/tree.mp3";
-    backgroundMusic = Music(music.c_str(), 15);
+    musics = vector<MusicInfo> 
+    {
+        { GameData::audiosPath + "musics/Pre-Score(Enemy).mp3", "", 10 },
+        { GameData::audiosPath + "musics/Pre-Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 8 },
+        { GameData::audiosPath + "musics/1st_Score(Enemy).mp3", "", 9 },
+        { GameData::audiosPath + "musics/1st_Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 9 },
+        { GameData::audiosPath + "musics/2nd_Score(Enemy).mp3", "", 25 }
+    };
+    currentMusic = 0;
+
+    backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 15);
     backgroundMusic.Play(1);
+    musicTimer.Restart();
 
     // Background
     GameObject* bgGo = new GameObject();
@@ -92,12 +104,6 @@ void StageState::LoadAssets()
     fps->AddComponent(text);
     
     fpsCounter = AddObject(fps, 10020);
-
-    // NoteSpawner
-    GameObject *spawnerGo = new GameObject(); 
-    NoteSpawner *spawner = new NoteSpawner(*spawnerGo, "./assets/sheet_music/music1.txt");
-    spawnerGo->AddComponent(spawner);
-    AddObject(spawnerGo, 1);
 
     // NoteTriggers
     int triggers[4] = {LEFT_ARROW_KEY, UP_ARROW_KEY, DOWN_ARROW_KEY, RIGHT_ARROW_KEY};
@@ -200,6 +206,30 @@ void StageState::Update(float dt)
     Text* FPS_Text = (Text*) fpsCounter.lock().get()->GetComponent("Text");
     if (FPS_Text != nullptr)
         FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
+
+    // Update music
+    musicTimer.Update(dt);
+    if(musicTimer.Get() > musics[currentMusic].duration)
+    {
+        if(++currentMusic == musics.size())
+        {
+            currentMusic = 0;
+            playerTurn = true;
+        }
+        backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 15);
+        backgroundMusic.Play(1);
+        musicTimer.Restart();
+        playerTurn = !playerTurn;
+
+        // NoteSpawner
+        if(playerTurn)
+        {
+            GameObject *spawnerGo = new GameObject(); 
+            NoteSpawner *spawner = new NoteSpawner(*spawnerGo, musics[currentMusic].notesFile);
+            spawnerGo->AddComponent(spawner);
+            AddObject(spawnerGo, 1);
+        }
+    }
 }
 
 void StageState::Render()

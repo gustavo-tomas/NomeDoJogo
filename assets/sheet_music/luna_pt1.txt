@@ -1,0 +1,7 @@
+speed: 200
+note: 0, 0
+note: 1, 0
+note: 1, 5
+note: 2, 10
+note: 3, 20
+note: 2, 30

@@ -5,6 +5,7 @@
 #include "../header/Collider.h"
 #include "../header/UserInterface.h"
 #include "../header/GameData.h"
+#include "../header/StageState.h"
 
 int Minion::minionCount = 0;
 
@@ -43,7 +44,7 @@ void Minion::Update(float dt)
     }
 
     shootTimer.Update(dt);
-    if (shootTimer.Get() >= 1.2)
+    if (shootTimer.Get() >= 1.2 && !StageState::playerTurn)
         Shoot(GameData::playerPos);
 }
 
