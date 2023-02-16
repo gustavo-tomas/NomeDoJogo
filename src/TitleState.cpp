@@ -4,6 +4,7 @@
 #include "../header/Sprite.h"
 #include "../header/InputManager.h"
 #include "../header/Game.h"
+#include "../header/CutsceneState.h"
 #include "../header/WorldState.h"
 #include "../header/Camera.h"
 #include "../header/CameraFollower.h"
@@ -107,13 +108,12 @@ void TitleState::LoadAssets()
 
 void TitleState::Update(float dt)
 {
-
-    if(currResolution.x != GameData::WIDTH && currResolution.y != GameData::HEIGHT){
+    if (currResolution.x != GameData::WIDTH && currResolution.y != GameData::HEIGHT)
+    {
         currResolution = Vec2(GameData::WIDTH, GameData::HEIGHT);
         Vec2 offset = Vec2(GameData::WIDTH / 2.0 - title->GetWidth() / 2.0, GameData::HEIGHT / 2.5 - title->GetHeight() / 2.0);
         titleCf->setOffset(offset);
     }
-
 
     // Sets quit requested
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) ||
@@ -137,7 +137,15 @@ void TitleState::Update(float dt)
     if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357)
     {
         GameData::returnToMenu = false;
-        Game::GetInstance().Push(new WorldState());
+
+        // Cutscenes and dialogs
+        vector<string> scenes { GameData::imagesPath + "parallax-mountain-bg.png",
+                                GameData::imagesPath + "tileset.png" };
+
+        vector<string> dialogs { GameData::imagesPath + "box.png",
+                                 GameData::imagesPath + "Heart.png" };
+
+        Game::GetInstance().Push(new CutsceneState(scenes, 5.0, dialogs, 5.0, new WorldState()));
     }
     
     // Créditos
