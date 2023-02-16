@@ -16,17 +16,16 @@
 #define MIN_MANA 10
 
 Player* Player::player;
-const Player::SpriteInfo files[7] = { 
-    {"./assets/image/player/Magic_Girl_Idle.png", 8, 1},        // IDLE
-    {"./assets/image/player/Magic_Girl_Walk_Left.png", 6, 1},   // LEFT
-    {"./assets/image/player/Magic_Girl_Walk_Up.png", 8, 1},     // UP
-    {"./assets/image/player/Magic_Girl_Walk_Right.png", 6, 1},  // RIGHT
-    {"./assets/image/player/Magic_Girl_Walk_Down.png", 8, 1},   // DOWN
-    {"./assets/image/player/Magic_Girl_Idle.png", 8, 1},        // ATTACK
-    {"./assets/image/player/Magic_Girl_Idle.png", 8, 1}         // DAMAGED
+const Player::SpriteInfo files[6] = { 
+    {"./assets/image/player/Luna_Idle.png", 4, 1},        // IDLE
+    {"./assets/image/player/Luna_Walk_Right.png", 3, 1},  // LEFT
+    {"./assets/image/player/Luna_Walk_Up.png", 3, 1},     // UP
+    {"./assets/image/player/Luna_Walk_Right.png", 3, 1},  // RIGHT
+    {"./assets/image/player/Luna_Walk_Down.png", 3, 1},   // DOWN
+    {"./assets/image/player/Luna_Flute.png", 7, 1}        // PERFORMING
 };
 
-const Vec2 playerScale(1.5, 1.5);
+const Vec2 playerScale(0.1, 0.1);
 
 Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 {
@@ -41,15 +40,13 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 
     this->moveLimits = moveLimits;
     Sprite* sprite = new Sprite(
-        associated, files[Action::IDLE].fileName, files[Action::IDLE].frameCountX, files[Action::IDLE].frameCountY, 0.2
+        associated, files[Action::IDLE].fileName, files[Action::IDLE].frameCountX, files[Action::IDLE].frameCountY, 0.25
     );
     sprite->SetScale(playerScale.x, playerScale.y);
     
     associated.AddComponent(sprite);
 
-    Collider* collider = new Collider(associated);
-    // Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25));
-    // Collider* collider = new Collider(associated, Vec2(0.70, 0.35), Vec2(0, 25), false);
+    Collider* collider = new Collider(associated, {0.4, 0.2}, {0, 35});
     associated.AddComponent(collider);
 
     // UI Elements
@@ -134,7 +131,7 @@ void Player::Update(float dt)
     {
         Vec2 currentPos = associated.box.GetCenter();
         ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
-            files[currentAction].fileName, files[currentAction].frameCountX, files[currentAction].frameCountY, 0.2
+            files[currentAction].fileName, files[currentAction].frameCountX, files[currentAction].frameCountY, 0.25
         );
         ((Sprite *) associated.GetComponent("Sprite"))->SetScale(playerScale.x, playerScale.y);
 
@@ -161,7 +158,8 @@ void Player::Update(float dt)
         previousAction = Action::WALKING_DOWN;
         break;
 
-    case Action::WALKING_LEFT:            
+    case Action::WALKING_LEFT:
+        ((Sprite *) associated.GetComponent("Sprite"))->SetMirror(true);
         ActionsHandler(velocity);
 
         previousAction = Action::WALKING_LEFT;
@@ -173,27 +171,11 @@ void Player::Update(float dt)
         previousAction = Action::WALKING_RIGHT;
         break;
 
-    case Action::ATTACKING:
-        actionTimer.Update(dt);
-
-        if(actionTimer.Get() > ATTACK_ANIMATION_DURATION){
+    case Action::PERFORMING:
+        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
             Shoot();
-            ActionsHandler(velocity);
-            actionTimer.Restart();
-        }
-
-        previousAction = Action::ATTACKING;
-        break;
-
-    case Action::TAKING_DAMAGE:
-        actionTimer.Update(dt);
-
-        if(actionTimer.Get() > KNOCKBACK_DURATION){
-            ActionsHandler(velocity);
-            actionTimer.Restart();
-        }
-
-        previousAction = Action::TAKING_DAMAGE;
+        
+        previousAction = Action::PERFORMING;
         break;
     }
 
@@ -216,20 +198,14 @@ void Player::Update(float dt)
 
 void Player::ActionsHandler(Vec2 velocity)
 {
-    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
-    {
-        currentAction = Action::ATTACKING;
-        actionTimer.Restart();
-    }
+    if (velocity.y > 0)
+        currentAction = Action::WALKING_DOWN;
 
     else if (velocity.x > 0)
         currentAction = Action::WALKING_RIGHT;
     
     else if (velocity.x < 0)
         currentAction = Action::WALKING_LEFT;
-    
-    else if (velocity.y > 0)
-        currentAction = Action::WALKING_DOWN;
     
     else if (velocity.y < 0)
         currentAction = Action::WALKING_UP;    
@@ -328,8 +304,6 @@ void Player::NotifyCollision(GameObject& other)
     if (bullet != nullptr)
     {
         int bulletDamage = bullet->GetDamage();
-        currentAction = Action::TAKING_DAMAGE;
-        actionTimer.Restart();
 
         hp -= bulletDamage;
         stunHeat += bulletDamage;
@@ -340,4 +314,9 @@ void Player::NotifyCollision(GameObject& other)
         if (ui != nullptr)
             ui->UpdateLifebar(hp / 10);
     }
+}
+
+void Player::SetAction(Action action)
+{
+    currentAction = action;
 }

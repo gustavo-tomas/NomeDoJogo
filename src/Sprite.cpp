@@ -18,6 +18,7 @@ Sprite::Sprite(GameObject& associated, const char* file, int frameCountX, int fr
     this->secondsToSelfDestruct = secondsToSelfDestruct;
     timeElapsed = 0;
     currentFrame = 0;
+    xMirror = false;
     Open(file);
 }
 
@@ -37,9 +38,10 @@ void Sprite::Open(const char* file)
     associated.box.h = height / frameCountY;
 }
 
-void Sprite::ChangeSprite(const char* file, int frameCountX, int frameCountY, float frameTime)
+void Sprite::ChangeSprite(const char* file, int frameCountX, int frameCountY, float frameTime, bool xMirror)
 {
     texture = nullptr;
+    this->xMirror = xMirror;
 
     this->frameCountX = frameCountX;
     this->frameCountY = frameCountY;
@@ -96,7 +98,7 @@ void Sprite::Render(int x, int y)
         &dstRect,
         associated.angleDeg * DEG, // 0° to 360° clockwise
         nullptr,
-        SDL_FLIP_NONE) < 0)
+        xMirror ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) < 0)
     {
         cout << "Error rendering copy" << endl;
         cout << SDL_GetError() << endl;
@@ -121,7 +123,7 @@ void Sprite::Render(int x, int y, int w, int h)
         &dstRect,
         associated.angleDeg * DEG, // 0° to 360° clockwise
         nullptr,
-        SDL_FLIP_NONE) < 0)
+        xMirror ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) < 0)
     {
         cout << "Error rendering copy" << endl;
         cout << SDL_GetError() << endl;
@@ -205,4 +207,8 @@ bool Sprite::IsOpen()
     if (texture != nullptr)
         return true;
     return false;
+}
+
+void Sprite::SetMirror(bool xMirror){
+    this->xMirror = xMirror;
 }

@@ -30,6 +30,18 @@ class Player : public Component {
             int frameCountX, frameCountY;
         };
 
+        enum Action
+        {
+            IDLE,
+            WALKING_LEFT,
+            WALKING_UP,
+            WALKING_RIGHT,
+            WALKING_DOWN,
+            PERFORMING
+        };
+
+        void SetAction(Action action);
+
     private:
         void ActionsHandler(Vec2 velocity);
 
@@ -42,17 +54,6 @@ class Player : public Component {
         Timer stunTimer, actionTimer;
         int stunHeat;
         
-        enum Action
-        {
-            IDLE,
-            WALKING_LEFT,
-            WALKING_UP,
-            WALKING_RIGHT,
-            WALKING_DOWN,
-            ATTACKING,
-            TAKING_DAMAGE
-        };
-
         Action currentAction, previousAction;
 };
 
