@@ -11,6 +11,7 @@
 #include "../header/Sound.h"
 #include "../header/StageState.h"
 #include "../header/NPC.h"
+#include "../header/SheetMusic.h"
 #include "../header/DialogBox.h"
 #include <fstream>
 #include <string>
@@ -82,6 +83,18 @@ void WorldState::LoadAssets()
     
     npcGo2->AddComponent(npc2);
     AddObject(npcGo2, 10020);
+
+
+
+    // NPC 3 - Partitura 1
+    GameObject* npcGo3 = new GameObject();
+    SheetMusic* npc3 = new SheetMusic(*npcGo3, "Mage", Vec2(1050, 300), Sprite(*npcGo3, "./assets/image/mage-1-85x94.png", 4, 2, 0.2), "assets/audio/Combate/Pre-Score(Luna).mp3");
+    npc3->AddSpeech("Lorem ipsum dolor amet."
+                    " Eu esqueci o resto da frase."
+                    " Aqui vai uma receita de bolo entao: "
+                    " ... eu nao sei fazer bolo :(");
+    npcGo3->AddComponent(npc3);
+    AddObject(npcGo3, 10020);
 
     // Camera
     Camera::Follow(playerGo);

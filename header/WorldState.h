@@ -25,8 +25,8 @@ class WorldState : public State {
         void Pause();
         void Resume();
 
-    private:
         weak_ptr<GameObject> backgroundMusic;
+    private:
         weak_ptr<GameObject> fpsCounter; // for tests
         weak_ptr<GameObject> player;
 };
