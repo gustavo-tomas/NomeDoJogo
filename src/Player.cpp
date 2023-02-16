@@ -8,6 +8,7 @@
 #include "../header/Bullet.h"
 #include "../header/GameData.h"
 #include "../header/UserInterface.h"
+#include "../header/StageState.h"
 #include <string>
 
 #define ATTACK_ANIMATION_DURATION 0.25
@@ -216,7 +217,7 @@ void Player::Update(float dt)
 
 void Player::ActionsHandler(Vec2 velocity)
 {
-    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
+    if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20 && StageState::playerTurn)
     {
         currentAction = Action::ATTACKING;
         actionTimer.Restart();
