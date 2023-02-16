@@ -147,7 +147,9 @@ void Game::PreLoadAssets()
 {
     // Images
     vector<string> images = { "ui_background.jpg", "background.png", "player/Luna_Idle.png",
-    "player/Luna_Walk_Down.png", "player/Luna_Walk_Right.png", "player/Luna_Walk_Up.png" };
+    "player/Luna_Walk_Down.png", "player/Luna_Walk_Right.png", "player/Luna_Walk_Up.png",
+    "player/Luna_Walk_Left.png"
+    };
 
     // Audios
     vector<string> audios = { "musics/background.mp3", "musics/main_theme.mp3",

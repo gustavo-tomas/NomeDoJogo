@@ -178,7 +178,7 @@ void WorldState::Update(float dt)
 
     // Creates new StageState
     if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
-        Game::GetInstance().Push(new StageState());
+        ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::PREPARING);
 
     // Updates GOs
     UpdateArray(dt);

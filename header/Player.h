@@ -37,7 +37,9 @@ class Player : public Component {
             WALKING_UP,
             WALKING_RIGHT,
             WALKING_DOWN,
-            PERFORMING
+            PERFORMING,
+            PREPARING,
+            LOSS
         };
 
         void SetAction(Action action);
