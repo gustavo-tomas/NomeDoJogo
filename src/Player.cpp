@@ -85,6 +85,8 @@ void Player::Update(float dt)
     if (hp <= 0)
         currentAction = Action::LOSS;
 
+    shootTimer.Update(dt);
+
     float speed = 300.0;
     // float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
@@ -197,7 +199,7 @@ void Player::Update(float dt)
         if (velocity.x != 0 || velocity.y != 0)
             currentAction = Action::WALK_PERFORMING;
 
-        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20 && StageState::playerTurn)
+        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20 && StageState::playerTurn && shootTimer.Get() > 0.4)
             Shoot();
         
         previousAction = Action::IDLE_PERFORMING;
@@ -278,6 +280,8 @@ void Player::ActionsHandler(Vec2 velocity)
 
 void Player::Shoot()
 {
+    shootTimer.Restart();
+
     float speed = 750;
     float maxDistance = 1000;
 
