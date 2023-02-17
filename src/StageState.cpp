@@ -22,7 +22,7 @@ bool StageState::playerTurn = false;
 
 StageState::StageState() : State()
 {
-    int32_t spawnerX = 0;
+    spawnerX = 0;
     cout << "\nStageState created successfully!\n" << endl;
     Minion::minionCount = 0;
     StageState::playerTurn = true;
