@@ -79,7 +79,7 @@ void StageState::LoadAssets()
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/backgroundBattle.png");
     bg->SetScale(0.2, 0.2);
-    CameraFollower* cf = new CameraFollower(*bgGo, {-100, 0});
+    CameraFollower* cf = new CameraFollower(*bgGo, {0, 0});
 
     bgGo->AddComponent(bg);
     bgGo->AddComponent(cf);
@@ -99,7 +99,7 @@ void StageState::LoadAssets()
 
     // Minion
     GameObject* minionGo = new GameObject();
-    Minion* minion = new Minion(*minionGo, Vec2(704, 150));
+    Minion* minion = new Minion(*minionGo, Vec2(600, 150));
     
     minionGo->AddComponent(minion);
     AddObject(minionGo, 10020);
@@ -137,7 +137,7 @@ void StageState::LoadAssets()
         NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo, triggers[4 - i - 1], i);
         noteTriggerGo->AddComponent(noteTrigger);
         spawnerX = noteTriggerGo->box.x;
-        AddObject(noteTriggerGo, 1);
+        AddObject(noteTriggerGo, 22000);
     }
     if(playerTurn)
     {
