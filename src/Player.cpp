@@ -102,22 +102,24 @@ void Player::Update(float dt)
 
     if (stunHeat < 30)
     {
+        Collider* collider = (Collider *) associated.GetComponent("Collider");
+
         // Up
-        if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || associated.box.y > GameData::HEIGHT / 5.0)) 
+        if (InputManager::GetInstance().IsKeyDown(W_KEY) && (!moveLimits || collider->box.y > GameData::HEIGHT / 5.0)) 
             velocity.y -= 1.f;
 
         // Down
-        if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || associated.box.y + associated.box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
+        if (InputManager::GetInstance().IsKeyDown(S_KEY) && (!moveLimits || collider->box.y + collider->box.h < GameData::HEIGHT - GameData::HEIGHT / 3.0))
             velocity.y += 1.f;
 
         // Right
-        if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || associated.box.x + associated.box.w < GameData::WIDTH / 3.0)) 
+        if (InputManager::GetInstance().IsKeyDown(D_KEY) && (!moveLimits || collider->box.x + collider->box.w < GameData::WIDTH / 3.0)) 
             velocity.x += 1.f;
 
         // Left
-        if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || associated.box.x > GameData::WIDTH / 20.0))
+        if (InputManager::GetInstance().IsKeyDown(A_KEY) && (!moveLimits || collider->box.x > GameData::WIDTH / 20.0))
             velocity.x -= 1.f;
-        
+
         // Walking SFX
         Sound* sound = (Sound *) associated.GetComponent("Sound");
         if (sound != nullptr)

@@ -251,14 +251,10 @@ void StageState::Update(float dt)
             spawnerGo->AddComponent(spawner);
             AddObject(spawnerGo, 1);
         }
-        
-
 
         // Enemy rants
         else
             ((DialogBox *) enemyDialog.lock().get()->GetComponent("DialogBox"))->SetText(dialogs[currentDialog++ % dialogs.size()]);
-    
-    
     }
 }
 
