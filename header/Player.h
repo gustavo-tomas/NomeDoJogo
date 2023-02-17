@@ -29,6 +29,7 @@ class Player : public Component {
         {
             const char* fileName;
             int frameCountX, frameCountY, framesMissing = 0;
+            float frameTime = 0.08;
         };
 
         enum Action

@@ -89,15 +89,18 @@ void WorldState::LoadAssets()
     npcGo2->AddComponent(npc2);
     AddObject(npcGo2, 10020);
 
-    // Partitura 1
-    GameObject* npcGo3 = new GameObject();
-    SheetMusic* npc3 = new SheetMusic(*npcGo3, "Mage", Vec2(1050, 300), Sprite(*npcGo3, "./assets/image/mage-1-85x94.png", 4, 2, 0.2), "assets/audio/Combate/Pre-Score(Luna).mp3");
-    npc3->AddSpeech("Lorem ipsum dolor amet."
-                    " Eu esqueci o resto da frase."
-                    " Aqui vai uma receita de bolo entao: "
-                    " ... eu nao sei fazer bolo :(");
-    npcGo3->AddComponent(npc3);
-    AddObject(npcGo3, 10020);
+    // Partituras
+    for (int i = 0; i < 3; i++)
+    {
+        GameObject* npcGo3 = new GameObject();
+        SheetMusic* npc3 = new SheetMusic(*npcGo3, "Mage", Vec2(1050 + (i * 70), 300), Sprite(*npcGo3, "./assets/image/mage-1-85x94.png", 4, 2, 0.2), "assets/audio/Combate/Pre-Score(Luna).mp3");
+        npc3->AddSpeech("Lorem ipsum dolor amet."
+                        " Eu esqueci o resto da frase."
+                        " Aqui vai uma receita de bolo entao: "
+                        " ... eu nao sei fazer bolo :(");
+        npcGo3->AddComponent(npc3);
+        AddObject(npcGo3, 10020);
+    }
 
     // Camera
     Camera::Follow(playerGo);
@@ -202,7 +205,7 @@ void WorldState::Update(float dt)
     }
 
     // Creates new StageState
-    if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
+    if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON) || collectedSongs == SheetMusic::sheetCounter)
         ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::PREPARING);
 
     // Creates new TreeState

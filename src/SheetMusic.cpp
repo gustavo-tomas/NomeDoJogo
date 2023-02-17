@@ -94,19 +94,22 @@ void SheetMusic::Interact()
     {
         if(++currentSpeech >= speechs.size())
         {
+            WorldState::collectedSongs++;
             dialog->Close();
             currentSpeech = 0;
             talking = false;
 
-            WorldState &worldState = dynamic_cast<WorldState&>(Game::GetInstance().GetCurrentState());
-            Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
-            bgSound->Pause();
-            sound->Play();
-            isMusicPlaying = true;
+            if (WorldState::collectedSongs < SheetMusic::sheetCounter)
+            {
+                WorldState &worldState = dynamic_cast<WorldState&>(Game::GetInstance().GetCurrentState());
+                Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
+                bgSound->Pause();
+                sound->Play();
+                isMusicPlaying = true;
+            }
 
             Player::player->SetAction(Player::Action::PRACTING);
             associated.RemoveComponent(associated.GetComponent("Sprite"));
-            WorldState::collectedSongs++;
         } 
         else 
             dialog->SetText(speechs[currentSpeech]);
