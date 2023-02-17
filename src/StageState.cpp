@@ -22,6 +22,7 @@ bool StageState::playerTurn = false;
 
 StageState::StageState() : State()
 {
+    int32_t spawnerX = 0;
     cout << "\nStageState created successfully!\n" << endl;
     Minion::minionCount = 0;
     StageState::playerTurn = true;
@@ -56,21 +57,16 @@ void StageState::LoadAssets()
     // Background Music
     musics = vector<MusicInfo> 
     {
-        { GameData::audiosPath + "musics/Pre-Score(Luna).mp3", "./assets/sheet_music/pre_score.txt", 8 },
-        { GameData::audiosPath + "musics/Pre-Score(Enemy).mp3", "", 10 },
-        { GameData::audiosPath + "musics/1st_Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 9 },
-        { GameData::audiosPath + "musics/1st_Score(Enemy).mp3", "", 9 },
-        { GameData::audiosPath + "musics/2nd_Score(Luna).mp3", "./assets/sheet_music/luna_pt2.txt", 10 },
-        { GameData::audiosPath + "musics/2nd_Score(Enemy).mp3", "", 25 }
+        // { GameData::audiosPath + "Combate/Pre-Score(Luna).mp3", "./assets/sheet_music/pre_score.txt", 8 },
+        // { GameData::audiosPath + "Combate/Pre-Score(Enemy).mp3", "", 10 },
+        { GameData::audiosPath + "Combate/1st_Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 9 },
+        { GameData::audiosPath + "Combate/1st_Score(Enemy).mp3", "", 9 },
+        { GameData::audiosPath + "Combate/2nd_Score(Luna).mp3", "./assets/sheet_music/luna_pt2.txt", 10 },
+        { GameData::audiosPath + "Combate/2nd_Score(Enemy).mp3", "", 25 },
+        { GameData::audiosPath + "Combate/3rd_Score(Luna).mp3", "./assets/sheet_music/luna_pt3.txt", 21 },
     };
     currentMusic = 0;
-    if(playerTurn)
-    {
-        GameObject *spawnerGo = new GameObject(); 
-        NoteSpawner *spawner = new NoteSpawner(*spawnerGo, musics[currentMusic].notesFile);
-        spawnerGo->AddComponent(spawner);
-        AddObject(spawnerGo, 1);
-    }
+    
 
     backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 12);
     backgroundMusic.Play(1);
@@ -133,13 +129,22 @@ void StageState::LoadAssets()
 
     // NoteTriggers
     int triggers[4] = {LEFT_ARROW_KEY, UP_ARROW_KEY, DOWN_ARROW_KEY, RIGHT_ARROW_KEY};
+    spawnerX = 0;
     for (int i = 0; i < 4; i++)
     {
         GameObject *noteTriggerGo = new GameObject(); 
         noteTriggerGo->box.SetVec(Vec2(40, GameData::HEIGHT - 20 * (i + 1) - 40));
         NoteTrigger *noteTrigger = new NoteTrigger(*noteTriggerGo, triggers[4 - i - 1], i);
         noteTriggerGo->AddComponent(noteTrigger);
+        spawnerX = noteTriggerGo->box.x;
         AddObject(noteTriggerGo, 1);
+    }
+    if(playerTurn)
+    {
+        GameObject *spawnerGo = new GameObject(); 
+        NoteSpawner *spawner = new NoteSpawner(*spawnerGo, musics[currentMusic].notesFile, spawnerX);
+        spawnerGo->AddComponent(spawner);
+        AddObject(spawnerGo, 1);
     }
 }
 
@@ -238,6 +243,9 @@ void StageState::Update(float dt)
     if(musicTimer.Get() > musics[currentMusic].duration)
     {
         currentMusic = (currentMusic + 1) %  musics.size();
+        if(currentMusic == 0){
+            playerTurn = true;
+        }
         backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 15);
         backgroundMusic.Play(1);
         musicTimer.Restart();
@@ -247,7 +255,7 @@ void StageState::Update(float dt)
         if(playerTurn)
         {
             GameObject *spawnerGo = new GameObject(); 
-            NoteSpawner *spawner = new NoteSpawner(*spawnerGo, musics[currentMusic].notesFile);
+            NoteSpawner *spawner = new NoteSpawner(*spawnerGo, musics[currentMusic].notesFile, spawnerX);
             spawnerGo->AddComponent(spawner);
             AddObject(spawnerGo, 1);
         }

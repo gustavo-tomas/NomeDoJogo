@@ -33,6 +33,7 @@ class StageState : public State {
         unsigned int currentMusic, currentDialog;
         weak_ptr<GameObject> player, fpsCounter, enemyDialog;
         vector<string> dialogs;
+        int32_t spawnerX;
 };
 
 #endif // STAGESTATE_H

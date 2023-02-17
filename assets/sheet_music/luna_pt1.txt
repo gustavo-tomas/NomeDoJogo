@@ -1,4 +1,4 @@
-speed: 0.428571429
+speed: 0.375
 note: 2, 3
 note: 1, 6
 note: 2, 9
