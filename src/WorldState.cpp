@@ -60,6 +60,14 @@ void WorldState::LoadAssets()
     bgGo->AddComponent(cf);
     AddObject(bgGo, -GameData::HEIGHT);
 
+    // Map
+    GameObject* mapGo = new GameObject();
+    Sprite* map = new Sprite(*mapGo, "./assets/image/map.png");
+    map->SetScale(0.15, 0.15);
+
+    mapGo->AddComponent(map);
+    AddObject(mapGo, 5002);
+
     // Player
     GameObject* playerGo = new GameObject();
     Player* playerComp = new Player(*playerGo);

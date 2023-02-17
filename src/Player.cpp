@@ -87,7 +87,7 @@ void Player::Update(float dt)
 
     shootTimer.Update(dt);
 
-    float speed = 300.0;
+    float speed = 200.0;
     // float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
 
