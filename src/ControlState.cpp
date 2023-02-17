@@ -49,7 +49,8 @@ void ControlState::LoadAssets()
     AddText("Mover: W, A, S, D\n", GameData::fontsPath + titleFont, nameSize, Vec2(250, 250));
     AddText("Atirar: SPACE\n", GameData::fontsPath + titleFont, nameSize, Vec2(250, 280));
     AddText("Interagir: E\n", GameData::fontsPath + titleFont, nameSize, Vec2(250,310));
-    AddText("Pausa (Modo Batalha): ESC\n", GameData::fontsPath + titleFont, nameSize, Vec2(250,340));
+    AddText("Tocar: ARROW KEYS\n", GameData::fontsPath + titleFont, nameSize, Vec2(250,340));
+    AddText("Pausa (Modo Batalha): ESC\n", GameData::fontsPath + titleFont, nameSize, Vec2(250,370));
 }
 
 void ControlState::AddText(string text, string fontFile, int fontSize, Vec2 position)
