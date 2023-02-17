@@ -244,6 +244,7 @@ void WorldState::Render()
 void WorldState::Pause()
 {
     ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Pause();
+    ((Sound *) player.lock().get()->GetComponent("Sound"))->Pause();
 }
 
 void WorldState::Resume()

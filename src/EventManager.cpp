@@ -25,8 +25,6 @@ void EventManager::Update()
     // Returns 1 if any event is found, 0 otherwise
     while (SDL_PollEvent(&event))
     {
-        int key = event.key.keysym.sym;
-        int button = event.button.button;
         switch (event.type)
         {
             // If event is quit

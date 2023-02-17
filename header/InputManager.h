@@ -40,7 +40,7 @@ class InputManager {
         int GetMouseX();
         int GetMouseY();
         bool QuitRequested();
-        bool AddEvent(SDL_Event &event);
+        void AddEvent(SDL_Event &event);
 
     private:
         InputManager();

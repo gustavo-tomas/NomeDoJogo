@@ -69,9 +69,10 @@ void CutsceneState::LoadAssets()
 
     GameObject* dialogGO = new GameObject();
     Sprite* dialogSprite = new Sprite(*dialogGO, dialogs[dialogCounter].c_str());
+    dialogSprite->SetScale(0.4, 0.4);
     
     dialogGO->AddComponent(dialogSprite);
-    dialogGO->box.SetCenter(Vec2(GameData::BASE_WIDTH / 2.0, GameData::HEIGHT - 150));
+    dialogGO->box.SetCenter(Vec2(GameData::BASE_WIDTH / 2.0, GameData::HEIGHT - dialogGO->box.h / 2.0));
     CameraFollower* dialogCf = new CameraFollower(*dialogGO, dialogGO->box.GetVec());
 
     dialogGO->AddComponent(dialogCf);
@@ -124,10 +125,6 @@ void CutsceneState::SetDialog(unsigned index)
     dialogSprite->ChangeSprite(dialogs[index].c_str());
 
     currentDialog.lock()->box.SetCenter(Vec2(GameData::BASE_WIDTH / 2.0, GameData::HEIGHT - 150));
-
-    // Center the sprite
-    CameraFollower* dialogCf = ((CameraFollower *) currentDialog.lock()->GetComponent("CameraFollower"));
-    dialogCf->setOffset(currentDialog.lock()->box.GetVec());
 }
 
 void CutsceneState::Render()

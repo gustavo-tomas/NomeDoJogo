@@ -136,8 +136,8 @@ void TitleState::Update(float dt)
         vector<string> scenes { GameData::imagesPath + "parallax-mountain-bg.png",
                                 GameData::imagesPath + "tileset.png" };
 
-        vector<string> dialogs { GameData::imagesPath + "box.png",
-                                 GameData::imagesPath + "Heart.png" };
+        vector<string> dialogs { GameData::imagesPath + "dialog/dialogo_1.png",
+                                 GameData::imagesPath + "dialog/dialogo_2.png" };
 
         Game::GetInstance().Push(new CutsceneState(scenes, 5.0, dialogs, 5.0, new WorldState()));
     }
