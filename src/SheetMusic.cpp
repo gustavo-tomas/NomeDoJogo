@@ -8,6 +8,8 @@
 
 using namespace std;
 
+unsigned int SheetMusic::sheetCounter = 0;
+
 SheetMusic::SheetMusic(GameObject& associated, const char* name, Vec2 pos, Sprite sprite, string soudPath) : Component(associated)
 {
     associated.box.SetVec(pos);
@@ -22,18 +24,23 @@ SheetMusic::SheetMusic(GameObject& associated, const char* name, Vec2 pos, Sprit
 
     sound = new Sound(associated, soudPath.c_str(), 15);
     associated.AddComponent(sound);
+
+    SheetMusic::sheetCounter++;
 }
 
 void SheetMusic::Update(float dt)
 {
-    if(!sound->IsOpen() && isMusicPlaying){
+    if (!sound->IsOpen() && isMusicPlaying)
+    {
         WorldState &worldState = dynamic_cast<WorldState&>(Game::GetInstance().GetCurrentState());
         Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
         bgSound->Resume();
         isMusicPlaying = false;
     }
+
     if(talking == true)
         Interact();
+
     else if
     (
         InputManager::GetInstance().KeyPress(E_KEY) &&
@@ -57,7 +64,6 @@ void SheetMusic::Update(float dt)
             isMusicPlaying = true;
         }
     }
-
 }
 
 void SheetMusic::Render(){}
@@ -77,7 +83,6 @@ void SheetMusic::Interact()
 {
     if(associated.box.GetCenter().GetDistance(GameData::playerPos) > associated.box.w/2 + associated.box.h/2 + 25)
     {
-
         dialog->Close();
         talking = false;
         currentSpeech = 0;
@@ -95,7 +100,7 @@ void SheetMusic::Interact()
             bgSound->Pause();
             sound->Play();
             isMusicPlaying = true;
-
+            WorldState::collectedSongs++;
         } 
         else 
             dialog->SetText(speechs[currentSpeech]);

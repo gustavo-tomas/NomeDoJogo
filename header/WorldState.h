@@ -24,11 +24,12 @@ class WorldState : public State {
         void Start();
         void Pause();
         void Resume();
-
         weak_ptr<GameObject> backgroundMusic;
+        static unsigned int collectedSongs;
+
     private:
         weak_ptr<GameObject> fpsCounter; // for tests
-        weak_ptr<GameObject> player;
+        weak_ptr<GameObject> player, counterDialog;
 };
 
 #endif // WORLDSTATE_H
