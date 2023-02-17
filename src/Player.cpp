@@ -11,13 +11,14 @@
 #include "../header/StageState.h"
 #include <string>
 
-#define LOSS_BATTLE_DURATION 1
-#define PREPARING_DURATION 2.45
+#define LOSS_BATTLE_DURATION 1.28
+#define PREPARING_DURATION 2.7
+#define PRACTING_DURATION 7.5
 #define MAX_MANA 40
 #define MIN_MANA 10
 
 Player* Player::player;
-const Player::SpriteInfo files[9] = { 
+const Player::SpriteInfo files[10] = { 
     {"./assets/image/player/Luna_Idle.png", 24, 1},             // IDLE
     {"./assets/image/player/Luna_Walk_Left.png", 12, 1},        // LEFT
     {"./assets/image/player/Luna_Walk_Up.png", 12, 1},          // UP
@@ -26,7 +27,8 @@ const Player::SpriteInfo files[9] = {
     {"./assets/image/player/Luna_Flute_Idle.png", 12, 2},       // IDLE_PERFORMING
     {"./assets/image/player/Luna_Flute_Walk.png", 15, 2, 1},    // WALK_PERFORMING
     {"./assets/image/player/Luna_Prepare.png", 16, 2, 1},       // PREPARING
-    {"./assets/image/player/Luna_Loss.png", 1, 1}               // LOST
+    {"./assets/image/player/Luna_Death.png", 6, 3, 2},          // LOST
+    {"./assets/image/player/Luna_Flute_Idle.png", 12, 2}        // PRACTING
 };
 
 const Vec2 playerScale(0.1, 0.1);
@@ -219,6 +221,19 @@ void Player::Update(float dt)
         }
 
         previousAction = Action::LOSS;
+
+        break;
+
+    case Action::PRACTING:
+        actionTimer.Update(dt);
+        velocity = {0, 0};
+
+        if(actionTimer.Get() > PRACTING_DURATION){
+            currentAction = Action::IDLE;
+            actionTimer.Restart();
+        }
+
+        previousAction = Action::PRACTING;
     }
 
     Collider* collider = (Collider*) associated.GetComponent("Collider");

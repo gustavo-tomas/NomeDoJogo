@@ -40,7 +40,8 @@ class Player : public Component {
             IDLE_PERFORMING,
             WALK_PERFORMING,
             PREPARING,
-            LOSS
+            LOSS,
+            PRACTING
         };
 
         void SetAction(Action action);

@@ -12,13 +12,18 @@
 #include "../header/StageState.h"
 #include "../header/TreeState.h"
 #include "../header/NPC.h"
+#include "../header/SheetMusic.h"
 #include "../header/DialogBox.h"
 #include <fstream>
 #include <string>
 
+unsigned int WorldState::collectedSongs = 0;
+
 WorldState::WorldState() : State()
 {
-    
+    cout << "\nWorld State\n";
+    SheetMusic::sheetCounter = 0;
+    WorldState::collectedSongs = 0;
 }
 
 WorldState::~WorldState()
@@ -84,6 +89,16 @@ void WorldState::LoadAssets()
     npcGo2->AddComponent(npc2);
     AddObject(npcGo2, 10020);
 
+    // Partitura 1
+    GameObject* npcGo3 = new GameObject();
+    SheetMusic* npc3 = new SheetMusic(*npcGo3, "Mage", Vec2(1050, 300), Sprite(*npcGo3, "./assets/image/mage-1-85x94.png", 4, 2, 0.2), "assets/audio/Combate/Pre-Score(Luna).mp3");
+    npc3->AddSpeech("Lorem ipsum dolor amet."
+                    " Eu esqueci o resto da frase."
+                    " Aqui vai uma receita de bolo entao: "
+                    " ... eu nao sei fazer bolo :(");
+    npcGo3->AddComponent(npc3);
+    AddObject(npcGo3, 10020);
+
     // Camera
     Camera::Follow(playerGo);
 
@@ -97,6 +112,15 @@ void WorldState::LoadAssets()
                                                             Vec2(GameData::WIDTH - 250, 20));
     dialogGo->AddComponent(dialog);
     AddObject(dialogGo, 20002);
+
+    // Songs counter
+    GameObject* songsGo = new GameObject();
+    DialogBox* songDialog = new DialogBox(*songsGo, "Partituras", 
+                                                    to_string(WorldState::collectedSongs) + "/" +
+                                                    to_string(SheetMusic::sheetCounter), Vec2(GameData::WIDTH - 250, 175));
+
+    songsGo->AddComponent(songDialog);
+    counterDialog = AddObject(songsGo, 20002);
 
     // World Objects
     vector<WorldObject> objects = {};
@@ -187,6 +211,11 @@ void WorldState::Update(float dt)
         Game::GetInstance().Push(new TreeState());
         return;
     }
+
+    // Updates collected
+    auto dialog = ((DialogBox *) counterDialog.lock().get()->GetComponent("DialogBox"));
+    if (dialog != nullptr)
+        dialog->SetText(to_string(collectedSongs) + "/" + to_string(SheetMusic::sheetCounter));
 
     // Updates GOs
     UpdateArray(dt);
