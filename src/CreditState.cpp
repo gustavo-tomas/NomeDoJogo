@@ -27,7 +27,7 @@ void CreditState::Start()
 void CreditState::LoadAssets()
 {
     // Music
-    backgroundMusic = Music((GameData::audiosPath + "musics/tree.mp3").c_str());
+    backgroundMusic = Music((GameData::audiosPath + "musics/Main_Theme(Master).mp3").c_str(), 15);
     backgroundMusic.Play(1);
 
     // Background
@@ -42,9 +42,9 @@ void CreditState::LoadAssets()
     AddObject(bgGo, -GameData::HEIGHT);
 
     // Credits
-    string programmers = "Davi\n" "Gustavo\n" "Oscar\n";
-    string designers = "Eduardo\n" "Rafael\n" "Rafael\n";
-    string musicians = "Letícia\n" "Luan\n";
+    string programmers = "David Gonçalves Mendes\n" "Gustavo Tomás de Paula\n" "Oscar Etcheaverry Barbosa Madureira da Silva\n";
+    string designers = "Eduardo Lima Dourado\n" "Rafael Schultz da Silva Rodrigues\n" "Rafael De Novo\n";
+    string musicians = "Letícia Nunes Neves\n" "Luan Rodrigues Paz\n";
     
     string titleFont = "Lena.ttf";
     string nameFont = "Inder-Regular.ttf";
@@ -54,16 +54,16 @@ void CreditState::LoadAssets()
     AddText("Som Da Luna\n", GameData::fontsPath + titleFont, titleSize, Vec2(350, 350));
 
     // Programmers
-    AddText("Programacao\n", GameData::fontsPath + titleFont, subtitleSize, Vec2(450, 650));
-    AddText(programmers, GameData::fontsPath + nameFont, nameSize, Vec2(450, 695));
+    AddText("Programacao\n", GameData::fontsPath + titleFont, subtitleSize, Vec2(350, 650));
+    AddText(programmers, GameData::fontsPath + nameFont, nameSize, Vec2(400, 695));
 
     // Designers
-    AddText("Design\n", GameData::fontsPath + titleFont, subtitleSize, Vec2(450, 835));
-    AddText(designers, GameData::fontsPath + nameFont, nameSize, Vec2(450, 880));
+    AddText("Design\n", GameData::fontsPath + titleFont, subtitleSize, Vec2(350, 835));
+    AddText(designers, GameData::fontsPath + nameFont, nameSize, Vec2(400, 880));
 
     // Musicians
-    AddText("Musica/SFX\n", GameData::fontsPath + titleFont, subtitleSize, Vec2(450, 1020));
-    AddText(musicians, GameData::fontsPath + nameFont, nameSize, Vec2(450, 1065));
+    AddText("Musica/SFX\n", GameData::fontsPath + titleFont, subtitleSize, Vec2(350, 1020));
+    AddText(musicians, GameData::fontsPath + nameFont, nameSize, Vec2(400, 1065));
 
     // Thank you
     AddText("Obrigado por jogar o nosso jogo!\n", GameData::fontsPath + titleFont, subtitleSize, Vec2(250, 1450));
@@ -97,11 +97,11 @@ void CreditState::Update(float dt)
 
     scrollTimer.Update(dt);
 
-    if (scrollTimer.Get() >= 38.0)
+    if (scrollTimer.Get() >= 55.0)
         backgroundMusic.Stop(1500);
 
     // Scrolling
-    if (scrollTimer.Get() < 37.0)
+    if (scrollTimer.Get() < 55.0)
     {
         for (auto& object : objectArray)
         {
@@ -111,9 +111,13 @@ void CreditState::Update(float dt)
             CameraFollower* follower = (CameraFollower *) object->GetComponent("CameraFollower");
             if (follower == nullptr) continue;
             
-            follower->setOffset(object->box.GetVec() + Vec2{0, -0.5});
+            follower->setOffset(object->box.GetVec() + Vec2{0, -0.4});
         }
     }
+
+    // Finish
+    if (scrollTimer.Get() > 60.0)
+        quitRequested = true;
 
     UpdateArray(dt);
 }

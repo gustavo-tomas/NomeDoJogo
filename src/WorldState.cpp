@@ -10,6 +10,7 @@
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 #include "../header/StageState.h"
+#include "../header/TreeState.h"
 #include "../header/NPC.h"
 #include "../header/DialogBox.h"
 #include <fstream>
@@ -179,6 +180,13 @@ void WorldState::Update(float dt)
     // Creates new StageState
     if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
         ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::PREPARING);
+
+    // Creates new TreeState
+    if (InputManager::GetInstance().MousePress(RIGHT_MOUSE_BUTTON))
+    {
+        Game::GetInstance().Push(new TreeState());
+        return;
+    }
 
     // Updates GOs
     UpdateArray(dt);

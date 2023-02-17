@@ -57,6 +57,12 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     UserInterface* ui = new UserInterface(associated, {25, 25});
     associated.AddComponent(ui);
 
+    // SFX
+    Sound* walkingSound = new Sound(associated, "./assets/audio/sfx/walking_concrete.mp3", MIX_MAX_VOLUME);
+    associated.AddComponent(walkingSound);
+    walkingSound->Play(1);
+    walkingSound->Pause();
+
     player = this;
 }
 
@@ -67,9 +73,7 @@ Player::~Player()
 
 void Player::Start()
 {
-    // SFX // ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-    Sound* walkingSound = new Sound(associated, "./assets/audio/sfx/walking_concrete.mp3", MIX_MAX_VOLUME);
-    associated.AddComponent(walkingSound);
+
 }
 
 void Player::Update(float dt)
@@ -176,7 +180,7 @@ void Player::Update(float dt)
         if (velocity.x == 0 && velocity.y == 0)
             currentAction = Action::IDLE_PERFORMING;
 
-        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
+        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20 && StageState::playerTurn)
             Shoot();
         
         previousAction = Action::WALK_PERFORMING;
@@ -186,7 +190,7 @@ void Player::Update(float dt)
         if (velocity.x != 0 || velocity.y != 0)
             currentAction = Action::WALK_PERFORMING;
 
-        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
+        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20 && StageState::playerTurn)
             Shoot();
         
         previousAction = Action::IDLE_PERFORMING;

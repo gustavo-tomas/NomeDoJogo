@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Music.h"
 #include "State.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -17,11 +18,21 @@ class StageState : public State {
         void Start();
         void Pause();
         void Resume();
+        static bool playerTurn;
+
+        struct MusicInfo
+        {
+            string musicFile, notesFile;
+            int duration;
+        };
 
     private:
         Music backgroundMusic;
-        weak_ptr<GameObject> player;
-        weak_ptr<GameObject> fpsCounter;
+        Timer musicTimer;
+        vector<MusicInfo> musics; 
+        unsigned int currentMusic, currentDialog;
+        weak_ptr<GameObject> player, fpsCounter, enemyDialog;
+        vector<string> dialogs;
 };
 
 #endif // STAGESTATE_H
