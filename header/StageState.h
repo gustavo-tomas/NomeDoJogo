@@ -30,9 +30,9 @@ class StageState : public State {
         Music backgroundMusic;
         Timer musicTimer;
         vector<MusicInfo> musics; 
-        unsigned int currentMusic;
-        weak_ptr<GameObject> player;
-        weak_ptr<GameObject> fpsCounter;
+        unsigned int currentMusic, currentDialog;
+        weak_ptr<GameObject> player, fpsCounter, enemyDialog;
+        vector<string> dialogs;
 };
 
 #endif // STAGESTATE_H

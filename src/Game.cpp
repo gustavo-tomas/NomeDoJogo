@@ -151,7 +151,7 @@ void Game::PreLoadAssets()
     "player/Magic_Girl_Walk_Up.png" };
 
     // Audios
-    vector<string> audios = { "musics/background.mp3", "musics/main_theme.mp3",
+    vector<string> audios = { "musics/background.mp3", "musics/Main_Theme(Master).mp3",
         "musics/tree.mp3", "musics/victory.mp3", "sfx/attack.mp3",
         "musics/Continue_Theme.mp3", "musics/Game_Over_Theme.mp3",
         "sfx/walking_concrete.mp3", "doom.mp3" };

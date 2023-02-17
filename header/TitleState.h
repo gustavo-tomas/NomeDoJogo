@@ -5,6 +5,8 @@
 #include "State.h"
 #include "CameraFollower.h"
 #include "Sprite.h"
+#include "Music.h"
+#include "Timer.h"
 
 class TitleState : public State {
     public:
@@ -21,6 +23,8 @@ class TitleState : public State {
         CameraFollower* titleCf;
         Sprite* title;
         weak_ptr<GameObject> cursor;
+        Music backgroundMusic;
+        Timer musicTimer;
 };
 
 #endif // TITLESTATE_H

@@ -32,6 +32,10 @@ void TitleState::Start()
 
 void TitleState::LoadAssets()
 {
+    // Background Music
+    backgroundMusic = Music((GameData::audiosPath + "musics/Main_Theme(Master).mp3").c_str(), 15);
+    backgroundMusic.Play(1);
+
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/ui_background.jpg");
@@ -156,6 +160,11 @@ void TitleState::Update(float dt)
     else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 3)
         quitRequested = true;
 
+    musicTimer.Update(dt);
+
+    if (musicTimer.Get() > 14.0)
+        backgroundMusic.Stop(500);
+
     UpdateArray(dt);
 }
 
@@ -166,7 +175,7 @@ void TitleState::Render()
 
 void TitleState::Pause()
 {
-
+    backgroundMusic.Stop(500);
 }
 
 void TitleState::Resume()

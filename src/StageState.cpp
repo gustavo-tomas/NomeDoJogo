@@ -14,6 +14,7 @@
 #include "../header/Minion.h"
 #include "../header/NoteSpawner.h"
 #include "../header/NoteTrigger.h"
+#include "../header/DialogBox.h"
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 
@@ -23,7 +24,7 @@ StageState::StageState() : State()
 {
     cout << "\nStageState created successfully!\n" << endl;
     Minion::minionCount = 0;
-    StageState::playerTurn = false;
+    StageState::playerTurn = true;
 }
 
 void StageState::Start()
@@ -31,7 +32,7 @@ void StageState::Start()
     LoadAssets();
     StartArray();
     started = true;
-    StageState::playerTurn = false;
+    StageState::playerTurn = true;
     
     ((Sound *) player.lock().get()->GetComponent("Sound"))->SetVolume(0);
 }
@@ -52,10 +53,11 @@ void StageState::LoadAssets()
     // Background Music
     musics = vector<MusicInfo> 
     {
-        { GameData::audiosPath + "musics/Pre-Score(Enemy).mp3", "", 10 },
         { GameData::audiosPath + "musics/Pre-Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 8 },
-        { GameData::audiosPath + "musics/1st_Score(Enemy).mp3", "", 9 },
+        { GameData::audiosPath + "musics/Pre-Score(Enemy).mp3", "", 10 },
         { GameData::audiosPath + "musics/1st_Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 9 },
+        { GameData::audiosPath + "musics/1st_Score(Enemy).mp3", "", 9 },
+        { GameData::audiosPath + "musics/2nd_Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 10 },
         { GameData::audiosPath + "musics/2nd_Score(Enemy).mp3", "", 25 }
     };
     currentMusic = 0;
@@ -63,6 +65,10 @@ void StageState::LoadAssets()
     backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 12);
     backgroundMusic.Play(1);
     musicTimer.Restart();
+
+    // Dialogs
+    dialogs = { "É só tu e eu parceiro", "Nas minhas mãos tu vira pão", "Em terra de cego eu sou rei" };
+    currentDialog = 0;
 
     // Background
     GameObject* bgGo = new GameObject();
@@ -91,6 +97,13 @@ void StageState::LoadAssets()
     
     minionGo->AddComponent(minion);
     AddObject(minionGo, 10020);
+
+    // Enemy dialog
+    GameObject* dialogGo = new GameObject();
+    DialogBox* dialog = new DialogBox(*dialogGo, "Robobo", " ", Vec2(GameData::WIDTH - 250, 80));
+    dialogGo->AddComponent(dialog);
+
+    this->enemyDialog = AddObject(dialogGo);
 
     // FPS counter
     GameObject* fps = new GameObject();
@@ -214,11 +227,7 @@ void StageState::Update(float dt)
     musicTimer.Update(dt);
     if(musicTimer.Get() > musics[currentMusic].duration)
     {
-        if(++currentMusic == musics.size())
-        {
-            currentMusic = 0;
-            playerTurn = true;
-        }
+        currentMusic = (currentMusic + 1) %  musics.size();
         backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 15);
         backgroundMusic.Play(1);
         musicTimer.Restart();
@@ -232,6 +241,10 @@ void StageState::Update(float dt)
             spawnerGo->AddComponent(spawner);
             AddObject(spawnerGo, 1);
         }
+
+        // Enemy rants
+        else
+            ((DialogBox *) enemyDialog.lock().get()->GetComponent("DialogBox"))->SetText(dialogs[currentDialog++ % dialogs.size()]);
     }
 }
 
