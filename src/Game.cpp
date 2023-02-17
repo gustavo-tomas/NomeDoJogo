@@ -147,16 +147,17 @@ void Game::PreLoadAssets()
 {
     // Images
     vector<string> images = { "ui_background.jpg", "background.png", "player/Luna_Idle.png",
-    "player/Luna_Walk_Down.png", "player/Luna_Walk_Right.png", "player/Luna_Walk_Up.png",
-    "player/Luna_Walk_Left.png", "player/Luna_Flute_Walk.png", "player/Luna_Flute_Idle.png",
-    "player/Luna_Prepare.png", "player/Luna_Death.png"
+        "player/Luna_Walk_Down.png", "player/Luna_Walk_Right.png", "player/Luna_Walk_Up.png",
+        "player/Luna_Walk_Left.png", "player/Luna_Flute_Walk.png", "player/Luna_Flute_Idle.png",
+        "player/Luna_Prepare.png", "player/Luna_Death.png"
     };
 
     // Audios
     vector<string> audios = { "musics/background.mp3", "musics/Main_Theme(Master).mp3",
         "musics/tree.mp3", "musics/victory.mp3", "sfx/attack.mp3",
         "musics/Continue_Theme.mp3", "musics/Game_Over_Theme.mp3",
-        "sfx/walking_concrete.mp3", "doom.mp3" };
+        "sfx/walking_concrete.mp3"
+    };
 
     for (string image : images)
         Resources::GetImage(GameData::imagesPath + image);

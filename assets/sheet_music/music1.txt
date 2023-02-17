@@ -1,9 +1,0 @@
-speed: 100
-note: 0, 0
-note: 1, 0
-note: 2, 0
-note: 3, 0
-note: 1, 5
-note: 2, 10
-note: 3, 30
-note: 2, 30
