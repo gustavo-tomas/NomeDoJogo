@@ -11,7 +11,6 @@
 #include "../header/Text.h"
 #include "../header/GameData.h"
 #include "../header/CreditState.h"
-#include "../header/Sound.h"
 
 TitleState::TitleState() : State()
 {
@@ -33,15 +32,6 @@ void TitleState::Start()
 
 void TitleState::LoadAssets()
 {
-    // Music
-    GameObject* bgMusic = new GameObject();
-    Sound* music = new Sound(*bgMusic, "./assets/audio/musics/main_theme.mp3", 10);
-    
-    bgMusic->AddComponent(music);
-    music->Play(1);
-
-    backgroundMusic = AddObject(bgMusic);
-
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/ui_background.jpg");
@@ -176,7 +166,7 @@ void TitleState::Render()
 
 void TitleState::Pause()
 {
-    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Stop(2500);
+
 }
 
 void TitleState::Resume()

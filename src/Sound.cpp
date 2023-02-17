@@ -66,6 +66,9 @@ Sound::~Sound()
 
 bool Sound::IsOpen()
 {
+    if (channel < 0)
+        return false;
+
     return Mix_Playing(channel);
 }
 

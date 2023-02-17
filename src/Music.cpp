@@ -15,8 +15,9 @@ Music::Music(const char* file, int volume)
 
 void Music::Play(int times)
 {
+    Mix_FadeOutMusic(0);
     SetVolume(volume);
-    if (Mix_PlayMusic(music, times) < 0)
+    if (music != nullptr && Mix_PlayMusic(music, times) < 0)
     {
         cout << "Error playing music" << endl;
         cout << SDL_GetError() << endl;
@@ -53,7 +54,12 @@ bool Music::IsOpen()
     return (music == nullptr);
 }
 
+bool Music::IsPlaying()
+{
+    return (Mix_PlayingMusic() != 0);
+}
+
 Music::~Music()
 {
-    Stop(0);
+    Stop(500);
 }

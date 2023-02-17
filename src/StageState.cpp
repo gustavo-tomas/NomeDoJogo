@@ -23,6 +23,7 @@ StageState::StageState() : State()
 {
     cout << "\nStageState created successfully!\n" << endl;
     Minion::minionCount = 0;
+    StageState::playerTurn = false;
 }
 
 void StageState::Start()
@@ -30,6 +31,7 @@ void StageState::Start()
     LoadAssets();
     StartArray();
     started = true;
+    StageState::playerTurn = false;
     
     ((Sound *) player.lock().get()->GetComponent("Sound"))->SetVolume(0);
 }
@@ -41,7 +43,8 @@ void StageState::Pause()
 
 void StageState::Resume()
 {
-    backgroundMusic.Resume();
+    if (!GameData::returnToMenu)
+        backgroundMusic.Resume();
 }
 
 void StageState::LoadAssets()
@@ -57,7 +60,7 @@ void StageState::LoadAssets()
     };
     currentMusic = 0;
 
-    backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 15);
+    backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 12);
     backgroundMusic.Play(1);
     musicTimer.Restart();
 
