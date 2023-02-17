@@ -144,7 +144,8 @@ void TitleState::Update(float dt)
             GameData::imagesPath + "preludio/DIALOG_HISTORIA_8.png",
             GameData::imagesPath + "preludio/DIALOG_HISTORIA_9.png",
             GameData::imagesPath + "preludio/DIALOG_HISTORIA_10.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_11_END.png"
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_11_END.png",
+            GameData::imagesPath + "loading.png"
         };
 
         vector<string> dialogs { };
