@@ -56,14 +56,21 @@ void StageState::LoadAssets()
     // Background Music
     musics = vector<MusicInfo> 
     {
-        { GameData::audiosPath + "musics/Pre-Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 8 },
+        { GameData::audiosPath + "musics/Pre-Score(Luna).mp3", "./assets/sheet_music/pre_score.txt", 8 },
         { GameData::audiosPath + "musics/Pre-Score(Enemy).mp3", "", 10 },
         { GameData::audiosPath + "musics/1st_Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 9 },
         { GameData::audiosPath + "musics/1st_Score(Enemy).mp3", "", 9 },
-        { GameData::audiosPath + "musics/2nd_Score(Luna).mp3", "./assets/sheet_music/luna_pt1.txt", 10 },
+        { GameData::audiosPath + "musics/2nd_Score(Luna).mp3", "./assets/sheet_music/luna_pt2.txt", 10 },
         { GameData::audiosPath + "musics/2nd_Score(Enemy).mp3", "", 25 }
     };
     currentMusic = 0;
+    if(playerTurn)
+    {
+        GameObject *spawnerGo = new GameObject(); 
+        NoteSpawner *spawner = new NoteSpawner(*spawnerGo, musics[currentMusic].notesFile);
+        spawnerGo->AddComponent(spawner);
+        AddObject(spawnerGo, 1);
+    }
 
     backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 12);
     backgroundMusic.Play(1);
@@ -234,9 +241,9 @@ void StageState::Update(float dt)
         backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 15);
         backgroundMusic.Play(1);
         musicTimer.Restart();
-        playerTurn = !playerTurn;
 
         // NoteSpawner
+        playerTurn = !playerTurn;
         if(playerTurn)
         {
             GameObject *spawnerGo = new GameObject(); 
@@ -244,10 +251,14 @@ void StageState::Update(float dt)
             spawnerGo->AddComponent(spawner);
             AddObject(spawnerGo, 1);
         }
+        
+
 
         // Enemy rants
         else
             ((DialogBox *) enemyDialog.lock().get()->GetComponent("DialogBox"))->SetText(dialogs[currentDialog++ % dialogs.size()]);
+    
+    
     }
 }
 

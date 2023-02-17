@@ -21,7 +21,7 @@ NoteSpawner::NoteSpawner(GameObject& associated, string sheetMusic) : Component(
     string buff;
     getline(myfile, buff, ':');
     getline(myfile, buff);
-    speed = stoll(buff);
+    speed = stold(buff);
     ind = 0;
 
     CameraFollower *spawnerCF = new CameraFollower(associated, Vec2(GameData::WIDTH + 20, GameData::HEIGHT - 20*4 - 40));
@@ -47,11 +47,11 @@ void NoteSpawner::Update(float dt)
     State& state = Game::GetInstance().GetCurrentState();
     while ((unsigned long int) ind < notes.size())
     {
-        if (timer.Get() >= notes[ind].time)
+        if (timer.Get() >= notes[ind].time * speed - 1 / speed)
         {
             GameObject *noteGo = new GameObject();
             noteGo->box.SetVec(Vec2(associated.box.x, associated.box.y + 20 * notes[ind].h + 1));
-            Note *note = new Note(*noteGo, speed, 3 - notes[ind].h);
+            Note *note = new Note(*noteGo, (GameData::WIDTH - 20) * speed, 3 - notes[ind].h);
             noteGo->AddComponent(note);
             state.AddObject(noteGo, 10050);
             ind++;
