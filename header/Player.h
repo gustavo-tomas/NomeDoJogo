@@ -27,7 +27,7 @@ class Player : public Component {
         struct SpriteInfo
         {
             const char* fileName;
-            int frameCountX, frameCountY;
+            int frameCountX, frameCountY, framesMissing = 0;
         };
 
         enum Action
@@ -37,7 +37,8 @@ class Player : public Component {
             WALKING_UP,
             WALKING_RIGHT,
             WALKING_DOWN,
-            PERFORMING,
+            IDLE_PERFORMING,
+            WALK_PERFORMING,
             PREPARING,
             LOSS
         };

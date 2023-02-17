@@ -18,6 +18,7 @@ Sprite::Sprite(GameObject& associated, const char* file, int frameCountX, int fr
     this->secondsToSelfDestruct = secondsToSelfDestruct;
     timeElapsed = 0;
     currentFrame = 0;
+    framesMissing = 0;
     xMirror = false;
     Open(file);
 }
@@ -38,11 +39,13 @@ void Sprite::Open(const char* file)
     associated.box.h = height / frameCountY;
 }
 
-void Sprite::ChangeSprite(const char* file, int frameCountX, int frameCountY, float frameTime, bool xMirror)
+void Sprite::ChangeSprite(const char* file, int frameCountX, int frameCountY, float frameTime, int framesMissing)
 {
     texture = nullptr;
     this->xMirror = xMirror;
 
+    currentFrame = 0;
+    this->framesMissing = framesMissing;
     this->frameCountX = frameCountX;
     this->frameCountY = frameCountY;
     this->frameTime = frameTime;
@@ -63,7 +66,7 @@ void Sprite::Update(float dt)
     timeElapsed += dt;
     if (timeElapsed > frameTime)
     {
-        currentFrame = (currentFrame + 1) % (frameCountX * frameCountY);
+        currentFrame = (currentFrame + 1) % ((frameCountX * frameCountY) - framesMissing);
         int frameWidth = width / frameCountX;
         int frameHeight = height / frameCountY;
         SetClip(frameWidth * (currentFrame % frameCountX), frameHeight * (currentFrame / frameCountX), frameWidth, frameHeight);

@@ -30,7 +30,7 @@ void StageState::Start()
     started = true;
     
     ((Sound *) player.lock().get()->GetComponent("Sound"))->SetVolume(0);
-    ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::PERFORMING);
+    ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::IDLE_PERFORMING);
     ((Collider *) player.lock().get()->GetComponent("Collider"))->SetScale({0.7, 0.8});
     ((Collider *) player.lock().get()->GetComponent("Collider"))->SetOffset({5, 0});
 }

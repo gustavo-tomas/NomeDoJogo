@@ -12,20 +12,21 @@
 #include <string>
 
 #define LOSS_BATTLE_DURATION 1
-#define PREPARING_DURATION 1
+#define PREPARING_DURATION 2.45
 #define MAX_MANA 40
 #define MIN_MANA 10
 
 Player* Player::player;
-const Player::SpriteInfo files[8] = { 
-    {"./assets/image/player/Luna_Idle.png", 24, 1},       // IDLE
-    {"./assets/image/player/Luna_Walk_Left.png", 12, 1},  // LEFT
-    {"./assets/image/player/Luna_Walk_Up.png", 12, 1},    // UP
-    {"./assets/image/player/Luna_Walk_Right.png", 12, 1}, // RIGHT
-    {"./assets/image/player/Luna_Walk_Down.png", 12, 1},  // DOWN
-    {"./assets/image/player/Luna_Flute.png", 7, 1},       // PERFORMING
-    {"./assets/image/player/Luna_Flute.png", 7, 1},       // PREPARING
-    {"./assets/image/player/Luna_Loss.png", 1, 1}         // LOST
+const Player::SpriteInfo files[9] = { 
+    {"./assets/image/player/Luna_Idle.png", 24, 1},             // IDLE
+    {"./assets/image/player/Luna_Walk_Left.png", 12, 1},        // LEFT
+    {"./assets/image/player/Luna_Walk_Up.png", 12, 1},          // UP
+    {"./assets/image/player/Luna_Walk_Right.png", 12, 1},       // RIGHT
+    {"./assets/image/player/Luna_Walk_Down.png", 12, 1},        // DOWN
+    {"./assets/image/player/Luna_Flute_Idle.png", 12, 2},       // IDLE_PERFORMING
+    {"./assets/image/player/Luna_Flute_Walk.png", 15, 2, 1},    // WALK_PERFORMING
+    {"./assets/image/player/Luna_Prepare.png", 16, 2, 1},       // PREPARING
+    {"./assets/image/player/Luna_Loss.png", 1, 1}               // LOST
 };
 
 const Vec2 playerScale(0.1, 0.1);
@@ -131,7 +132,8 @@ void Player::Update(float dt)
     {
         Vec2 currentPos = associated.box.GetCenter();
         ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
-            files[currentAction].fileName, files[currentAction].frameCountX, files[currentAction].frameCountY, 0.08
+            files[currentAction].fileName, files[currentAction].frameCountX,
+             files[currentAction].frameCountY, 0.08, files[currentAction].framesMissing
         );
         ((Sprite *) associated.GetComponent("Sprite"))->SetScale(playerScale.x, playerScale.y);
 
@@ -170,14 +172,24 @@ void Player::Update(float dt)
         previousAction = Action::WALKING_RIGHT;
         break;
 
-    case Action::PERFORMING:
+    case Action::WALK_PERFORMING:
         if (velocity.x == 0 && velocity.y == 0)
-            ((Sprite *) associated.GetComponent("Sprite"))->SetFrame(0);
+            currentAction = Action::IDLE_PERFORMING;
 
         if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
             Shoot();
         
-        previousAction = Action::PERFORMING;
+        previousAction = Action::WALK_PERFORMING;
+        break;
+
+    case Action::IDLE_PERFORMING:
+        if (velocity.x != 0 || velocity.y != 0)
+            currentAction = Action::WALK_PERFORMING;
+
+        if (InputManager::GetInstance().IsKeyDown(SPACE_KEY) && mana >= 20)
+            Shoot();
+        
+        previousAction = Action::IDLE_PERFORMING;
         break;
 
     case Action::PREPARING:
