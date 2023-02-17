@@ -35,7 +35,7 @@ void TreeState::LoadAssets()
 
     // Background
     GameObject* bgGo = new GameObject();
-    Sprite* bg = new Sprite(*bgGo, "./assets/image/parallax-mountain-bg.png");
+    Sprite* bg = new Sprite(*bgGo, "./assets/image/background.png");
     bg->SetScale(4.0, 4.0);
     CameraFollower* cf = new CameraFollower(*bgGo);
 
@@ -43,8 +43,17 @@ void TreeState::LoadAssets()
     bgGo->AddComponent(cf);
     AddObject(bgGo, -GameData::HEIGHT);
 
+    // Tree
+    GameObject* treeGo = new GameObject();
+    Sprite* tree = new Sprite(*treeGo, "./assets/image/tree.png");
+    tree->SetScale(0.15, 0.15);
+
+    treeGo->AddComponent(tree);
+    AddObject(treeGo, 5002);
+
     // Player
     GameObject* playerGo = new GameObject();
+    playerGo->box.SetVec({891, 1451});
     Player* playerComp = new Player(*playerGo);
 
     playerGo->AddComponent(playerComp);
@@ -53,17 +62,17 @@ void TreeState::LoadAssets()
     // Camera
     Camera::Follow(playerGo);
 
-    // Tree
-    GameObject* treeGo = new GameObject();
-    Sprite treeSprite = Sprite(*treeGo, "./assets/image/250_scout.png");
-    treeSprite.SetScale(0.5, 0.5);
+    // // Tree
+    // GameObject* treeGo = new GameObject();
+    // Sprite treeSprite = Sprite(*treeGo, "./assets/image/250_scout.png");
+    // treeSprite.SetScale(0.5, 0.5);
     
-    NPC* tree = new NPC(*treeGo, "Árvore", Vec2(100, -200), treeSprite);
-    tree->AddSpeech("Eu sou a grande árvore");
-    tree->AddSpeech("E não tenho boca pra te dizer o que fazer");
+    // NPC* tree = new NPC(*treeGo, "Árvore", Vec2(100, -200), treeSprite);
+    // tree->AddSpeech("Eu sou a grande árvore");
+    // tree->AddSpeech("E não tenho boca pra te dizer o que fazer");
 
-    treeGo->AddComponent(tree);
-    AddObject(treeGo, 10020);
+    // treeGo->AddComponent(tree);
+    // AddObject(treeGo, 10020);
 
     // Trigger
     healingArea = Rect(treeGo->box.x, treeGo->box.y, treeGo->box.w + 30, treeGo->box.h + 30);

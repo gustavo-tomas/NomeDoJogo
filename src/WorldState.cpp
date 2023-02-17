@@ -60,59 +60,117 @@ void WorldState::LoadAssets()
     bgGo->AddComponent(cf);
     AddObject(bgGo, -GameData::HEIGHT);
 
+    // Map
+    GameObject* mapGo = new GameObject();
+    Sprite* map = new Sprite(*mapGo, "./assets/image/map.png");
+    map->SetScale(0.15, 0.15);
+
+    mapGo->AddComponent(map);
+    AddObject(mapGo, 5002);
+    
+    auto mapHeight = map->GetHeight();
+    auto mapWidth = map->GetWidth();
+
     // Player
     GameObject* playerGo = new GameObject();
     Player* playerComp = new Player(*playerGo);
-    playerGo->box.SetVec(Vec2(1650, 350));
+    playerGo->box.SetVec(Vec2(537, 1314));
     playerGo->AddComponent(playerComp);
     player = AddObject(playerGo, 10020);
 
-    // NPC 1
-    GameObject* npcGo = new GameObject();
-    Sprite npcSprite = Sprite(*npcGo, "./assets/image/250_scout.png");
-    npcSprite.SetScale(0.5, 0.5);
-    NPC* npc = new NPC(*npcGo, "Scout", Vec2(1800, 500), npcSprite);
-    npc->AddSpeech("Ola!");
-    npc->AddSpeech("Bom Dia!");
+    // GameObject* border1GO = new GameObject();
+    // border1GO->box.x = 0;
+    // border1GO->box.y = 120;
+    // border1GO->box.w = 90;
+    // border1GO->box.h = mapHeight;
+    // Collider* border1collider = new Collider(*border1GO, Vec2(1, 1), Vec2(0, 0));
+    // border1GO->AddComponent(border1collider);
+    // AddObject(border1GO, 1000000);
 
-    npcGo->AddComponent(npc);
-    AddObject(npcGo, 10020);
+    // GameObject* border2GO = new GameObject();
+    // border2GO->box.x = 0;
+    // border2GO->box.w = mapWidth;
+    // border2GO->box.h = 120;
+    // Collider* border2collider = new Collider(*border2GO, Vec2(1, 1), Vec2(0, 0));
+    // border2GO->AddComponent(border2collider);
+    // AddObject(border2GO, 1000000);
+
+    // vector<Rect> positions{{-1172, -181, 3245, 20}, {-1172, -181, 20, 1892}, {-1172, 1711, 3245, 20}, {2073, -181, 20, 1892}};
+    vector<Rect> positions{{-1172, -181, 3245-40, 100}, {-1172, -181, 100, 1892}, {-1172, 1711, 3245, 100}, {2073, -181, 100, 1892}};
+
+    for (auto position : positions)
+    {
+        GameObject* objectGo = new GameObject();
+        objectGo->box = position;
+
+        Collider* objectCollider = new Collider(*objectGo);
+        objectGo->AddComponent(objectCollider);
+        
+        AddObject(objectGo);
+    }
+
+    // // NPC 1
+    // GameObject* npcGo = new GameObject();
+    // Sprite npcSprite = Sprite(*npcGo, "./assets/image/250_scout.png");
+    // npcSprite.SetScale(0.5, 0.5);
+    // NPC* npc = new NPC(*npcGo, "Scout", Vec2(1800, 500), npcSprite);
+    // npc->AddSpeech("Ola!");
+    // npc->AddSpeech("Bom Dia!");
+
+    // npcGo->AddComponent(npc);
+    // AddObject(npcGo, 10020);
 
     // NPC 2
-    GameObject* npcGo2 = new GameObject();
-    NPC* npc2 = new NPC(*npcGo2, "Mage", Vec2(850, 300), Sprite(*npcGo2, "./assets/image/mage-1-85x94.png", 4, 2, 0.2));
-    npc2->AddSpeech("Lorem ipsum dolor amet."
-                    " Eu esqueci o resto da frase."
-                    " Aqui vai uma receita de bolo entao: "
-                    " ... eu nao sei fazer bolo :(");
+    // GameObject* npcGo2 = new GameObject();
+    // NPC* npc2 = new NPC(*npcGo2, "Mage", Vec2(850, 300), Sprite(*npcGo2, "./assets/image/mage-1-85x94.png", 4, 2, 0.2));
+    // npc2->AddSpeech("Lorem ipsum dolor amet."
+    //                 " Eu esqueci o resto da frase."
+    //                 " Aqui vai uma receita de bolo entao: "
+    //                 " ... eu nao sei fazer bolo :(");
     
-    npcGo2->AddComponent(npc2);
-    AddObject(npcGo2, 10020);
+    // npcGo2->AddComponent(npc2);
+    // AddObject(npcGo2, 10020);
 
-    // Partituras
-    for (int i = 0; i < 3; i++)
-    {
+    // // Partituras
+    // for (int i = 0; i < 3; i++)
+    // {
+    //     GameObject* npcGo3 = new GameObject();
+    //     SheetMusic* npc3 = new SheetMusic(*npcGo3, "Mage", Vec2(1050 + (i * 70), 300), Sprite(*npcGo3, "./assets/image/mage-1-85x94.png", 4, 2, 0.2), "assets/audio/Combate/Pre-Score(Luna).mp3");
+    //     npc3->AddSpeech("Lorem ipsum dolor amet."
+    //                     " Eu esqueci o resto da frase."
+    //                     " Aqui vai uma receita de bolo entao: "
+    //                     " ... eu nao sei fazer bolo :(");
+    //     npcGo3->AddComponent(npc3);
+    //     AddObject(npcGo3, 10020);
+    // }
+
         GameObject* npcGo3 = new GameObject();
-        SheetMusic* npc3 = new SheetMusic(*npcGo3, "Mage", Vec2(1050 + (i * 70), 300), Sprite(*npcGo3, "./assets/image/mage-1-85x94.png", 4, 2, 0.2), "assets/audio/Combate/Pre-Score(Luna).mp3");
-        npc3->AddSpeech("Lorem ipsum dolor amet."
-                        " Eu esqueci o resto da frase."
-                        " Aqui vai uma receita de bolo entao: "
-                        " ... eu nao sei fazer bolo :(");
+        SheetMusic* npc3 = new SheetMusic(*npcGo3, "Mage", Vec2(1700, 1300), Sprite(*npcGo3, "./assets/image/mage-1-85x94.png", 4, 2, 0.2), "assets/audio/Combate/Pre-Score(Luna).mp3");
+        npc3->AddSpeech("Você encontrou uma partitura de música, experimente tocá-la!");
         npcGo3->AddComponent(npc3);
         AddObject(npcGo3, 10020);
-    }
+
+        npcGo3 = new GameObject();
+        npc3 = new SheetMusic(*npcGo3, "Mage", Vec2(900, 800), Sprite(*npcGo3, "./assets/image/mage-1-85x94.png", 4, 2, 0.2), "assets/audio/Combate/Pre-Score(Luna).mp3");
+        npc3->AddSpeech("Você encontrou uma partitura de música, experimente tocá-la!");
+        npcGo3->AddComponent(npc3);
+        AddObject(npcGo3, 10020);
+
+        npcGo3 = new GameObject();
+        npc3 = new SheetMusic(*npcGo3, "Mage", Vec2(600, 150), Sprite(*npcGo3, "./assets/image/mage-1-85x94.png", 4, 2, 0.2), "assets/audio/Combate/Pre-Score(Luna).mp3");
+        npc3->AddSpeech("Você encontrou uma partitura de música, experimente tocá-la!");
+        npcGo3->AddComponent(npc3);
+        AddObject(npcGo3, 10020);
+
+
 
     // Camera
     Camera::Follow(playerGo);
 
     // Dialog
     GameObject* dialogGo = new GameObject();
-    DialogBox* dialog = new DialogBox(*dialogGo, "Sua missão", 
-                                                            "Encontre todas as partituras "
-                                                            "Para aprender a tocar a sua flauta. "
-                                                            "Com isso venca as batalhas musicais "
-                                                            "para se tornar a flautista oficial da banda!!",
-                                                            Vec2(GameData::WIDTH - 250, 20));
+    DialogBox* dialog = new DialogBox(*dialogGo, "Sua missão", "Encontre todas as partituras musicais",
+                                      Vec2(GameData::WIDTH - 250, 20));
     dialogGo->AddComponent(dialog);
     AddObject(dialogGo, 20002);
 
@@ -120,7 +178,7 @@ void WorldState::LoadAssets()
     GameObject* songsGo = new GameObject();
     DialogBox* songDialog = new DialogBox(*songsGo, "Partituras", 
                                                     to_string(WorldState::collectedSongs) + "/" +
-                                                    to_string(SheetMusic::sheetCounter), Vec2(GameData::WIDTH - 250, 175));
+                                                    to_string(SheetMusic::sheetCounter), Vec2(GameData::WIDTH - 250, 90));
 
     songsGo->AddComponent(songDialog);
     counterDialog = AddObject(songsGo, 20002);
@@ -128,46 +186,46 @@ void WorldState::LoadAssets()
     // World Objects
     vector<WorldObject> objects = {};
 
-    ifstream mappingFile; 
-    mappingFile.open("./assets/map/world_objects.txt");
+    // ifstream mappingFile; 
+    // mappingFile.open("./assets/map/world_objects.txt");
 
-    string buff;
-    getline(mappingFile, buff);
+    // string buff;
+    // getline(mappingFile, buff);
 
     // Format: < name, position, scale, >
-    while (!getline(mappingFile, buff).eof())
-    {
-        size_t pos = 0;
-        bool nameFound = false;
-        string name;
-        vector<float> values;
+    // while (!getline(mappingFile, buff).eof())
+    // {
+    //     size_t pos = 0;
+    //     bool nameFound = false;
+    //     string name;
+    //     vector<float> values;
 
-        while ((pos = buff.find(",")) != string::npos)
-        {
-            string token = buff.substr(0, pos);
+    //     while ((pos = buff.find(",")) != string::npos)
+    //     {
+    //         string token = buff.substr(0, pos);
             
-            if (!nameFound)
-            {
-                name = token;
-                nameFound = true;
-            }
+    //         if (!nameFound)
+    //         {
+    //             name = token;
+    //             nameFound = true;
+    //         }
 
-            else
-                values.push_back(stof(token));
+    //         else
+    //             values.push_back(stof(token));
 
-            buff.erase(0, pos + 1);
-        }
+    //         buff.erase(0, pos + 1);
+    //     }
 
-        objects.push_back({
-            .name = name,
-            .position = {values[0], values[1]},
-            .scale = {values[2], values[3]},
-            .colliderScale = {values[4], values[5]},
-            .colliderOffset = {values[6], values[7]}
-        });
-    }
+    //     objects.push_back({
+    //         .name = name,
+    //         .position = {values[0], values[1]},
+    //         .scale = {values[2], values[3]},
+    //         .colliderScale = {values[4], values[5]},
+    //         .colliderOffset = {values[6], values[7]}
+    //     });
+    // }
 
-    mappingFile.close();
+    // mappingFile.close();
 
     for (auto object : objects)
     {
@@ -209,7 +267,7 @@ void WorldState::Update(float dt)
         ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::PREPARING);
 
     // Creates new TreeState
-    if (InputManager::GetInstance().MousePress(RIGHT_MOUSE_BUTTON))
+    if (InputManager::GetInstance().KeyPress(SDLK_t))
     {
         Game::GetInstance().Push(new TreeState());
         return;

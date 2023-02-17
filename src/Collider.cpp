@@ -5,7 +5,7 @@
 #include "../header/Game.h"
 #include "../header/InputManager.h"
 
-bool Collider::debug = true;
+bool Collider::debug = false;
 Timer Collider::debugTimer;
 
 Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset, bool activeCollison) : Component(associated)

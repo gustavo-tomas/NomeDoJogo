@@ -139,7 +139,8 @@ void TitleState::Update(float dt)
         vector<string> dialogs { GameData::imagesPath + "dialog/dialogo_1.png",
                                  GameData::imagesPath + "dialog/dialogo_2.png" };
 
-        Game::GetInstance().Push(new CutsceneState(scenes, 5.0, dialogs, 5.0, new WorldState()));
+        // Game::GetInstance().Push(new CutsceneState(scenes, 5.0, dialogs, 5.0, new WorldState()));
+        Game::GetInstance().Push(new WorldState());
     }
     
     // Créditos

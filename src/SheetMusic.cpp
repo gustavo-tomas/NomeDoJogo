@@ -108,7 +108,8 @@ void SheetMusic::Interact()
                 isMusicPlaying = true;
             }
 
-            Player::player->SetAction(Player::Action::PRACTING);
+            if(Player::player != nullptr)
+                Player::player->SetAction(Player::Action::PRACTING);
             associated.RemoveComponent(associated.GetComponent("Sprite"));
         } 
         else 
