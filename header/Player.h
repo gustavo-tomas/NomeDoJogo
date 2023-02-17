@@ -57,7 +57,7 @@ class Player : public Component {
         int mana;
         float attackPower;
         bool moveLimits;
-        Timer stunTimer, actionTimer;
+        Timer stunTimer, actionTimer, shootTimer;
         int stunHeat;
         
         Action currentAction, previousAction;
