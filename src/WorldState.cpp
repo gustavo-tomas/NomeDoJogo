@@ -67,6 +67,9 @@ void WorldState::LoadAssets()
 
     mapGo->AddComponent(map);
     AddObject(mapGo, 5002);
+    
+    auto mapHeight = map->GetHeight();
+    auto mapWidth = map->GetWidth();
 
     // Player
     GameObject* playerGo = new GameObject();
@@ -74,6 +77,37 @@ void WorldState::LoadAssets()
     playerGo->box.SetVec(Vec2(1650, 350));
     playerGo->AddComponent(playerComp);
     player = AddObject(playerGo, 10020);
+
+    // GameObject* border1GO = new GameObject();
+    // border1GO->box.x = 0;
+    // border1GO->box.y = 120;
+    // border1GO->box.w = 90;
+    // border1GO->box.h = mapHeight;
+    // Collider* border1collider = new Collider(*border1GO, Vec2(1, 1), Vec2(0, 0));
+    // border1GO->AddComponent(border1collider);
+    // AddObject(border1GO, 1000000);
+
+    // GameObject* border2GO = new GameObject();
+    // border2GO->box.x = 0;
+    // border2GO->box.w = mapWidth;
+    // border2GO->box.h = 120;
+    // Collider* border2collider = new Collider(*border2GO, Vec2(1, 1), Vec2(0, 0));
+    // border2GO->AddComponent(border2collider);
+    // AddObject(border2GO, 1000000);
+
+    // vector<Rect> positions{{-1172, -181, 3245, 20}, {-1172, -181, 20, 1892}, {-1172, 1711, 3245, 20}, {2073, -181, 20, 1892}};
+    vector<Rect> positions{{-1172, -181, 3245-40, 100}, {-1172, -181, 100, 1892}, {-1172, 1711, 3245, 100}, {2073, -181, 100, 1892}};
+
+    for (auto position : positions)
+    {
+        GameObject* objectGo = new GameObject();
+        objectGo->box = position;
+
+        Collider* objectCollider = new Collider(*objectGo);
+        objectGo->AddComponent(objectCollider);
+        
+        AddObject(objectGo);
+    }
 
     // NPC 1
     GameObject* npcGo = new GameObject();
@@ -136,46 +170,46 @@ void WorldState::LoadAssets()
     // World Objects
     vector<WorldObject> objects = {};
 
-    ifstream mappingFile; 
-    mappingFile.open("./assets/map/world_objects.txt");
+    // ifstream mappingFile; 
+    // mappingFile.open("./assets/map/world_objects.txt");
 
-    string buff;
-    getline(mappingFile, buff);
+    // string buff;
+    // getline(mappingFile, buff);
 
     // Format: < name, position, scale, >
-    while (!getline(mappingFile, buff).eof())
-    {
-        size_t pos = 0;
-        bool nameFound = false;
-        string name;
-        vector<float> values;
+    // while (!getline(mappingFile, buff).eof())
+    // {
+    //     size_t pos = 0;
+    //     bool nameFound = false;
+    //     string name;
+    //     vector<float> values;
 
-        while ((pos = buff.find(",")) != string::npos)
-        {
-            string token = buff.substr(0, pos);
+    //     while ((pos = buff.find(",")) != string::npos)
+    //     {
+    //         string token = buff.substr(0, pos);
             
-            if (!nameFound)
-            {
-                name = token;
-                nameFound = true;
-            }
+    //         if (!nameFound)
+    //         {
+    //             name = token;
+    //             nameFound = true;
+    //         }
 
-            else
-                values.push_back(stof(token));
+    //         else
+    //             values.push_back(stof(token));
 
-            buff.erase(0, pos + 1);
-        }
+    //         buff.erase(0, pos + 1);
+    //     }
 
-        objects.push_back({
-            .name = name,
-            .position = {values[0], values[1]},
-            .scale = {values[2], values[3]},
-            .colliderScale = {values[4], values[5]},
-            .colliderOffset = {values[6], values[7]}
-        });
-    }
+    //     objects.push_back({
+    //         .name = name,
+    //         .position = {values[0], values[1]},
+    //         .scale = {values[2], values[3]},
+    //         .colliderScale = {values[4], values[5]},
+    //         .colliderOffset = {values[6], values[7]}
+    //     });
+    // }
 
-    mappingFile.close();
+    // mappingFile.close();
 
     for (auto object : objects)
     {
@@ -217,7 +251,7 @@ void WorldState::Update(float dt)
         ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::PREPARING);
 
     // Creates new TreeState
-    if (InputManager::GetInstance().MousePress(RIGHT_MOUSE_BUTTON))
+    if (InputManager::GetInstance().KeyPress(SDLK_t))
     {
         Game::GetInstance().Push(new TreeState());
         return;

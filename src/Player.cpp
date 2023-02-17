@@ -91,6 +91,10 @@ void Player::Update(float dt)
     // float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
 
+
+    cout << "associated.box.x = " <<  associated.box.x << "\n";
+    cout << "associated.box.y = " <<  associated.box.y << "\n";
+
     // Stunned
     if (stunHeat >= 30)
     {
