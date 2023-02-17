@@ -48,7 +48,7 @@ void TreeState::LoadAssets()
     Player* playerComp = new Player(*playerGo);
 
     playerGo->AddComponent(playerComp);
-    AddObject(playerGo, 10020);
+    player = AddObject(playerGo, 10020);
 
     // Camera
     Camera::Follow(playerGo);
@@ -64,6 +64,9 @@ void TreeState::LoadAssets()
 
     treeGo->AddComponent(tree);
     AddObject(treeGo, 10020);
+
+    // Trigger
+    healingArea = Rect(treeGo->box.x, treeGo->box.y, treeGo->box.w + 30, treeGo->box.h + 30);
 }
 
 void TreeState::Update(float dt)
@@ -83,6 +86,13 @@ void TreeState::Update(float dt)
     {
         popRequested = true;
         return;
+    }
+
+    // Heals player
+    if (!player.expired())
+    {
+        if (healingArea.Contains(player.lock()->box.GetCenter()))
+            ((Player *) player.lock()->GetComponent("Player"))->RestoreHealth();
     }
 
     // Updates GOs

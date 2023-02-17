@@ -21,6 +21,7 @@ class Player : public Component {
         void AddAttackPower(float value);
         void ResetMana();
         void AddMana(int value);
+        void RestoreHealth();
 
         static Player* player;
 

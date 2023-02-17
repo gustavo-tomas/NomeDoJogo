@@ -19,6 +19,8 @@ class TreeState : public State {
 
     private:
         Music backgroundMusic;
+        Rect healingArea;
+        weak_ptr<GameObject> player;
 };
 
 #endif // TREESTATE_H

@@ -324,6 +324,11 @@ void Player::AddAttackPower(float value)
     attackPower = max(0.f, attackPower);
 }
 
+void Player::RestoreHealth()
+{
+    hp = 100;
+}
+
 void Player::ResetMana() 
 {
     mana = MIN_MANA;
