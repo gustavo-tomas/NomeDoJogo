@@ -72,7 +72,7 @@ void CutsceneState::LoadAssets()
     dialogSprite->SetScale(0.4, 0.4);
     
     dialogGO->AddComponent(dialogSprite);
-    dialogGO->box.SetCenter(Vec2(GameData::BASE_WIDTH / 2.0, GameData::HEIGHT - 220));
+    dialogGO->box.SetCenter(Vec2(GameData::BASE_WIDTH / 2.0, GameData::HEIGHT - dialogGO->box.h / 2.0));
     CameraFollower* dialogCf = new CameraFollower(*dialogGO, dialogGO->box.GetVec());
 
     dialogGO->AddComponent(dialogCf);
