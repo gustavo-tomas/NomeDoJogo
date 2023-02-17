@@ -5,6 +5,7 @@
 #include "../header/GameData.h"
 #include "../header/Sound.h"
 #include "../header/WorldState.h"
+#include "../header/Player.h"
 
 using namespace std;
 
@@ -31,12 +32,14 @@ void SheetMusic::Update(float dt)
         Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
         bgSound->Resume();
         isMusicPlaying = false;
+        associated.RequestDelete();
+
     }
     if(talking == true)
         Interact();
     else if
     (
-        InputManager::GetInstance().KeyPress(E_KEY) &&
+        InputManager::GetInstance().KeyPress(E_KEY) && !isMusicPlaying &&
         associated.box.GetCenter().GetDistance(GameData::playerPos) < (associated.box.w/2 + associated.box.h/2 + 25) 
     )
     {
@@ -82,9 +85,9 @@ void SheetMusic::Interact()
         talking = false;
         currentSpeech = 0;
     }
-    else if(InputManager::GetInstance().KeyPress(E_KEY))
+    else if(InputManager::GetInstance().KeyPress(E_KEY) && !isMusicPlaying)
     {
-        if(++currentSpeech == speechs.size())
+        if(++currentSpeech >= speechs.size())
         {
             dialog->Close();
             currentSpeech = 0;
@@ -96,6 +99,8 @@ void SheetMusic::Interact()
             sound->Play();
             isMusicPlaying = true;
 
+            Player::player->SetAction(Player::Action::PRACTING);
+            associated.RemoveComponent(associated.GetComponent("Sprite"));
         } 
         else 
             dialog->SetText(speechs[currentSpeech]);
