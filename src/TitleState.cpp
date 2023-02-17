@@ -133,14 +133,25 @@ void TitleState::Update(float dt)
         GameData::returnToMenu = false;
 
         // Cutscenes and dialogs
-        vector<string> scenes { GameData::imagesPath + "parallax-mountain-bg.png",
-                                GameData::imagesPath + "tileset.png" };
+        vector<string> scenes { 
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_1.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_2.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_3.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_4.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_5.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_6.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_7.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_8.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_9.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_10.png",
+            GameData::imagesPath + "preludio/DIALOG_HISTORIA_11_END.png"
+        };
 
-        vector<string> dialogs { GameData::imagesPath + "dialog/dialogo_1.png",
-                                 GameData::imagesPath + "dialog/dialogo_2.png" };
+        vector<string> dialogs { };
 
-        // Game::GetInstance().Push(new CutsceneState(scenes, 5.0, dialogs, 5.0, new WorldState()));
-        Game::GetInstance().Push(new WorldState());
+
+        Game::GetInstance().Push(new CutsceneState(scenes, 8.0, dialogs, 8.0, new WorldState()));
+        // Game::GetInstance().Push(new WorldState());
     }
     
     // Créditos

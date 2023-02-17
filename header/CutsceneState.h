@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "State.h"
 #include "Timer.h"
+#include "Music.h"
 
 class CutsceneState : public State {
     public:
@@ -25,6 +26,7 @@ class CutsceneState : public State {
         unsigned sceneCounter, dialogCounter;
         weak_ptr<GameObject> currentScene, currentDialog;
         State* nextState;
+        Music backgroundMusic;
 };
 
 #endif // CUTSCENESTATE_H

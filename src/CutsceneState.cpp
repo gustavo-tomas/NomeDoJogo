@@ -23,6 +23,7 @@ CutsceneState::CutsceneState(vector<string> scenes, float duration, vector<strin
 CutsceneState::~CutsceneState()
 {
     objectArray.clear();
+    backgroundMusic.Stop(1000);
     cout << "CutsceneState deleted successfully!\n";
 }
 
@@ -35,6 +36,9 @@ void CutsceneState::Start()
 
 void CutsceneState::LoadAssets()
 {
+    backgroundMusic = Music((GameData::audiosPath + "Soundtrack/Tree_Theme.mp3").c_str(), 15);
+    backgroundMusic.Play(-1);
+
     // Load sprites beforehand
     for (auto scene : scenes)
         Resources::GetImage(scene);
