@@ -1,13 +1,15 @@
-#ifndef ENDSTATE_H
-#define ENDSTATE_H
+#ifndef TREESTATE_H
+#define TREESTATE_H
 
 #include "State.h"
 #include "Music.h"
 
-class EndState : public State {
+using namespace std;
+
+class TreeState : public State {
     public:
-        EndState();
-        ~EndState();
+        TreeState();
+        ~TreeState();
         void LoadAssets();
         void Update(float dt);
         void Render();
@@ -17,7 +19,6 @@ class EndState : public State {
 
     private:
         Music backgroundMusic;
-        weak_ptr<GameObject> cursor;
 };
 
-#endif // ENDSTATE_H
+#endif // TREESTATE_H

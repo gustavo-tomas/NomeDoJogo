@@ -146,13 +146,16 @@ State& Game::GetCurrentState()
 void Game::PreLoadAssets()
 {
     // Images
-    vector<string> images = { "ui_background.jpg", "background.png", "player/Magic_Girl_Idle.png",
-    "player/Magic_Girl_Walk_Down.png", "player/Magic_Girl_Walk_Left.png", "player/Magic_Girl_Walk_Right.png",
-    "player/Magic_Girl_Walk_Up.png" };
+    vector<string> images = { "ui_background.jpg", "background.png", "player/Luna_Idle.png",
+    "player/Luna_Walk_Down.png", "player/Luna_Walk_Right.png", "player/Luna_Walk_Up.png",
+    "player/Luna_Walk_Left.png", "player/Luna_Flute_Walk.png", "player/Luna_Flute_Idle.png",
+    "player/Luna_Prepare.png"
+    };
 
     // Audios
-    vector<string> audios = { "musics/background.mp3", "musics/main_theme.mp3",
+    vector<string> audios = { "musics/background.mp3", "musics/Main_Theme(Master).mp3",
         "musics/tree.mp3", "musics/victory.mp3", "sfx/attack.mp3",
+        "musics/Continue_Theme.mp3", "musics/Game_Over_Theme.mp3",
         "sfx/walking_concrete.mp3", "doom.mp3" };
 
     for (string image : images)
@@ -190,13 +193,13 @@ void Game::Run()
             stateStack.pop();
             if (!stateStack.empty())
                 stateStack.top()->Resume();
-            else
+            else if (storedState == nullptr)
                 break;
         }
         
         if (storedState != nullptr)
         {
-            stateStack.top()->Pause();
+            if (!stateStack.empty()) stateStack.top()->Pause();
             stateStack.push(unique_ptr<State>(storedState));
             stateStack.top()->Start();
             storedState = nullptr;

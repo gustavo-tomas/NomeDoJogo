@@ -4,13 +4,13 @@
 #include "../header/Sprite.h"
 #include "../header/InputManager.h"
 #include "../header/Game.h"
+#include "../header/CutsceneState.h"
 #include "../header/WorldState.h"
 #include "../header/Camera.h"
 #include "../header/CameraFollower.h"
 #include "../header/Text.h"
 #include "../header/GameData.h"
 #include "../header/CreditState.h"
-#include "../header/Sound.h"
 
 TitleState::TitleState() : State()
 {
@@ -32,14 +32,9 @@ void TitleState::Start()
 
 void TitleState::LoadAssets()
 {
-    // Music
-    GameObject* bgMusic = new GameObject();
-    Sound* music = new Sound(*bgMusic, "./assets/audio/musics/main_theme.mp3", 10);
-    
-    bgMusic->AddComponent(music);
-    music->Play(1);
-
-    backgroundMusic = AddObject(bgMusic);
+    // Background Music
+    backgroundMusic = Music((GameData::audiosPath + "musics/Main_Theme(Master).mp3").c_str(), 15);
+    backgroundMusic.Play(1);
 
     // Background
     GameObject* bgGo = new GameObject();
@@ -107,13 +102,12 @@ void TitleState::LoadAssets()
 
 void TitleState::Update(float dt)
 {
-
-    if(currResolution.x != GameData::WIDTH && currResolution.y != GameData::HEIGHT){
+    if (currResolution.x != GameData::WIDTH && currResolution.y != GameData::HEIGHT)
+    {
         currResolution = Vec2(GameData::WIDTH, GameData::HEIGHT);
         Vec2 offset = Vec2(GameData::WIDTH / 2.0 - title->GetWidth() / 2.0, GameData::HEIGHT / 2.5 - title->GetHeight() / 2.0);
         titleCf->setOffset(offset);
     }
-
 
     // Sets quit requested
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) ||
@@ -137,7 +131,15 @@ void TitleState::Update(float dt)
     if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357)
     {
         GameData::returnToMenu = false;
-        Game::GetInstance().Push(new WorldState());
+
+        // Cutscenes and dialogs
+        vector<string> scenes { GameData::imagesPath + "parallax-mountain-bg.png",
+                                GameData::imagesPath + "tileset.png" };
+
+        vector<string> dialogs { GameData::imagesPath + "dialog/dialogo_1.png",
+                                 GameData::imagesPath + "dialog/dialogo_2.png" };
+
+        Game::GetInstance().Push(new CutsceneState(scenes, 5.0, dialogs, 5.0, new WorldState()));
     }
     
     // Créditos
@@ -158,6 +160,11 @@ void TitleState::Update(float dt)
     else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 3)
         quitRequested = true;
 
+    musicTimer.Update(dt);
+
+    if (musicTimer.Get() > 14.0)
+        backgroundMusic.Stop(500);
+
     UpdateArray(dt);
 }
 
@@ -168,7 +175,7 @@ void TitleState::Render()
 
 void TitleState::Pause()
 {
-    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Stop(2500);
+    backgroundMusic.Stop(500);
 }
 
 void TitleState::Resume()

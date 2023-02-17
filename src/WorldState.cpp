@@ -10,6 +10,7 @@
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 #include "../header/StageState.h"
+#include "../header/TreeState.h"
 #include "../header/NPC.h"
 #include "../header/SheetMusic.h"
 #include "../header/DialogBox.h"
@@ -191,7 +192,14 @@ void WorldState::Update(float dt)
 
     // Creates new StageState
     if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
-        Game::GetInstance().Push(new StageState());
+        ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::PREPARING);
+
+    // Creates new TreeState
+    if (InputManager::GetInstance().MousePress(RIGHT_MOUSE_BUTTON))
+    {
+        Game::GetInstance().Push(new TreeState());
+        return;
+    }
 
     // Updates GOs
     UpdateArray(dt);
@@ -249,6 +257,7 @@ void WorldState::Render()
 void WorldState::Pause()
 {
     ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Pause();
+    ((Sound *) player.lock().get()->GetComponent("Sound"))->Pause();
 }
 
 void WorldState::Resume()

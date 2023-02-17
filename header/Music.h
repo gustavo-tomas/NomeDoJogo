@@ -20,6 +20,7 @@ class Music {
         void Open(const char* file);
         bool IsOpen();
         void SetVolume(int volume);
+        bool IsPlaying();
         
     private:
         Mix_Music* music;
