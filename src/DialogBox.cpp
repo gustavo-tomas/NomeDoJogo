@@ -34,8 +34,8 @@ DialogBox::DialogBox(GameObject& associated, string title, string text, Vec2 pos
 
 DialogBox::~DialogBox()
 {
-    dialogGo.lock()->RequestDelete();
-    titleGo.lock()->RequestDelete();
+    if (!dialogGo.expired()) dialogGo.lock()->RequestDelete();
+    if (!titleGo.expired()) titleGo.lock()->RequestDelete();
 }
 
 void DialogBox::Update(float dt)

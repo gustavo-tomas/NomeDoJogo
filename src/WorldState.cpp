@@ -213,8 +213,9 @@ void WorldState::Update(float dt)
     }
 
     // Updates collected
-    ((DialogBox *) counterDialog.lock().get()->GetComponent("DialogBox"))->SetText(to_string(collectedSongs) + "/" +
-                                                                                   to_string(SheetMusic::sheetCounter));
+    auto dialog = ((DialogBox *) counterDialog.lock().get()->GetComponent("DialogBox"));
+    if (dialog != nullptr)
+        dialog->SetText(to_string(collectedSongs) + "/" + to_string(SheetMusic::sheetCounter));
 
     // Updates GOs
     UpdateArray(dt);
