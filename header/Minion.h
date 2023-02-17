@@ -20,7 +20,9 @@ class Minion : public Component {
 
     private:
         int hp;
-        Timer shootTimer;
+        Timer shootTimer, moveTimer;
+        Vec2 destination, velocity;
+        bool moving;
 };
 
 #endif // MINION_H
