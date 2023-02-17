@@ -36,7 +36,7 @@ void CutsceneState::Start()
 
 void CutsceneState::LoadAssets()
 {
-    backgroundMusic = Music((GameData::audiosPath + "Soundtrack/Tree_Theme.mp3").c_str(), 15);
+    backgroundMusic = Music((GameData::audiosPath + "Soundtrack/Prelude.mp3").c_str(), 25);
     backgroundMusic.Play(-1);
 
     // Load sprites beforehand
