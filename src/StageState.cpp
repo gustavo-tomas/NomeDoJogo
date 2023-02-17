@@ -270,6 +270,7 @@ void StageState::Render()
 
 StageState::~StageState()
 {
+    backgroundMusic.Stop(0);
     objectArray.clear();
     colliderArray.clear();
     cout << "Object Array deleted successfully!" << endl;
