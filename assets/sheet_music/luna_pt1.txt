@@ -1,7 +1,7 @@
-speed: 200
-note: 0, 0
-note: 1, 0
-note: 1, 5
-note: 2, 10
-note: 3, 20
-note: 2, 30
+speed: 0.428571429
+note: 2, 3
+note: 1, 6
+note: 2, 9
+note: 2, 14
+note: 0, 15
+note: 0, 18
