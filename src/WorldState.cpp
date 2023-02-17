@@ -179,10 +179,7 @@ void WorldState::Update(float dt)
 
     // Creates new StageState
     if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
-    {
-        Game::GetInstance().Push(new StageState());
-        return;
-    }
+        ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::PREPARING);
 
     // Creates new TreeState
     if (InputManager::GetInstance().MousePress(RIGHT_MOUSE_BUTTON))

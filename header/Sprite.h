@@ -18,7 +18,7 @@ class Sprite : public Component {
         Sprite(GameObject& associated, const char* file, int frameCountX = 1, int frameCountY = 1, float frameTime = 1, float secondsToSelfDestruct = 0);
         ~Sprite();
         void Open(const char* file);
-        void ChangeSprite(const char* file, int frameCountX = 1, int frameCountY = 1, float frameTime = 1);
+        void ChangeSprite(const char* file, int frameCountX = 1, int frameCountY = 1, float frameTime = 1, int framesMissing = 0);
         void SetClip(int x, int y, int w, int h);
         void Update(float dt);
         bool Is(const char* type);
@@ -36,6 +36,7 @@ class Sprite : public Component {
         void SetFrameTime(float frameTime);
         bool IsOpen();
         bool isProportionActive{};
+        void SetMirror(bool xMirror);
 
     private:
         SDL_Texture* texture;
@@ -44,12 +45,13 @@ class Sprite : public Component {
         Vec2 scale;
         int frameCountX;
         int frameCountY;
-        int currentFrame;
+        int currentFrame, framesMissing;
         float timeElapsed;
         float frameTime;
         SDL_Rect clipRect;
         Timer selfDestructCount;
         float secondsToSelfDestruct;
+        bool xMirror;
 };
 
 #endif // SPRITE_H

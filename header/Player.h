@@ -27,8 +27,23 @@ class Player : public Component {
         struct SpriteInfo
         {
             const char* fileName;
-            int frameCountX, frameCountY;
+            int frameCountX, frameCountY, framesMissing = 0;
         };
+
+        enum Action
+        {
+            IDLE,
+            WALKING_LEFT,
+            WALKING_UP,
+            WALKING_RIGHT,
+            WALKING_DOWN,
+            IDLE_PERFORMING,
+            WALK_PERFORMING,
+            PREPARING,
+            LOSS
+        };
+
+        void SetAction(Action action);
 
     private:
         void ActionsHandler(Vec2 velocity);
@@ -42,17 +57,6 @@ class Player : public Component {
         Timer stunTimer, actionTimer;
         int stunHeat;
         
-        enum Action
-        {
-            IDLE,
-            WALKING_LEFT,
-            WALKING_UP,
-            WALKING_RIGHT,
-            WALKING_DOWN,
-            ATTACKING,
-            TAKING_DAMAGE
-        };
-
         Action currentAction, previousAction;
 };
 
