@@ -46,7 +46,9 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
 
     this->moveLimits = moveLimits;
     Sprite* sprite = new Sprite(
-        associated, files[Action::IDLE].fileName, files[Action::IDLE].frameCountX, files[Action::IDLE].frameCountY, 0.08
+        associated, files[Action::IDLE].fileName, 
+        files[Action::IDLE].frameCountX, files[Action::IDLE].frameCountY, 
+        files[Action::IDLE].frameTime
     );
     sprite->SetScale(playerScale.x, playerScale.y);
     
@@ -139,7 +141,8 @@ void Player::Update(float dt)
         Vec2 currentPos = associated.box.GetCenter();
         ((Sprite *) associated.GetComponent("Sprite"))->ChangeSprite(
             files[currentAction].fileName, files[currentAction].frameCountX,
-             files[currentAction].frameCountY, 0.08, files[currentAction].framesMissing
+             files[currentAction].frameCountY, files[currentAction].frameTime,
+             files[currentAction].framesMissing
         );
         ((Sprite *) associated.GetComponent("Sprite"))->SetScale(playerScale.x, playerScale.y);
 
