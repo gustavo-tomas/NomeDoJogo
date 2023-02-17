@@ -122,7 +122,8 @@ bool InputManager::QuitRequested()
     return quitRequested;
 }
 
-bool InputManager::AddEvent(SDL_Event &event){
+void InputManager::AddEvent(SDL_Event &event)
+{
     eventQueue.push(event);
 }
 
