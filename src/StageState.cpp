@@ -81,7 +81,7 @@ void StageState::LoadAssets()
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/backgroundBattle.png");
-    bg->SetScale(0.2, 0.2);
+    bg->SetScale(0.4, 0.4);
     CameraFollower* cf = new CameraFollower(*bgGo, {0, 0});
 
     bgGo->AddComponent(bg);

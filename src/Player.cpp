@@ -51,7 +51,7 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
         files[Action::IDLE].frameCountX, files[Action::IDLE].frameCountY, 
         files[Action::IDLE].frameTime
     );
-    sprite->SetScale(playerScale.x, playerScale.y);
+    sprite->SetScale(playerScale.x*2, playerScale.y*2);
     
     associated.AddComponent(sprite);
 
@@ -149,7 +149,23 @@ void Player::Update(float dt)
              files[currentAction].frameCountY, files[currentAction].frameTime,
              files[currentAction].framesMissing
         );
-        ((Sprite *) associated.GetComponent("Sprite"))->SetScale(playerScale.x, playerScale.y);
+        switch(currentAction)
+        {
+            case Action::WALKING_UP:  
+            case Action::WALKING_DOWN:
+            case Action::WALKING_LEFT:
+            case Action::WALKING_RIGHT:
+                ((Sprite *) associated.GetComponent("Sprite"))->SetScale(playerScale.x, playerScale.y);
+                break;
+            case Action::WALK_PERFORMING:
+            case Action::IDLE:
+            case Action::IDLE_PERFORMING:
+            case Action::PREPARING:
+            case Action::LOSS:
+            case Action::PRACTING:
+                 ((Sprite *) associated.GetComponent("Sprite"))->SetScale(playerScale.x * 2, playerScale.y * 2);
+        }
+        // ((Sprite *) associated.GetComponent("Sprite"))->SetScale(playerScale.x, playerScale.y);
 
         associated.box.SetCenter(currentPos);
     }

@@ -45,7 +45,7 @@ void TreeState::LoadAssets()
     // Tree
     GameObject* treeGo = new GameObject();
     Sprite* tree = new Sprite(*treeGo, "./assets/image/tree.png");
-    tree->SetScale(0.15, 0.15);
+    tree->SetScale(0.30, 0.30);
 
     treeGo->AddComponent(tree);
     AddObject(treeGo, 5002);

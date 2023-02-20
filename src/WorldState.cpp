@@ -54,7 +54,7 @@ void WorldState::LoadAssets()
     // Map
     GameObject* mapGo = new GameObject();
     Sprite* map = new Sprite(*mapGo, "./assets/image/map.png");
-    map->SetScale(0.15, 0.15);
+    map->SetScale(0.30, 0.30);
 
     mapGo->AddComponent(map);
     AddObject(mapGo, 5002);
