@@ -7,8 +7,11 @@
 template<class T>
 struct pointer_compare {
     bool operator() (const pair<uint32_t, weak_ptr<GameObject>> &leftPtr, const pair<uint32_t, weak_ptr<GameObject>> &rightPtr)const {
-        if(leftPtr.first != rightPtr.first)
+        if (leftPtr.first != rightPtr.first)
             return leftPtr.first < rightPtr.first;
+
+        if (leftPtr.second.expired() || rightPtr.second.expired())
+            return false;
 
         auto lptr = leftPtr.second.lock(), rptr = rightPtr.second.lock();
         if (!rptr) return false;

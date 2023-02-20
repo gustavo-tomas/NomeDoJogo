@@ -80,19 +80,6 @@ void SpriteRect::Render(int x, int y)
         cout << SDL_GetError() << endl;
         exit(1);
     }
-    // if (SDL_RenderCopyEx(
-    //     Game::GetInstance().GetRenderer(),
-    //     texture,
-    //     &clipRect,
-    //     &dstRect,
-    //     associated.angleDeg * DEG, // 0° to 360° clockwise
-    //     nullptr,
-    //     SDL_FLIP_NONE) < 0)
-    // {
-    //     cout << "Error rendering copy" << endl;
-    //     cout << SDL_GetError() << endl;
-    //     exit(1);
-    // }
 }
 
 bool SpriteRect::Is(const char* type)

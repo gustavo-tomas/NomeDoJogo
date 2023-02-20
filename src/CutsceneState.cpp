@@ -120,15 +120,19 @@ void CutsceneState::Update(float dt)
 
 void CutsceneState::SetScene(unsigned index)
 {
-    ((Sprite *) currentScene.lock()->GetComponent("Sprite"))->ChangeSprite(scenes[index].c_str());
+    if(!currentScene.expired()){
+        ((Sprite *) currentScene.lock()->GetComponent("Sprite"))->ChangeSprite(scenes[index].c_str());
+    }
 }
 
 void CutsceneState::SetDialog(unsigned index)
 {
-    Sprite * dialogSprite = ((Sprite *) currentDialog.lock()->GetComponent("Sprite"));
-    dialogSprite->ChangeSprite(dialogs[index].c_str());
+    if(!currentDialog.expired()){
+        Sprite * dialogSprite = ((Sprite *) currentDialog.lock()->GetComponent("Sprite"));
+        dialogSprite->ChangeSprite(dialogs[index].c_str());
 
-    currentDialog.lock()->box.SetCenter(Vec2(GameData::BASE_WIDTH / 2.0, GameData::HEIGHT - 150));
+        currentDialog.lock()->box.SetCenter(Vec2(GameData::BASE_WIDTH / 2.0, GameData::HEIGHT - 150));
+    }
 }
 
 void CutsceneState::Render()

@@ -34,8 +34,10 @@ void SheetMusic::Update(float dt)
     if (!sound->IsOpen() && isMusicPlaying)
     {
         WorldState &worldState = dynamic_cast<WorldState&>(Game::GetInstance().GetCurrentState());
-        Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
-        bgSound->Resume();
+        if (!worldState.backgroundMusic.expired()){
+            Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
+            bgSound->Resume();
+        }
         isMusicPlaying = false;
         associated.RequestDelete();
 
@@ -61,8 +63,10 @@ void SheetMusic::Update(float dt)
         else
         {
             WorldState &worldState = dynamic_cast<WorldState&>(Game::GetInstance().GetCurrentState());
-            Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
-            bgSound->Pause();
+            if (!worldState.backgroundMusic.expired()){
+                Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
+                bgSound->Pause();
+            }
             sound->Play();
             isMusicPlaying = true;
         }
@@ -102,8 +106,11 @@ void SheetMusic::Interact()
             if (WorldState::collectedSongs < SheetMusic::sheetCounter)
             {
                 WorldState &worldState = dynamic_cast<WorldState&>(Game::GetInstance().GetCurrentState());
-                Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
-                bgSound->Pause();
+                if (!worldState.backgroundMusic.expired())
+                {
+                    Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
+                    bgSound->Pause();
+                }
                 sound->Play();
                 isMusicPlaying = true;
             }

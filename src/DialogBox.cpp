@@ -62,11 +62,13 @@ void DialogBox::Close()
 void DialogBox::SetText(string text)
 {
     this->text = text;
-    ((Text *) dialogGo.lock()->GetComponent("Text"))->SetText(text.c_str());
+    if(!dialogGo.expired())
+        ((Text *) dialogGo.lock()->GetComponent("Text"))->SetText(text.c_str());
 }
 
 void DialogBox::SetTitle(string title)
 {
     this->title = title;
-    ((Text *) titleGo.lock()->GetComponent("Text"))->SetText(title.c_str());
+    if(!titleGo.expired())
+        ((Text *) titleGo.lock()->GetComponent("Text"))->SetText(title.c_str());
 }

@@ -35,10 +35,13 @@ void StageState::Start()
     started = true;
     StageState::playerTurn = true;
     
-    ((Sound *) player.lock().get()->GetComponent("Sound"))->SetVolume(0);
-    ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::IDLE_PERFORMING);
-    ((Collider *) player.lock().get()->GetComponent("Collider"))->SetScale({0.7, 0.8});
-    ((Collider *) player.lock().get()->GetComponent("Collider"))->SetOffset({5, 0});
+    if(!player.expired()){
+        auto playerPtr = player.lock().get();
+        ((Sound *) playerPtr->GetComponent("Sound"))->SetVolume(0);
+        ((Player *) playerPtr->GetComponent("Player"))->SetAction(Player::Action::IDLE_PERFORMING);
+        ((Collider *) playerPtr->GetComponent("Collider"))->SetScale({0.7, 0.8});
+        ((Collider *) playerPtr->GetComponent("Collider"))->SetOffset({5, 0});
+    }
 }
 
 void StageState::Pause()
@@ -234,9 +237,11 @@ void StageState::Update(float dt)
     }
 
     // Updates FPS counter
-    Text* FPS_Text = (Text*) fpsCounter.lock().get()->GetComponent("Text");
-    if (FPS_Text != nullptr)
-        FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
+    if (!fpsCounter.expired()){
+        Text* FPS_Text = (Text*) fpsCounter.lock().get()->GetComponent("Text");
+        if (FPS_Text != nullptr)
+            FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
+    }
 
     // Update music
     musicTimer.Update(dt);
@@ -261,7 +266,7 @@ void StageState::Update(float dt)
         }
 
         // Enemy rants
-        else
+        else if (!enemyDialog.expired())
             ((DialogBox *) enemyDialog.lock().get()->GetComponent("DialogBox"))->SetText(dialogs[currentDialog++ % dialogs.size()]);
     }
 }

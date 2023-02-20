@@ -32,35 +32,40 @@ void EndState::Update(float dt)
         InputManager::GetInstance().KeyPress(ESCAPE_KEY))
         quitRequested = true;
 
-    // Cursor displacement
-    if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
-        cursor.lock().get()->box.y += 35;
+    if(!cursor.expired()){
 
-    if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
-        cursor.lock().get()->box.y -= 35;
+        auto cursorPtr = cursor.lock().get();
 
-    cursor.lock().get()->box.y = max(357.f, cursor.lock().get()->box.y);
-    cursor.lock().get()->box.y = min(357.f + 35 * 2, cursor.lock().get()->box.y);
+        // Cursor displacement
+        if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
+            cursorPtr->box.y += 35;
 
-    // Try again
-    if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357)
-    {
-        popRequested = true;
-        Game::GetInstance().Push(new StageState());
-    }
-    
-    // Back to the menu
-    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 1)
-    {
-        popRequested = true;
-        GameData::returnToMenu = true;
-    }
+        if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
+            cursorPtr->box.y -= 35;
 
-    // Credits
-    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 2)
-    {
-        popRequested = true;
-        Game::GetInstance().Push(new CreditState());
+        cursorPtr->box.y = max(357.f, cursorPtr->box.y);
+        cursorPtr->box.y = min(357.f + 35 * 2, cursorPtr->box.y);
+
+        // Try again
+        if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357)
+        {
+            popRequested = true;
+            Game::GetInstance().Push(new StageState());
+        }
+        
+        // Back to the menu
+        else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357 + 35 * 1)
+        {
+            popRequested = true;
+            GameData::returnToMenu = true;
+        }
+
+        // Credits
+        else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357 + 35 * 2)
+        {
+            popRequested = true;
+            Game::GetInstance().Push(new CreditState());
+        }
     }
 
     UpdateArray(dt);

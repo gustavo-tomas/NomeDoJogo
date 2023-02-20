@@ -20,7 +20,8 @@
 
 unsigned int WorldState::collectedSongs = 0;
 
-WorldState::WorldState() : State()
+WorldState::
+WorldState() : State()
 {
     cout << "\nWorld State\n";
     SheetMusic::sheetCounter = 0;
@@ -264,7 +265,7 @@ void WorldState::Update(float dt)
     }
 
     // Creates new StageState
-    if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON) || collectedSongs == SheetMusic::sheetCounter)
+    if (!player.expired() && (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON) || collectedSongs == SheetMusic::sheetCounter))
         ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::PREPARING);
 
     // Creates new TreeState
@@ -280,9 +281,12 @@ void WorldState::Update(float dt)
     }
 
     // Updates collected
-    auto dialog = ((DialogBox *) counterDialog.lock().get()->GetComponent("DialogBox"));
-    if (dialog != nullptr)
-        dialog->SetText(to_string(collectedSongs) + "/" + to_string(SheetMusic::sheetCounter));
+    if (!counterDialog.expired())
+    {
+        auto dialog = ((DialogBox *) counterDialog.lock().get()->GetComponent("DialogBox"));
+        if (dialog != nullptr)
+            dialog->SetText(to_string(collectedSongs) + "/" + to_string(SheetMusic::sheetCounter));
+    }
 
     // Updates GOs
     UpdateArray(dt);
@@ -339,12 +343,16 @@ void WorldState::Render()
 
 void WorldState::Pause()
 {
-    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Pause();
-    ((Sound *) player.lock().get()->GetComponent("Sound"))->Pause();
+    if (!backgroundMusic.expired())
+        ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Pause();
+    if (!player.expired())
+        ((Sound *) player.lock().get()->GetComponent("Sound"))->Pause();
 }
 
 void WorldState::Resume()
 {
-    Camera::Follow(player.lock().get());
-    ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Resume();
+    if (!player.expired())
+        Camera::Follow(player.lock().get());
+    if (!backgroundMusic.expired())
+        ((Sound *) backgroundMusic.lock().get()->GetComponent("Sound"))->Resume();
 }
