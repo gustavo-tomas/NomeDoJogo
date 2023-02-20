@@ -9,7 +9,6 @@
 #include "../header/GameData.h"
 #include "../header/EndState.h"
 #include "../header/PauseState.h"
-#include "../header/Text.h"
 #include "../header/Player.h"
 #include "../header/Minion.h"
 #include "../header/NoteSpawner.h"
@@ -114,22 +113,6 @@ void StageState::LoadAssets()
     dialogGo->AddComponent(dialog);
 
     this->enemyDialog = AddObject(dialogGo);
-
-    // FPS counter
-    GameObject* fps = new GameObject();
-    CameraFollower* textFollower = new CameraFollower(*fps, fps->box.GetVec());
-    fps->AddComponent(textFollower);
-
-    const char* fontFile = "./assets/font/Inder-Regular.ttf";
-    const char* textStr = "FPS ";
-    int fontSize = 16;
-    Text::TextStyle style = Text::BLENDED;
-    SDL_Color color = {255, 255, 255, 255};
-    
-    Text* text = new Text(*fps, fontFile, fontSize, style, textStr, color);
-    fps->AddComponent(text);
-    
-    fpsCounter = AddObject(fps, 10020);
 
     // NoteTriggers
     int triggers[4] = {LEFT_ARROW_KEY, UP_ARROW_KEY, DOWN_ARROW_KEY, RIGHT_ARROW_KEY};
@@ -239,29 +222,22 @@ void StageState::Update(float dt)
         }
     }
 
-    // Updates FPS counter
-    if (!fpsCounter.expired())
-    {
-        Text* FPS_Text = (Text*) fpsCounter.lock().get()->GetComponent("Text");
-        if (FPS_Text != nullptr)
-            FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
-    }
-
     // Update music
     musicTimer.Update(dt);
     if (musicTimer.Get() > musics[currentMusic].duration)
     {
         currentMusic = (currentMusic + 1) %  musics.size();
-        if (currentMusic == 0)
-        {
+        if (currentMusic % 2 == 0)
             playerTurn = true;
-        }
+
+        else
+            playerTurn = false;
+
         backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 15);
         backgroundMusic.Play(1);
         musicTimer.Restart();
 
         // NoteSpawner
-        playerTurn = !playerTurn;
         if (playerTurn)
         {
             GameObject *spawnerGo = new GameObject(); 
