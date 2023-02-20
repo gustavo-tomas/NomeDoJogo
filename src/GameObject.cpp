@@ -1,4 +1,5 @@
 #include "../header/GameObject.h"
+#include <memory>
 
 GameObject::GameObject()
 {
@@ -23,13 +24,15 @@ GameObject::~GameObject()
 void GameObject::Update(float dt)
 {
     for (auto& cpt : components)
-        cpt->Update(dt);
+        if (cpt != nullptr)
+            cpt->Update(dt);
 }
 
 void GameObject::Render()
 {
     for (auto& cpt : components)
-        cpt->Render();
+        if (cpt != nullptr)
+            cpt->Render();
 }
 
 bool GameObject::IsDead()
@@ -72,4 +75,12 @@ void GameObject::NotifyCollision(GameObject& other)
 {
     for (auto& cpt : components)
         cpt->NotifyCollision(other);
+}
+
+void GameObject::SetLayer(int32_t layer){
+    this->layer = layer;
+}
+
+int32_t GameObject::GetLayer(){
+    return layer;
 }

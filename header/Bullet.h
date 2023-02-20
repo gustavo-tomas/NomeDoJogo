@@ -9,7 +9,8 @@ class Bullet : public Component {
     public:
         Bullet(GameObject& associated, float angle, float speed,
             int damage, float maxDistance, const char* sprite,
-            int frameCount = 1, float frameTime = 1, bool targetsPlayer = true);
+            int frameCount = 1, float frameTime = 1, bool targetsPlayer = true,
+            string soundFile = "");
         void Update(float dt);
         void Render();
         bool Is(const char* type);

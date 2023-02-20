@@ -32,8 +32,10 @@ void InputManager::Update()
     updateCounter++;
     
     // Returns 1 if any event is found, 0 otherwise
-    while (SDL_PollEvent(&event))
+    while (!eventQueue.empty())
     {
+        event = eventQueue.front();
+        eventQueue.pop();
         int key = event.key.keysym.sym;
         int button = event.button.button;
         switch (event.type)
@@ -118,6 +120,11 @@ int InputManager::GetMouseY()
 bool InputManager::QuitRequested()
 {
     return quitRequested;
+}
+
+void InputManager::AddEvent(SDL_Event &event)
+{
+    eventQueue.push(event);
 }
 
 InputManager::~InputManager()

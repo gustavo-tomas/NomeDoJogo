@@ -1,10 +1,13 @@
 #include "../header/State.h"
+#include "../header/GameData.h"
+#include <algorithm>
 
 State::State()
 {
     popRequested = false;
     quitRequested = false;
     started = false;
+    currResolution = Vec2(GameData::WIDTH, GameData::HEIGHT);
 }
 
 State::~State()
@@ -42,14 +45,23 @@ void State::Render()
 
 }
 
-weak_ptr<GameObject> State::AddObject(GameObject* go)
+void State::AddColliderObject(weak_ptr<GameObject>& object)
+{
+    colliderArray.emplace_back(object);
+}
+
+weak_ptr<GameObject> State::AddObject(GameObject* go, int32_t layer)
 {
     auto ptr = shared_ptr<GameObject>(go);
+    go->SetLayer(layer);
     objectArray.push_back(ptr);
-    if (started)
-        go->Start();
+
+    auto weakPtr =  weak_ptr<GameObject>(ptr);
+
+    if (go->GetComponent("Collider") != nullptr)
+        AddColliderObject(weakPtr);
     
-    return weak_ptr<GameObject>(ptr);
+    return weakPtr;
 }
 
 weak_ptr<GameObject> State::GetObjectPtr(GameObject* go)
@@ -58,25 +70,29 @@ weak_ptr<GameObject> State::GetObjectPtr(GameObject* go)
         if (obj.get() == go)
             return weak_ptr<GameObject>(obj);
 
-    return weak_ptr<GameObject>();
+    return {};
 }
 
 void State::StartArray()
 {
-    for (unsigned int i = 0; i < objectArray.size(); i++)
+    for (uint32_t i = 0; i < objectArray.size(); i++)
         objectArray[i]->Start();
 }
 
 void State::UpdateArray(float dt)
 {
-    for (unsigned int i = 0; i < objectArray.size(); i++)
+    for (uint32_t i = 0; i < objectArray.size(); i++)
         objectArray[i]->Update(dt);
 }
 
 void State::RenderArray()
 {
-    for (unsigned int i = 0; i < objectArray.size(); i++)
-        objectArray[i]->Render();
+    std::sort(objectArray.begin(), objectArray.end(), [](shared_ptr<GameObject> &a, shared_ptr<GameObject> &b)
+    {
+        return a->GetLayer() + a->box.y + a->box.h < b->GetLayer() + b->box.y + b->box.h;
+    });
+    for (auto &obj: objectArray)
+        obj->Render();
 }
 
 bool State::PopRequested()

@@ -1,0 +1,4 @@
+speed: 0.33333
+note: 2, 8
+note: 0, 12
+note: 1, 16

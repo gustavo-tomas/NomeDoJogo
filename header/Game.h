@@ -8,7 +8,6 @@
 
 #include "SDL_include.h"
 #include "State.h"
-#include "Resources.h"
 #include <string>
 #include <iostream>
 #include <stack>
@@ -25,8 +24,10 @@ class Game {
         void Push(State* state);
         void Run();
         float GetDeltaTime();
+        SDL_Window* GetWindow();
 
     private:
+        void PreLoadAssets();
         void CalculateDeltaTime();
         void UpdateDelay(Uint64 start, Uint64 end);
         void UpdateFPS(Uint64 start, Uint64 end);

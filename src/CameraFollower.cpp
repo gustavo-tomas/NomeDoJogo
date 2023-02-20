@@ -24,3 +24,8 @@ bool CameraFollower::Is(const char* type)
     string str_type = type;
     return str_type == "CameraFollower";
 }
+
+void CameraFollower::setOffset(Vec2 offset)
+{
+    this->offset = offset;
+}

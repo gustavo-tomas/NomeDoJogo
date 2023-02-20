@@ -1,5 +1,4 @@
 #include "../header/TileMap.h"
-#include "../header/Game.h"
 #include "../header/Camera.h"
 
 TileMap::TileMap(GameObject& associated, const char* file, TileSet* tileSet) : Component(associated)
@@ -80,8 +79,9 @@ void TileMap::RenderLayer(int layer, float cameraX, float cameraY)
     {
         tileSet->RenderTile(
             tileMatrix[i],
-            tileSet->GetTileWidth() * countCol - cameraX,
-            tileSet->GetTileHeight() * countRow - cameraY
+            ceil(tileSet->GetTileWidth() * countCol * scale) - cameraX,
+            ceil(tileSet->GetTileHeight() * countRow * scale) - cameraY,
+            scale
         );
         countCol = (countCol + 1) % mapWidth;
 

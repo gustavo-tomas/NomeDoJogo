@@ -12,7 +12,7 @@ class Vec2 {
         float GetDistance(Vec2 vec);
         float GetDot(Vec2 vec);
         Vec2 GetRotated(float angle);
-        Vec2 GetNormal();
+        Vec2 GetNormalized();
         Vec2 operator + (const Vec2 &obj);
         Vec2 operator - (const Vec2 &obj);
         Vec2 operator * (const float obj);

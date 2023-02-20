@@ -1,7 +1,8 @@
 #include "../header/Game.h"
 #include "../header/InputManager.h"
+#include "../header/EventManager.h"
 #include "../header/GameData.h"
-#include "../header/CameraFollower.h"
+#include "../header/Resources.h"
 
 Game* Game::instance = nullptr;
 
@@ -71,6 +72,8 @@ Game::Game(const char* title, int width, int height)
         cout << SDL_GetError() << endl;
         exit(1);
     }
+    // SDL_SetWindowResizable(window, SDL_TRUE);
+    // SDL_SetWindowFullscreen(window, SDL_TRUE);
 
     // Creates renderer
     if ((renderer = SDL_CreateRenderer(
@@ -117,6 +120,10 @@ float Game::GetDeltaTime()
     return dt;
 }
 
+SDL_Window* Game::GetWindow(){
+    return window;
+}
+
 Game& Game::GetInstance()
 {
     if (instance == nullptr)
@@ -135,6 +142,31 @@ State& Game::GetCurrentState()
     return *(stateStack.top());
 }
 
+// Moving this to Resources might be nice :)
+void Game::PreLoadAssets()
+{
+    // Images
+    vector<string> images = { "ui_background.jpg", "background.png", "player/Luna_Idle.png",
+        "player/Luna_Walk_Down.png", "player/Luna_Walk_Right.png", "player/Luna_Walk_Up.png",
+        "player/Luna_Walk_Left.png", "player/Luna_Flute_Walk.png", "player/Luna_Flute_Idle.png",
+        "player/Luna_Prepare.png", "player/Luna_Death.png", "map.png", "tree.png",
+        "backgroundBattle.png"
+    };
+
+    // Audios
+    vector<string> audios = { "Soundtrack/Walking_Theme.mp3", "Soundtrack/Main_Theme(Master).mp3",
+        "Soundtrack/Tree_Theme.mp3", "Soundtrack/Victory_Theme.mp3", "SFX/Ataque.mp3",
+        "Soundtrack/Continue_Theme.mp3", "Soundtrack/Game_Over_Theme.mp3",
+        "SFX/Concreto_Caminhando.mp3"
+    };
+
+    for (string image : images)
+        Resources::GetImage(GameData::imagesPath + image);
+    
+    for (string audio : audios)
+        Resources::GetSound(GameData::audiosPath + audio);
+}
+
 void Game::Push(State* state)
 {
     storedState = state;
@@ -147,6 +179,8 @@ void Game::Run()
         delete this;
         return;
     }
+
+    PreLoadAssets();
 
     stateStack.push(unique_ptr<State>(storedState));
     stateStack.top()->Start();
@@ -161,18 +195,46 @@ void Game::Run()
             stateStack.pop();
             if (!stateStack.empty())
                 stateStack.top()->Resume();
+            else if (storedState == nullptr)
+                break;
         }
         
         if (storedState != nullptr)
         {
-            stateStack.top()->Pause();
+            if (!stateStack.empty()) stateStack.top()->Pause();
             stateStack.push(unique_ptr<State>(storedState));
             stateStack.top()->Start();
             storedState = nullptr;
         }
         
         CalculateDeltaTime();
+        EventManager::GetInstance().Update();
         InputManager::GetInstance().Update();
+        if (InputManager::GetInstance().KeyPress(F_KEY))
+        {
+            swap(GameData::HEIGHT, GameData::PREV_HEIGHT);
+            swap(GameData::WIDTH, GameData::PREV_WIDTH);
+            GameData::fullscreenUpdateCounter = 2;
+            if (GameData::isFullScreen)
+            {
+                SDL_SetWindowSize(Game::GetInstance().GetWindow(), GameData::WIDTH, GameData::HEIGHT);
+                SDL_SetWindowFullscreen(window, SDL_FALSE);
+            } 
+            else
+            {
+                SDL_DisplayMode dm;
+                SDL_GetCurrentDisplayMode(0, &dm);
+                GameData::HEIGHT = dm.h;
+                GameData::WIDTH = dm.w;
+                SDL_SetWindowSize(Game::GetInstance().GetWindow(), GameData::WIDTH, GameData::HEIGHT);
+                SDL_SetWindowFullscreen(window, SDL_TRUE);
+            }
+            GameData::isFullScreen = !GameData::isFullScreen;
+        }
+        if (GameData::fullscreenUpdateCounter > 0)
+        {
+            GameData::fullscreenUpdateCounter--;
+        }
         stateStack.top()->Update(dt);
         stateStack.top()->Render();
 
@@ -185,10 +247,6 @@ void Game::Run()
         UpdateFPS(start, SDL_GetPerformanceCounter());
     }
 
-    // Clear the stack
-    while (!stateStack.empty())
-        stateStack.pop();    
-    
     delete this;
 }
 

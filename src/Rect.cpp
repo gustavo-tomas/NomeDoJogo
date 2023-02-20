@@ -44,3 +44,9 @@ Vec2 Rect::GetCenter()
 {
     return Vec2(x + w / 2.0, y + h / 2.0);
 }
+
+void Rect::SetCenter(Vec2 vec_a)
+{
+    x = vec_a.x - w/2;
+    y = vec_a.y - h/2;
+}

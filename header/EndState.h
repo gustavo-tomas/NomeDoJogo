@@ -17,6 +17,7 @@ class EndState : public State {
 
     private:
         Music backgroundMusic;
+        weak_ptr<GameObject> cursor;
 };
 
 #endif // ENDSTATE_H

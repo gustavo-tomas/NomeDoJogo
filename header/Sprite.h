@@ -15,35 +15,43 @@ using namespace std;
 class Sprite : public Component {
     public:
         Sprite(GameObject& associated);
-        Sprite(GameObject& associated, const char* file, int frameCount = 1, float frameTime = 1, float secondsToSelfDestruct = 0);
+        Sprite(GameObject& associated, const char* file, int frameCountX = 1, int frameCountY = 1, float frameTime = 1, float secondsToSelfDestruct = 0);
         ~Sprite();
         void Open(const char* file);
+        void ChangeSprite(const char* file, int frameCountX = 1, int frameCountY = 1, float frameTime = 1, int framesMissing = 0);
         void SetClip(int x, int y, int w, int h);
         void Update(float dt);
         bool Is(const char* type);
         void Render();
         void Render(int x, int y);
+        void Render(int x, int y, int w, int h);
         int GetWidth();
         int GetHeight();
+        int GetUnscaledWidth();
+        int GetUnscaledHeight();
         void SetScale(float scaleX, float scaleY);
         Vec2 GetScale();
         void SetFrame(int frame);
-        void SetFrameCount(int frameCount);
+        void SetFrameCount(int frameCountX, int frameCountY);
         void SetFrameTime(float frameTime);
         bool IsOpen();
+        bool isProportionActive{};
+        void SetMirror(bool xMirror);
 
     private:
         SDL_Texture* texture;
         int width;
         int height;
         Vec2 scale;
-        int frameCount;
-        int currentFrame;
+        int frameCountX;
+        int frameCountY;
+        int currentFrame, framesMissing;
         float timeElapsed;
         float frameTime;
         SDL_Rect clipRect;
         Timer selfDestructCount;
         float secondsToSelfDestruct;
+        bool xMirror;
 };
 
 #endif // SPRITE_H

@@ -10,6 +10,7 @@ class CameraFollower : public Component {
         void Update(float dt);
         void Render();
         bool Is(const char* type);
+        void setOffset(Vec2 offset);
     
     private:
         Vec2 offset;

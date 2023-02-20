@@ -1,24 +1,28 @@
 #ifndef MINION_H
 #define MINION_H
 
-#define ANG_INC M_PI / 4.0
-
 #include "Component.h"
 #include "GameObject.h"
 #include "Vec2.h"
+#include "Timer.h"
 
 class Minion : public Component {
     public:
-        Minion(GameObject& associated, weak_ptr<GameObject> alienCenter, float arcOffsetDeg = 0);
+        Minion(GameObject& associated, Vec2 initialPos = Vec2(0, 0));
+        ~Minion();
+        void Start();
         void Update(float dt);
         void Render();
         bool Is(const char* type);
         void NotifyCollision(GameObject& other);
         void Shoot(Vec2 target);
+        static int minionCount;
 
     private:
-        GameObject* alienCenter;
-        float arc;
+        int hp;
+        Timer shootTimer, moveTimer;
+        Vec2 destination, velocity;
+        bool moving;
 };
 
 #endif // MINION_H

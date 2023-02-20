@@ -19,6 +19,7 @@ class TileMap : public Component {
         int GetWidth();
         int GetHeight();
         int GetDepth();
+        float scale{1.0f};
 
     private:
         vector<int> tileMatrix;
@@ -27,6 +28,5 @@ class TileMap : public Component {
         int mapHeight;
         int mapDepth;
 };
-
 
 #endif // TILEMAP_H
