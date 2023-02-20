@@ -75,22 +75,23 @@ weak_ptr<GameObject> State::GetObjectPtr(GameObject* go)
 
 void State::StartArray()
 {
-    for(uint32_t i = 0; i < objectArray.size(); i++)
+    for (uint32_t i = 0; i < objectArray.size(); i++)
         objectArray[i]->Start();
 }
 
 void State::UpdateArray(float dt)
 {
-    for(uint32_t i = 0; i < objectArray.size(); i++)
+    for (uint32_t i = 0; i < objectArray.size(); i++)
         objectArray[i]->Update(dt);
 }
 
 void State::RenderArray()
 {
-    std::sort(objectArray.begin(), objectArray.end(), [](shared_ptr<GameObject> &a, shared_ptr<GameObject> &b){
+    std::sort(objectArray.begin(), objectArray.end(), [](shared_ptr<GameObject> &a, shared_ptr<GameObject> &b)
+    {
         return a->GetLayer() + a->box.y + a->box.h < b->GetLayer() + b->box.y + b->box.h;
     });
-    for(auto &obj: objectArray)
+    for (auto &obj: objectArray)
         obj->Render();
 }
 

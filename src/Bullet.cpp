@@ -17,8 +17,6 @@ Bullet::Bullet(GameObject& associated, float angle, float speed,
     collider->kinematic = true;
     associated.AddComponent(collider);
 
-    // associated.angleDeg = angle;
-
     this->targetsPlayer = targetsPlayer;
     this->speed = Vec2(speed, speed).GetRotated(angle);
     this->damage = damage;
@@ -43,7 +41,6 @@ void Bullet::Update(float dt)
         if (sound != nullptr && sound->IsOpen())
             return;
 
-        cout << "Bullet deleted" << endl;
         associated.RequestDelete();
         return;
     }

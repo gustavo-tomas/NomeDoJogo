@@ -1,5 +1,5 @@
 #ifndef SPRITERECT_H
-#define SPRITERECT_Hwe
+#define SPRITERECT_H
 
 #define INCLUDE_SDL_IMAGE
 #define DEG 57.2958

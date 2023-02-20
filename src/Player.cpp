@@ -63,7 +63,7 @@ Player::Player(GameObject& associated, bool moveLimits) : Component(associated)
     associated.AddComponent(ui);
 
     // SFX
-    Sound* walkingSound = new Sound(associated, "./assets/audio/sfx/walking_concrete.mp3", MIX_MAX_VOLUME);
+    Sound* walkingSound = new Sound(associated, "./assets/audio/SFX/Concreto_Caminhando.mp3", MIX_MAX_VOLUME);
     associated.AddComponent(walkingSound);
     walkingSound->Play(1);
     walkingSound->Pause();
@@ -91,10 +91,6 @@ void Player::Update(float dt)
     float speed = 200.0;
     // float speed = 900.0; // For tests
     Vec2 velocity = Vec2(0.f, 0.f);
-
-
-    cout << "associated.box.x = " <<  associated.box.x << "\n";
-    cout << "associated.box.y = " <<  associated.box.y << "\n";
 
     // Stunned
     if (stunHeat >= 30)
@@ -214,7 +210,8 @@ void Player::Update(float dt)
         actionTimer.Update(dt);
         velocity = {0, 0};
 
-        if(actionTimer.Get() > PREPARING_DURATION){
+        if (actionTimer.Get() > PREPARING_DURATION)
+        {
             currentAction = Action::IDLE;
 
             vector<string> scenes {  GameData::imagesPath + "loading.png"  };
@@ -229,7 +226,8 @@ void Player::Update(float dt)
         actionTimer.Update(dt);
         velocity = {0, 0};
 
-        if(actionTimer.Get() > LOSS_BATTLE_DURATION){
+        if (actionTimer.Get() > LOSS_BATTLE_DURATION)
+        {
             associated.RequestDelete();
             return;
         }
@@ -242,7 +240,8 @@ void Player::Update(float dt)
         actionTimer.Update(dt);
         velocity = {0, 0};
 
-        if(actionTimer.Get() > PRACTING_DURATION){
+        if (actionTimer.Get() > PRACTING_DURATION)
+        {
             currentAction = Action::IDLE;
             actionTimer.Restart();
         }
@@ -303,13 +302,13 @@ void Player::Shoot()
     if (mana == MAX_MANA)
     {
         sprite += "icons/note5.png";
-        audio += "sfx/special_attack.mp3";
+        audio += "SFX/Ataque_Super.mp3";
         ResetMana();
     }
     else
     {
         sprite += "icons/note1.png";
-        audio += "sfx/attack.mp3";
+        audio += "SFX/Ataque.mp3";
         AddMana(-10);
     }
 

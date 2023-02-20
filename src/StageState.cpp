@@ -35,10 +35,14 @@ void StageState::Start()
     started = true;
     StageState::playerTurn = true;
     
-    ((Sound *) player.lock().get()->GetComponent("Sound"))->SetVolume(0);
-    ((Player *) player.lock().get()->GetComponent("Player"))->SetAction(Player::Action::IDLE_PERFORMING);
-    ((Collider *) player.lock().get()->GetComponent("Collider"))->SetScale({0.7, 0.8});
-    ((Collider *) player.lock().get()->GetComponent("Collider"))->SetOffset({5, 0});
+    if (!player.expired())
+    {
+        auto playerPtr = player.lock().get();
+        ((Sound *) playerPtr->GetComponent("Sound"))->SetVolume(0);
+        ((Player *) playerPtr->GetComponent("Player"))->SetAction(Player::Action::IDLE_PERFORMING);
+        ((Collider *) playerPtr->GetComponent("Collider"))->SetScale({0.7, 0.8});
+        ((Collider *) playerPtr->GetComponent("Collider"))->SetOffset({5, 0});
+    }
 }
 
 void StageState::Pause()
@@ -130,6 +134,7 @@ void StageState::LoadAssets()
     // NoteTriggers
     int triggers[4] = {LEFT_ARROW_KEY, UP_ARROW_KEY, DOWN_ARROW_KEY, RIGHT_ARROW_KEY};
     spawnerX = 0;
+
     for (int i = 0; i < 4; i++)
     {
         GameObject *noteTriggerGo = new GameObject(); 
@@ -139,7 +144,8 @@ void StageState::LoadAssets()
         spawnerX = noteTriggerGo->box.x;
         AddObject(noteTriggerGo, 22000);
     }
-    if(playerTurn)
+    
+    if (playerTurn)
     {
         GameObject *spawnerGo = new GameObject(); 
         NoteSpawner *spawner = new NoteSpawner(*spawnerGo, musics[currentMusic].notesFile, spawnerX);
@@ -208,7 +214,7 @@ void StageState::Update(float dt)
     {
         for (uint32_t j = i + 1; j < colliderArray.size(); j++)
         {
-            if(colliderArray[i].expired() || colliderArray[j].expired())
+            if (colliderArray[i].expired() || colliderArray[j].expired())
                 continue;
             
             auto weakColliderA = colliderArray[i].lock().get();
@@ -234,16 +240,20 @@ void StageState::Update(float dt)
     }
 
     // Updates FPS counter
-    Text* FPS_Text = (Text*) fpsCounter.lock().get()->GetComponent("Text");
-    if (FPS_Text != nullptr)
-        FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
+    if (!fpsCounter.expired())
+    {
+        Text* FPS_Text = (Text*) fpsCounter.lock().get()->GetComponent("Text");
+        if (FPS_Text != nullptr)
+            FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
+    }
 
     // Update music
     musicTimer.Update(dt);
-    if(musicTimer.Get() > musics[currentMusic].duration)
+    if (musicTimer.Get() > musics[currentMusic].duration)
     {
         currentMusic = (currentMusic + 1) %  musics.size();
-        if(currentMusic == 0){
+        if (currentMusic == 0)
+        {
             playerTurn = true;
         }
         backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 15);
@@ -261,7 +271,7 @@ void StageState::Update(float dt)
         }
 
         // Enemy rants
-        else
+        else if (!enemyDialog.expired())
             ((DialogBox *) enemyDialog.lock().get()->GetComponent("DialogBox"))->SetText(dialogs[currentDialog++ % dialogs.size()]);
     }
 }

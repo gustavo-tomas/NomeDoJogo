@@ -1,4 +1,5 @@
 #include "../header/TileSet.h"
+#include "../header/GameObject.h"
 
 TileSet::TileSet(int tileWidth, int tileHeight, const char* file)
 {
@@ -22,7 +23,6 @@ void TileSet::RenderTile(unsigned index, float x, float y, float scale)
         
         tileSet->SetClip(column, row, tileWidth, tileHeight);
         tileSet->Render(x, y, ceil(tileWidth * scale), ceil(tileHeight * scale));
-
     }
 }
 

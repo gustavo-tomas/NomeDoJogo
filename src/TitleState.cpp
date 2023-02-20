@@ -33,7 +33,7 @@ void TitleState::Start()
 void TitleState::LoadAssets()
 {
     // Background Music
-    backgroundMusic = Music((GameData::audiosPath + "musics/Main_Theme(Master).mp3").c_str(), 15);
+    backgroundMusic = Music((GameData::audiosPath + "Soundtrack/Main_Theme(Master).mp3").c_str(), 15);
     backgroundMusic.Play(1);
 
     // Background
@@ -56,7 +56,6 @@ void TitleState::LoadAssets()
     Vec2 offset = Vec2(GameData::WIDTH / 2.0 - title->GetWidth() / 2.0, GameData::HEIGHT / 2.5 - title->GetHeight() / 2.0);
     titleCf = new CameraFollower(*titleGo, offset);
     
-
     titleGo->AddComponent(title);
     titleGo->AddComponent(titleCf);
     AddObject(titleGo);
@@ -117,61 +116,63 @@ void TitleState::Update(float dt)
         return;
     }
 
-    // Cursor displacement
-    if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
-        cursor.lock().get()->box.y += 35;
-
-    if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
-        cursor.lock().get()->box.y -= 35;
-
-    cursor.lock().get()->box.y = max(357.f, cursor.lock().get()->box.y);
-    cursor.lock().get()->box.y = min(357.f + 35 * 3, cursor.lock().get()->box.y);
-
-    // Creates new WorldState
-    if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357)
+    if (!cursor.expired())
     {
-        GameData::returnToMenu = false;
+        auto cursorPtr = cursor.lock().get();
+        // Cursor displacement
+        if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
+            cursorPtr->box.y += 35;
 
-        // Cutscenes and dialogs
-        vector<string> scenes { 
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_1.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_2.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_3.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_4.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_5.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_6.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_7.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_8.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_9.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_10.png",
-            GameData::imagesPath + "preludio/DIALOG_HISTORIA_11_END.png",
-            GameData::imagesPath + "loading.png"
-        };
+        if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
+            cursorPtr->box.y -= 35;
 
-        vector<string> dialogs { };
+        cursorPtr->box.y = max(357.f, cursorPtr->box.y);
+        cursorPtr->box.y = min(357.f + 35 * 3, cursorPtr->box.y);
 
+        // Creates new WorldState
+        if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357)
+        {
+            GameData::returnToMenu = false;
 
-        Game::GetInstance().Push(new CutsceneState(scenes, 8.0, dialogs, 8.0, new WorldState()));
-        // Game::GetInstance().Push(new WorldState());
+            // Cutscenes and dialogs
+            vector<string> scenes { 
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_1.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_2.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_3.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_4.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_5.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_6.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_7.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_8.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_9.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_10.png",
+                GameData::imagesPath + "preludio/DIALOG_HISTORIA_11_END.png",
+                GameData::imagesPath + "loading.png"
+            };
+
+            vector<string> dialogs { };
+
+            Game::GetInstance().Push(new CutsceneState(scenes, 8.0, dialogs, 8.0, new WorldState()));
+        }
+        
+        // Créditos
+        else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357 + 35 * 1)
+        {
+            GameData::returnToMenu = false;
+            Game::GetInstance().Push(new CreditState());
+        }
+
+        // Controles
+        else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357 + 35 * 2)
+        {
+            GameData::returnToMenu = false;
+            Game::GetInstance().Push(new ControlState());
+        }
+
+        // Quits
+        else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357 + 35 * 3)
+            quitRequested = true;
     }
-    
-    // Créditos
-    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 1)
-    {
-        GameData::returnToMenu = false;
-        Game::GetInstance().Push(new CreditState());
-    }
-
-    // Controles
-    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 2)
-    {
-        GameData::returnToMenu = false;
-        Game::GetInstance().Push(new ControlState());
-    }
-
-    // Quits
-    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 3)
-        quitRequested = true;
 
     musicTimer.Update(dt);
 

@@ -34,14 +34,17 @@ void SheetMusic::Update(float dt)
     if (!sound->IsOpen() && isMusicPlaying)
     {
         WorldState &worldState = dynamic_cast<WorldState&>(Game::GetInstance().GetCurrentState());
-        Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
-        bgSound->Resume();
+        if (!worldState.backgroundMusic.expired())
+        {
+            Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
+            bgSound->Resume();
+        }
         isMusicPlaying = false;
         associated.RequestDelete();
 
     }
 
-    if(talking == true)
+    if (talking == true)
         Interact();
 
     else if
@@ -50,7 +53,7 @@ void SheetMusic::Update(float dt)
         associated.box.GetCenter().GetDistance(GameData::playerPos) < (associated.box.w/2 + associated.box.h/2 + 25) 
     )
     {
-        if(speechs.size() > currentSpeech)
+        if (speechs.size() > currentSpeech)
         {
             GameObject* textGo = new GameObject();
             dialog = new DialogBox(*textGo, name, speechs[currentSpeech], Vec2(25, GameData::HEIGHT - 100), 1000);
@@ -61,8 +64,11 @@ void SheetMusic::Update(float dt)
         else
         {
             WorldState &worldState = dynamic_cast<WorldState&>(Game::GetInstance().GetCurrentState());
-            Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
-            bgSound->Pause();
+            if (!worldState.backgroundMusic.expired())
+            {
+                Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
+                bgSound->Pause();
+            }
             sound->Play();
             isMusicPlaying = true;
         }
@@ -84,15 +90,15 @@ void SheetMusic::AddSpeech(const char* text)
 
 void SheetMusic::Interact()
 {
-    if(associated.box.GetCenter().GetDistance(GameData::playerPos) > associated.box.w/2 + associated.box.h/2 + 25)
+    if (associated.box.GetCenter().GetDistance(GameData::playerPos) > associated.box.w/2 + associated.box.h/2 + 25)
     {
         dialog->Close();
         talking = false;
         currentSpeech = 0;
     }
-    else if(InputManager::GetInstance().KeyPress(E_KEY) && !isMusicPlaying)
+    else if (InputManager::GetInstance().KeyPress(E_KEY) && !isMusicPlaying)
     {
-        if(++currentSpeech >= speechs.size())
+        if (++currentSpeech >= speechs.size())
         {
             WorldState::collectedSongs++;
             dialog->Close();
@@ -102,13 +108,16 @@ void SheetMusic::Interact()
             if (WorldState::collectedSongs < SheetMusic::sheetCounter)
             {
                 WorldState &worldState = dynamic_cast<WorldState&>(Game::GetInstance().GetCurrentState());
-                Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
-                bgSound->Pause();
+                if (!worldState.backgroundMusic.expired())
+                {
+                    Sound* bgSound = (Sound*) worldState.backgroundMusic.lock()->GetComponent("Sound");
+                    bgSound->Pause();
+                }
                 sound->Play();
                 isMusicPlaying = true;
             }
 
-            if(Player::player != nullptr)
+            if (Player::player != nullptr)
                 Player::player->SetAction(Player::Action::PRACTING);
             associated.RemoveComponent(associated.GetComponent("Sprite"));
         } 

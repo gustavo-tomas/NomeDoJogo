@@ -4,6 +4,7 @@
 #include "../header/InputManager.h"
 #include "../header/CameraFollower.h"
 #include "../header/GameData.h"
+#include "../header/Game.h"
 #include "../header/Resources.h"
 
 CutsceneState::CutsceneState(vector<string> scenes, float duration, vector<string> dialogs, float dialogDuration, State* nextState) : State()
@@ -36,15 +37,16 @@ void CutsceneState::Start()
 
 void CutsceneState::LoadAssets()
 {
-    backgroundMusic = Music((GameData::audiosPath + "Soundtrack/Prelude.mp3").c_str(), 25);
-    backgroundMusic.Play(-1);
-
     // Load sprites beforehand
     for (auto scene : scenes)
         Resources::GetImage(scene);
 
     for (auto dialog : dialogs)
         Resources::GetImage(dialog);
+
+    // Background music
+    backgroundMusic = Music((GameData::audiosPath + "Soundtrack/Prelude.mp3").c_str(), 25);
+    backgroundMusic.Play(-1);
 
     // Background
     GameObject* bgGo = new GameObject();
@@ -120,15 +122,21 @@ void CutsceneState::Update(float dt)
 
 void CutsceneState::SetScene(unsigned index)
 {
-    ((Sprite *) currentScene.lock()->GetComponent("Sprite"))->ChangeSprite(scenes[index].c_str());
+    if (!currentScene.expired())
+    {
+        ((Sprite *) currentScene.lock()->GetComponent("Sprite"))->ChangeSprite(scenes[index].c_str());
+    }
 }
 
 void CutsceneState::SetDialog(unsigned index)
 {
-    Sprite * dialogSprite = ((Sprite *) currentDialog.lock()->GetComponent("Sprite"));
-    dialogSprite->ChangeSprite(dialogs[index].c_str());
+    if (!currentDialog.expired())
+    {
+        Sprite * dialogSprite = ((Sprite *) currentDialog.lock()->GetComponent("Sprite"));
+        dialogSprite->ChangeSprite(dialogs[index].c_str());
 
-    currentDialog.lock()->box.SetCenter(Vec2(GameData::BASE_WIDTH / 2.0, GameData::HEIGHT - 150));
+        currentDialog.lock()->box.SetCenter(Vec2(GameData::BASE_WIDTH / 2.0, GameData::HEIGHT - 150));
+    }
 }
 
 void CutsceneState::Render()

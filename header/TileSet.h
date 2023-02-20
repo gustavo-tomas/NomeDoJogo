@@ -2,7 +2,6 @@
 #define TILESET_H
 
 #include "Sprite.h"
-#include "GameObject.h"
 
 class TileSet {
     public:

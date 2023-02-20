@@ -7,7 +7,6 @@
 #include "../header/InputManager.h"
 #include "../header/Player.h"
 #include "../header/Sprite.h"
-#include "../header/NPC.h"
 
 TreeState::TreeState() : State()
 {
@@ -31,7 +30,7 @@ void TreeState::Start()
 void TreeState::LoadAssets()
 {
     // Music
-    backgroundMusic = Music((GameData::audiosPath + "musics/tree.mp3").c_str(), 20);
+    backgroundMusic = Music((GameData::audiosPath + "Soundtrack/Tree_Theme.mp3").c_str(), 20);
 
     // Background
     GameObject* bgGo = new GameObject();
@@ -61,18 +60,6 @@ void TreeState::LoadAssets()
 
     // Camera
     Camera::Follow(playerGo);
-
-    // // Tree
-    // GameObject* treeGo = new GameObject();
-    // Sprite treeSprite = Sprite(*treeGo, "./assets/image/250_scout.png");
-    // treeSprite.SetScale(0.5, 0.5);
-    
-    // NPC* tree = new NPC(*treeGo, "Árvore", Vec2(100, -200), treeSprite);
-    // tree->AddSpeech("Eu sou a grande árvore");
-    // tree->AddSpeech("E não tenho boca pra te dizer o que fazer");
-
-    // treeGo->AddComponent(tree);
-    // AddObject(treeGo, 10020);
 
     // Trigger
     healingArea = Rect(treeGo->box.x, treeGo->box.y, treeGo->box.w + 30, treeGo->box.h + 30);
@@ -117,7 +104,7 @@ void TreeState::Update(float dt)
     {
         for (uint32_t j = i + 1; j < colliderArray.size(); j++)
         {
-            if(colliderArray[i].expired() || colliderArray[j].expired())
+            if (colliderArray[i].expired() || colliderArray[j].expired())
                 continue;
             
             auto weakColliderA = colliderArray[i].lock().get();
@@ -146,7 +133,7 @@ void TreeState::Update(float dt)
     Camera::Update(dt);
 
     // Updates camera followers (o fix mais feio da história)
-    for(uint32_t i = 0; i < objectArray.size(); i++)
+    for (uint32_t i = 0; i < objectArray.size(); i++)
         if ((CameraFollower *) objectArray[i]->GetComponent("CameraFollower") != nullptr)
             objectArray[i]->GetComponent("CameraFollower") ->Update(dt);
 }

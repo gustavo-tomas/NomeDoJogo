@@ -14,9 +14,12 @@ NoteSpawner::NoteSpawner(GameObject& associated) : Component(associated), notes(
 }
 
 NoteSpawner::NoteSpawner(GameObject& associated, string sheetMusic, int32_t spawnerX) : Component(associated), notes()
-{
-    ifstream myfile; 
+{    
+    ifstream myfile;
     myfile.open(sheetMusic);
+
+    if (!myfile) return;
+
     this->spawnerX = spawnerX;
 
     string buff;

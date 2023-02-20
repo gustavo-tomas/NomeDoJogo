@@ -32,35 +32,41 @@ void EndState::Update(float dt)
         InputManager::GetInstance().KeyPress(ESCAPE_KEY))
         quitRequested = true;
 
-    // Cursor displacement
-    if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
-        cursor.lock().get()->box.y += 35;
-
-    if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
-        cursor.lock().get()->box.y -= 35;
-
-    cursor.lock().get()->box.y = max(357.f, cursor.lock().get()->box.y);
-    cursor.lock().get()->box.y = min(357.f + 35 * 2, cursor.lock().get()->box.y);
-
-    // Try again
-    if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357)
+    if (!cursor.expired())
     {
-        popRequested = true;
-        Game::GetInstance().Push(new StageState());
-    }
-    
-    // Back to the menu
-    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 1)
-    {
-        popRequested = true;
-        GameData::returnToMenu = true;
-    }
 
-    // Credits
-    else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 357 + 35 * 2)
-    {
-        popRequested = true;
-        Game::GetInstance().Push(new CreditState());
+        auto cursorPtr = cursor.lock().get();
+
+        // Cursor displacement
+        if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
+            cursorPtr->box.y += 35;
+
+        if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
+            cursorPtr->box.y -= 35;
+
+        cursorPtr->box.y = max(357.f, cursorPtr->box.y);
+        cursorPtr->box.y = min(357.f + 35 * 2, cursorPtr->box.y);
+
+        // Try again
+        if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357)
+        {
+            popRequested = true;
+            Game::GetInstance().Push(new StageState());
+        }
+        
+        // Back to the menu
+        else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357 + 35 * 1)
+        {
+            popRequested = true;
+            GameData::returnToMenu = true;
+        }
+
+        // Credits
+        else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357 + 35 * 2)
+        {
+            popRequested = true;
+            Game::GetInstance().Push(new CreditState());
+        }
     }
 
     UpdateArray(dt);
@@ -89,10 +95,10 @@ void EndState::LoadAssets()
     string musicFile;
 
     if (GameData::playerVictory)
-        musicFile = GameData::audiosPath + "musics/victory.mp3";
+        musicFile = GameData::audiosPath + "Soundtrack/Victory_Theme.mp3";
 
     else
-        musicFile = GameData::audiosPath + "musics/Game_Over_Theme.mp3";
+        musicFile = GameData::audiosPath + "Soundtrack/Game_Over_Theme.mp3";
 
     backgroundMusic = Music(musicFile.c_str(), 15);
     backgroundMusic.Play(1);

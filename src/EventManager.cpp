@@ -34,9 +34,11 @@ void EventManager::Update()
 
             // If event is a window evennt
             case SDL_WINDOWEVENT:
-                if(event.type == SDL_WINDOW_RESIZABLE){
+                if (event.type == SDL_WINDOW_RESIZABLE)
+                {
                     SDL_Window* win = SDL_GetWindowFromID(event.window.windowID);
-                    if (win == (SDL_Window*)Game::GetInstance().GetWindow()) {
+                    if (win == (SDL_Window*)Game::GetInstance().GetWindow())
+                    {
                         SDL_GetWindowSize(win, &GameData::WIDTH, &GameData::HEIGHT);
                     }
                 }

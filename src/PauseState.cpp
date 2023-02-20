@@ -28,7 +28,7 @@ void PauseState::LoadAssets()
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/ui_background.jpg");
-    bg->SetScale(0.5556, 0.5556); // Original resolution: 1920x1080
+    bg->SetScale(0.56, 0.56); // Original resolution: 1920x1080
     CameraFollower* cf = new CameraFollower(*bgGo);
 
     bgGo->AddComponent(bg);
@@ -100,27 +100,33 @@ void PauseState::Update(float dt)
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) || GameData::returnToMenu)
         popRequested = true;
 
-    // Cursor displacement
-    if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
-        cursor.lock().get()->box.y += 35;
+    if (!cursor.expired())
+    {
+        auto cursorPtr = cursor.lock().get();
 
-    if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
-        cursor.lock().get()->box.y -= 35;
+        // Cursor displacement
+        if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
+            cursorPtr->box.y += 35;
 
-    cursor.lock().get()->box.y = max(256.f, cursor.lock().get()->box.y);
-    cursor.lock().get()->box.y = min(325.f, cursor.lock().get()->box.y);
+        if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
+            cursorPtr->box.y -= 35;
 
-    // Resumes
-    if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y <= 256)
-        popRequested = true;
+        cursorPtr->box.y = max(256.f, cursorPtr->box.y);
+        cursorPtr->box.y = min(325.f, cursorPtr->box.y);
 
-    // Returns to the menu
-    if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y == 291)
-        GameData::returnToMenu = true;
+        // Resumes
+        if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 256)
+            popRequested = true;
 
-    // Quits
-    if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursor.lock().get()->box.y >= 325)
-        quitRequested = true;
+        // Returns to the menu
+        if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y == 291)
+            GameData::returnToMenu = true;
+
+        // Quits
+        if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y >= 325)
+            quitRequested = true;
+    }
+
 
     // Updates GOs
     UpdateArray(dt);

@@ -2,7 +2,6 @@
 #define STATE_H
 
 #include "GameObject.h"
-#include "util.h"
 #include <vector>
 #include <memory>
 #include <map>

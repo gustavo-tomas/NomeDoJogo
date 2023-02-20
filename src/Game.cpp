@@ -154,10 +154,10 @@ void Game::PreLoadAssets()
     };
 
     // Audios
-    vector<string> audios = { "musics/background.mp3", "musics/Main_Theme(Master).mp3",
-        "musics/tree.mp3", "musics/victory.mp3", "sfx/attack.mp3",
-        "musics/Continue_Theme.mp3", "musics/Game_Over_Theme.mp3",
-        "sfx/walking_concrete.mp3"
+    vector<string> audios = { "Soundtrack/Walking_Theme.mp3", "Soundtrack/Main_Theme(Master).mp3",
+        "Soundtrack/Tree_Theme.mp3", "Soundtrack/Victory_Theme.mp3", "SFX/Ataque.mp3",
+        "Soundtrack/Continue_Theme.mp3", "Soundtrack/Game_Over_Theme.mp3",
+        "SFX/Concreto_Caminhando.mp3"
     };
 
     for (string image : images)
@@ -210,14 +210,18 @@ void Game::Run()
         CalculateDeltaTime();
         EventManager::GetInstance().Update();
         InputManager::GetInstance().Update();
-        if(InputManager::GetInstance().KeyPress(F_KEY)){
+        if (InputManager::GetInstance().KeyPress(F_KEY))
+        {
             swap(GameData::HEIGHT, GameData::PREV_HEIGHT);
             swap(GameData::WIDTH, GameData::PREV_WIDTH);
             GameData::fullscreenUpdateCounter = 2;
-            if(GameData::isFullScreen){
+            if (GameData::isFullScreen)
+            {
                 SDL_SetWindowSize(Game::GetInstance().GetWindow(), GameData::WIDTH, GameData::HEIGHT);
                 SDL_SetWindowFullscreen(window, SDL_FALSE);
-            } else{
+            } 
+            else
+            {
                 SDL_DisplayMode dm;
                 SDL_GetCurrentDisplayMode(0, &dm);
                 GameData::HEIGHT = dm.h;
@@ -227,7 +231,8 @@ void Game::Run()
             }
             GameData::isFullScreen = !GameData::isFullScreen;
         }
-        if(GameData::fullscreenUpdateCounter > 0){
+        if (GameData::fullscreenUpdateCounter > 0)
+        {
             GameData::fullscreenUpdateCounter--;
         }
         stateStack.top()->Update(dt);

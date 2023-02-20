@@ -6,7 +6,7 @@
 #define INCLUDE_SDL_TTF
 
 #include "SDL_include.h"
-#include "Game.h"
+#include <string>
 #include <unordered_map>
 
 using namespace std;
