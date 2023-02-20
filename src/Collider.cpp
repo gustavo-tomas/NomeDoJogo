@@ -64,7 +64,8 @@ void Collider::ResolveCollisionUpdate(float dt)
     correction = Vec2(0, 0);
 }
 
-void Collider::Render() {
+void Collider::Render()
+{
 
     if (!debug)
         return;

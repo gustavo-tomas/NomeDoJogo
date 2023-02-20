@@ -35,14 +35,13 @@ void Sprite::Open(const char* file)
     SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
     SetClip(0, 0, width / frameCountX, height / frameCountY);
 
-    associated.box.w = width / frameCountX;
-    associated.box.h = height / frameCountY;
+    associated.box.w = (int) (width / frameCountX);
+    associated.box.h = (int) (height / frameCountY);
 }
 
 void Sprite::ChangeSprite(const char* file, int frameCountX, int frameCountY, float frameTime, int framesMissing)
 {
     texture = nullptr;
-    this->xMirror = xMirror;
 
     currentFrame = 0;
     this->framesMissing = framesMissing;
@@ -142,12 +141,12 @@ bool Sprite::Is(const char* type)
 
 int Sprite::GetWidth()
 {
-    return (width / frameCountX) * scale.x * (isProportionActive? GameData::WIDTH * 1.0 / GameData::BASE_WIDTH : 1.0);
+    return (int) (width / frameCountX) * scale.x * (isProportionActive? GameData::WIDTH * 1.0 / GameData::BASE_WIDTH : 1.0);
 }
 
 int Sprite::GetHeight()
 {
-    return (height / frameCountY) * scale.y * (isProportionActive? GameData::HEIGHT * 1.0 / GameData::BASE_HEIGHT : 1.0);
+    return (int) (height / frameCountY) * scale.y * (isProportionActive? GameData::HEIGHT * 1.0 / GameData::BASE_HEIGHT : 1.0);
 }
 
 int Sprite::GetUnscaledWidth()
@@ -168,14 +167,14 @@ void Sprite::SetScale(float scaleX, float scaleY)
     {
         // float diff = ((width / frameCountX * scaleX) - width / frameCountX) / 2.0;
         // associated.box.x -= diff;
-        associated.box.w = (width / frameCountX) * scaleX;
+        associated.box.w = (int) (width / frameCountX) * scaleX;
     }
 
     if (scaleY > 0)
     {
         // float diff = ((height / frameCountY * scaleY) - height / frameCountY) / 2.0;
         // associated.box.y -= diff;
-        associated.box.h = (height / frameCountY) * scaleY;
+        associated.box.h = (int) (height / frameCountY) * scaleY;
     }
 }
 
@@ -196,8 +195,8 @@ void Sprite::SetFrameCount(int frameCountX, int frameCountY)
     this->frameCountX = frameCountX;
     this->frameCountY = frameCountY;
     this->currentFrame = 0;
-    associated.box.w = (width / frameCountX) * scale.x;
-    associated.box.h = (height / frameCountY) * scale.y;
+    associated.box.w = (int) (width / frameCountX) * scale.x;
+    associated.box.h = (int) (height / frameCountY) * scale.y;
 }
 
 void Sprite::SetFrameTime(float frameTime)
@@ -212,6 +211,7 @@ bool Sprite::IsOpen()
     return false;
 }
 
-void Sprite::SetMirror(bool xMirror){
+void Sprite::SetMirror(bool xMirror)
+{
     this->xMirror = xMirror;
 }

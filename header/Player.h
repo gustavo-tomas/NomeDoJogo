@@ -25,15 +25,13 @@ class Player : public Component {
 
         static Player* player;
 
-        struct SpriteInfo
-        {
+        struct SpriteInfo {
             const char* fileName;
             int frameCountX, frameCountY, framesMissing = 0;
             float frameTime = 0.08;
         };
 
-        enum Action
-        {
+        enum Action {
             IDLE,
             WALKING_LEFT,
             WALKING_UP,

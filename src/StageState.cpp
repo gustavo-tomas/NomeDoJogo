@@ -35,7 +35,8 @@ void StageState::Start()
     started = true;
     StageState::playerTurn = true;
     
-    if(!player.expired()){
+    if (!player.expired())
+    {
         auto playerPtr = player.lock().get();
         ((Sound *) playerPtr->GetComponent("Sound"))->SetVolume(0);
         ((Player *) playerPtr->GetComponent("Player"))->SetAction(Player::Action::IDLE_PERFORMING);
@@ -133,6 +134,7 @@ void StageState::LoadAssets()
     // NoteTriggers
     int triggers[4] = {LEFT_ARROW_KEY, UP_ARROW_KEY, DOWN_ARROW_KEY, RIGHT_ARROW_KEY};
     spawnerX = 0;
+
     for (int i = 0; i < 4; i++)
     {
         GameObject *noteTriggerGo = new GameObject(); 
@@ -142,7 +144,8 @@ void StageState::LoadAssets()
         spawnerX = noteTriggerGo->box.x;
         AddObject(noteTriggerGo, 22000);
     }
-    if(playerTurn)
+    
+    if (playerTurn)
     {
         GameObject *spawnerGo = new GameObject(); 
         NoteSpawner *spawner = new NoteSpawner(*spawnerGo, musics[currentMusic].notesFile, spawnerX);
@@ -211,7 +214,7 @@ void StageState::Update(float dt)
     {
         for (uint32_t j = i + 1; j < colliderArray.size(); j++)
         {
-            if(colliderArray[i].expired() || colliderArray[j].expired())
+            if (colliderArray[i].expired() || colliderArray[j].expired())
                 continue;
             
             auto weakColliderA = colliderArray[i].lock().get();
@@ -237,7 +240,8 @@ void StageState::Update(float dt)
     }
 
     // Updates FPS counter
-    if (!fpsCounter.expired()){
+    if (!fpsCounter.expired())
+    {
         Text* FPS_Text = (Text*) fpsCounter.lock().get()->GetComponent("Text");
         if (FPS_Text != nullptr)
             FPS_Text->SetText(("FPS " + to_string(floor(GameData::currentFPS))).c_str());
@@ -245,10 +249,11 @@ void StageState::Update(float dt)
 
     // Update music
     musicTimer.Update(dt);
-    if(musicTimer.Get() > musics[currentMusic].duration)
+    if (musicTimer.Get() > musics[currentMusic].duration)
     {
         currentMusic = (currentMusic + 1) %  musics.size();
-        if(currentMusic == 0){
+        if (currentMusic == 0)
+        {
             playerTurn = true;
         }
         backgroundMusic = Music(musics[currentMusic].musicFile.c_str(), 15);

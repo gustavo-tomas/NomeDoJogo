@@ -1,4 +1,6 @@
 #include "../header/Resources.h"
+#include "../header/Game.h"
+#include <iostream>
 
 // Create resources
 unordered_map<string, SDL_Texture*> Resources::imageTable;
@@ -59,7 +61,7 @@ Mix_Chunk* Resources::GetSound(string file)
     Mix_Chunk* chunk;
     if ((chunk = Mix_LoadWAV(file.c_str())) == nullptr)
     {
-        cout << "Error loading sound" << endl;
+        cout << "Error loading sound " << file << endl;
         cout << SDL_GetError() << endl;
         exit(1);
     }

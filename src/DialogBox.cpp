@@ -1,6 +1,5 @@
 #include "../header/CameraFollower.h"
 #include "../header/Game.h"
-#include "../header/GameData.h"
 #include "../header/DialogBox.h"
 #include "../header/Text.h"
 
@@ -62,13 +61,13 @@ void DialogBox::Close()
 void DialogBox::SetText(string text)
 {
     this->text = text;
-    if(!dialogGo.expired())
+    if (!dialogGo.expired())
         ((Text *) dialogGo.lock()->GetComponent("Text"))->SetText(text.c_str());
 }
 
 void DialogBox::SetTitle(string title)
 {
     this->title = title;
-    if(!titleGo.expired())
+    if (!titleGo.expired())
         ((Text *) titleGo.lock()->GetComponent("Text"))->SetText(title.c_str());
 }

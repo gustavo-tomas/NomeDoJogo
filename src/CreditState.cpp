@@ -27,7 +27,7 @@ void CreditState::Start()
 void CreditState::LoadAssets()
 {
     // Music
-    backgroundMusic = Music((GameData::audiosPath + "musics/Main_Theme(Master).mp3").c_str(), 15);
+    backgroundMusic = Music((GameData::audiosPath + "Soundtrack/Main_Theme(Master).mp3").c_str(), 15);
     backgroundMusic.Play(1);
 
     // Background

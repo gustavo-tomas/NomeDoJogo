@@ -2,6 +2,7 @@
 #include "../header/Resources.h"
 #include "../header/Camera.h"
 #include "../header/Sprite.h"
+#include "../header/Game.h"
 
 Text::Text(GameObject& associated, const char* fontFile, int fontSize,
            TextStyle style, const char* text, SDL_Color color, 

@@ -19,7 +19,7 @@ NPC::NPC(GameObject& associated, const char* name, Vec2 pos, Sprite sprite) : Co
 
 void NPC::Update(float dt)
 {
-    if(talking == true)
+    if (talking == true)
         Interact();
     else if
     (
@@ -51,15 +51,15 @@ void NPC::AddSpeech(const char* text)
 
 void NPC::Interact()
 {
-    if(associated.box.GetCenter().GetDistance(GameData::playerPos) > associated.box.w/2 + associated.box.h/2 + 25)
+    if (associated.box.GetCenter().GetDistance(GameData::playerPos) > associated.box.w/2 + associated.box.h/2 + 25)
     {
         dialog->Close();
         talking = false;
         currentSpeech = 0;
     }
-    else if(InputManager::GetInstance().KeyPress(E_KEY))
+    else if (InputManager::GetInstance().KeyPress(E_KEY))
     {
-        if(++currentSpeech == speechs.size())
+        if (++currentSpeech == speechs.size())
         {
             dialog->Close();
             currentSpeech = 0;

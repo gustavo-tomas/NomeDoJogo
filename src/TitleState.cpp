@@ -33,7 +33,7 @@ void TitleState::Start()
 void TitleState::LoadAssets()
 {
     // Background Music
-    backgroundMusic = Music((GameData::audiosPath + "musics/Main_Theme(Master).mp3").c_str(), 15);
+    backgroundMusic = Music((GameData::audiosPath + "Soundtrack/Main_Theme(Master).mp3").c_str(), 15);
     backgroundMusic.Play(1);
 
     // Background
@@ -56,7 +56,6 @@ void TitleState::LoadAssets()
     Vec2 offset = Vec2(GameData::WIDTH / 2.0 - title->GetWidth() / 2.0, GameData::HEIGHT / 2.5 - title->GetHeight() / 2.0);
     titleCf = new CameraFollower(*titleGo, offset);
     
-
     titleGo->AddComponent(title);
     titleGo->AddComponent(titleCf);
     AddObject(titleGo);
@@ -117,7 +116,8 @@ void TitleState::Update(float dt)
         return;
     }
 
-    if (!cursor.expired()){
+    if (!cursor.expired())
+    {
         auto cursorPtr = cursor.lock().get();
         // Cursor displacement
         if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
@@ -152,9 +152,7 @@ void TitleState::Update(float dt)
 
             vector<string> dialogs { };
 
-
             Game::GetInstance().Push(new CutsceneState(scenes, 8.0, dialogs, 8.0, new WorldState()));
-            // Game::GetInstance().Push(new WorldState());
         }
         
         // Créditos
@@ -175,7 +173,6 @@ void TitleState::Update(float dt)
         else if (InputManager::GetInstance().KeyPress(ENTER_KEY) && cursorPtr->box.y <= 357 + 35 * 3)
             quitRequested = true;
     }
-
 
     musicTimer.Update(dt);
 

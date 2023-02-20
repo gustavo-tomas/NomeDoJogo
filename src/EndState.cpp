@@ -32,7 +32,8 @@ void EndState::Update(float dt)
         InputManager::GetInstance().KeyPress(ESCAPE_KEY))
         quitRequested = true;
 
-    if(!cursor.expired()){
+    if (!cursor.expired())
+    {
 
         auto cursorPtr = cursor.lock().get();
 
@@ -94,10 +95,10 @@ void EndState::LoadAssets()
     string musicFile;
 
     if (GameData::playerVictory)
-        musicFile = GameData::audiosPath + "musics/victory.mp3";
+        musicFile = GameData::audiosPath + "Soundtrack/Victory_Theme.mp3";
 
     else
-        musicFile = GameData::audiosPath + "musics/Game_Over_Theme.mp3";
+        musicFile = GameData::audiosPath + "Soundtrack/Game_Over_Theme.mp3";
 
     backgroundMusic = Music(musicFile.c_str(), 15);
     backgroundMusic.Play(1);

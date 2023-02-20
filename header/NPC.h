@@ -7,8 +7,7 @@
 #include "Vec2.h"
 #include "DialogBox.h"
 
-class NPC : public Component
-{
+class NPC : public Component {
 private:
     vector<const char*> speechs;
     const char* name;

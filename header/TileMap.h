@@ -29,5 +29,4 @@ class TileMap : public Component {
         int mapDepth;
 };
 
-
 #endif // TILEMAP_H

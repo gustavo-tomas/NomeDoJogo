@@ -28,7 +28,7 @@ void PauseState::LoadAssets()
     // Background
     GameObject* bgGo = new GameObject();
     Sprite* bg = new Sprite(*bgGo, "./assets/image/ui_background.jpg");
-    bg->SetScale(0.5556, 0.5556); // Original resolution: 1920x1080
+    bg->SetScale(0.56, 0.56); // Original resolution: 1920x1080
     CameraFollower* cf = new CameraFollower(*bgGo);
 
     bgGo->AddComponent(bg);

@@ -50,13 +50,15 @@ void Minion::Update(float dt)
     
     moveTimer.Update(dt);
 
-    if (moveTimer.Get() >= 0.5){
+    if (moveTimer.Get() >= 0.5)
+    {
         Collider* collider = (Collider*) associated.GetComponent("Collider");
         float speed = 200.0;
 
         Vec2 minionPos = collider->box.GetCenter();
 
-        if(!moving){
+        if (!moving)
+        {
             velocity = Vec2(0.f, 1.f);
             destination = minionPos + Vec2(0, (rand() % 200) - 100);
             moving = true;
@@ -67,14 +69,15 @@ void Minion::Update(float dt)
             if (destination.y >= GameData::HEIGHT - GameData::HEIGHT / 3.0)
                 destination.y = GameData::HEIGHT - GameData::HEIGHT / 3.0;
 
-            if(destination.y < minionPos.y){
+            if (destination.y < minionPos.y)
+            {
                 velocity.y = -1.f;
             }
         }
 
         if (collider != nullptr && (velocity.x != 0.f || velocity.y != 0.f))
             collider->velocity = velocity.GetNormalized() * speed;
-        else if(collider != nullptr)
+        else if (collider != nullptr)
             collider->velocity = {0, 0};
             
         float dist = minionPos.GetDistance(destination);

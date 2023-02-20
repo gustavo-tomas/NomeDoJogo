@@ -1,6 +1,5 @@
 #include "../header/SpriteRect.h"
 #include "../header/Game.h"
-#include "../header/Resources.h"
 #include "../header/Camera.h"
 
 SpriteRect::SpriteRect(GameObject& associated) : Component(associated)
@@ -90,7 +89,7 @@ bool SpriteRect::Is(const char* type)
 
 int SpriteRect::GetWidth()
 {
-    return (width / frameCount) * scale.x;
+    return (int) (width / frameCount) * scale.x;
 }
 
 int SpriteRect::GetHeight()
@@ -104,9 +103,9 @@ void SpriteRect::SetScale(float scaleX, float scaleY)
 
     if (scaleX > 0)
     {
-        float diff = ((width / frameCount * scaleX) - width / frameCount) / 2.0;
+        float diff = (((float) width / frameCount * scaleX) - (float) width / frameCount) / 2.0;
         associated.box.x -= diff;
-        associated.box.w = (width / frameCount) * scaleX;
+        associated.box.w = ((float) width / frameCount) * scaleX;
     }
 
     if (scaleY > 0)
@@ -133,7 +132,7 @@ void SpriteRect::SetFrameCount(int frameCount)
 {
     this->frameCount = frameCount;
     this->currentFrame = 0;
-    associated.box.w = (width / frameCount) * scale.x;
+    associated.box.w = ((float) width / frameCount) * scale.x;
 }
 
 void SpriteRect::SetFrameTime(float frameTime)
