@@ -9,6 +9,7 @@
 #include "../header/GameData.h"
 #include "../header/UserInterface.h"
 #include "../header/StageState.h"
+#include "../header/CutsceneState.h"
 #include <string>
 
 #define LOSS_BATTLE_DURATION 1.28
@@ -215,7 +216,9 @@ void Player::Update(float dt)
 
         if(actionTimer.Get() > PREPARING_DURATION){
             currentAction = Action::IDLE;
-            Game::GetInstance().Push(new StageState());
+
+            vector<string> scenes {  GameData::imagesPath + "loading.png"  };
+            Game::GetInstance().Push(new CutsceneState(scenes, 3.0, {}, 8.0, new StageState()));
             actionTimer.Restart();
         }
 

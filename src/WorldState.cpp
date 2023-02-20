@@ -10,6 +10,7 @@
 #include "../header/Sprite.h"
 #include "../header/Sound.h"
 #include "../header/StageState.h"
+#include "../header/CutsceneState.h"
 #include "../header/TreeState.h"
 #include "../header/NPC.h"
 #include "../header/SheetMusic.h"
@@ -269,7 +270,12 @@ void WorldState::Update(float dt)
     // Creates new TreeState
     if (InputManager::GetInstance().KeyPress(SDLK_t))
     {
-        Game::GetInstance().Push(new TreeState());
+        // Game::GetInstance().Push(new TreeState());
+        vector<string> scenes { 
+            GameData::imagesPath + "loading.png"
+        };
+        Game::GetInstance().Push(new CutsceneState(scenes, 3.0, {}, 8.0, new TreeState()));
+
         return;
     }
 
